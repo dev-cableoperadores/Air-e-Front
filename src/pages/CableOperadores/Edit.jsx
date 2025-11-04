@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import cableoperadoresService from '../../services/cableoperadoresService'
+import { useAuth } from '../../context/AuthContext'
 import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
@@ -11,6 +12,7 @@ import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION } from '../../utils/con
 const CableOperadoresEdit = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
@@ -25,8 +27,8 @@ const CableOperadoresEdit = () => {
     direccion: '',
     Representante: '',
     telefono: '',
-    correo: '',
-    ejecutiva: 1,
+  correo: '',
+  ejecutiva_id: null,
     observaciones: '',
     estado: '',
     vencimiento_factura: '',
@@ -43,8 +45,15 @@ const CableOperadoresEdit = () => {
     try {
       setLoading(true)
       const data = await cableoperadoresService.getById(id)
+      // Normalizar datos y mapear ejecutiva -> ejecutiva_id
+      const cleaned = { ...data }
+      // Mapear relación ejecutiva (objeto) a ejecutiva_id (pk)
+      cleaned.ejecutiva_id = data.ejecutiva?.id ?? data.ejecutiva ?? null
+      // Eliminar el campo ejecutiva para no dejar un objeto dentro del form state
+      delete cleaned.ejecutiva
+
       setFormData({
-        ...data,
+        ...cleaned,
         NIT: data.NIT?.toString() || '',
         Digito_verificacion: data.Digito_verificacion?.toString() || '',
         RegistroTic: data.RegistroTic?.toString() || '',
@@ -52,10 +61,9 @@ const CableOperadoresEdit = () => {
         telefono: data.telefono?.toString() || '',
         vencimiento_factura: data.vencimiento_factura?.toString() || '',
         preliquidacion_num: data.preliquidacion_num?.toString() || '',
-        ejecutiva: data.ejecutiva || 1,
       })
     } catch (error) {
-      toast.error('Error al cargar cable-operador')
+      toast.error('Error al cargar cableoperador')
       navigate('/cableoperadores')
     } finally {
       setLoading(false)
@@ -72,8 +80,12 @@ const CableOperadoresEdit = () => {
     setSaving(true)
 
     try {
+      // Asegurar ejecutiva_id: usar el valor actual del form o el usuario autenticado como fallback
+      const formCopy = { ...formData }
+      if (!formCopy.ejecutiva_id && user?.id) formCopy.ejecutiva_id = user.id
+
       const dataToSend = {
-        ...formData,
+        ...formCopy,
         NIT: formData.NIT ? parseInt(formData.NIT) : null,
         Digito_verificacion: formData.Digito_verificacion ? parseInt(formData.Digito_verificacion) : null,
         RegistroTic: formData.RegistroTic ? parseInt(formData.RegistroTic) : null,
@@ -84,10 +96,10 @@ const CableOperadoresEdit = () => {
       }
 
       await cableoperadoresService.update(id, dataToSend)
-      toast.success('Cable-operador actualizado exitosamente')
+      toast.success('Cableoperador actualizado exitosamente')
       navigate('/cableoperadores')
     } catch (error) {
-      toast.error('Error al actualizar cable-operador')
+      toast.error('Error al actualizar cableoperador')
     } finally {
       setSaving(false)
     }
@@ -99,7 +111,7 @@ const CableOperadoresEdit = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Editar Cable-operador</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Editar Cableoperador</h2>
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
@@ -159,6 +171,13 @@ const CableOperadoresEdit = () => {
             label="Dirección"
             name="direccion"
             value={formData.direccion}
+            onChange={handleChange}
+            className="md:col-span-2"
+          />
+          <Input
+            label="Departamento"
+            name="departamento"
+            value={formData.departamento}
             onChange={handleChange}
             className="md:col-span-2"
           />

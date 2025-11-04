@@ -33,10 +33,10 @@ const CableOperadoresDetail = () => {
     if (window.confirm(`¿Estás seguro de eliminar ${cableoperador?.nombre}?`)) {
       try {
         await cableoperadoresService.delete(id)
-        toast.success('Cable-operador eliminado')
+        toast.success('Cableoperador eliminado')
         navigate('/cableoperadores')
       } catch (error) {
-        toast.error('Error al eliminar cable-operador')
+        toast.error('Error al eliminar cableoperador')
       }
     }
   }
@@ -68,9 +68,9 @@ const CableOperadoresDetail = () => {
 
       <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
         <div className="bg-secondary text-white rounded-lg p-4 mb-6">
-          <h3 className="text-2xl font-bold text-center">{cableoperador.nombre}</h3>
-          {cableoperador.nombre_largo && (
-            <p className="text-center mt-2 opacity-90">{cableoperador.nombre_largo}</p>
+          <h3 className="text-2xl font-bold text-center">{cableoperador.nombre_largo}</h3>
+          {cableoperador.nombre && (
+            <p className="text-center mt-2 opacity-90">{cableoperador.nombre}</p>
           )}
         </div>
 
@@ -82,6 +82,7 @@ const CableOperadoresDetail = () => {
           <DetailField label="País" value={cableoperador.pais || 'N/A'} />
           <DetailField label="Ciudad" value={cableoperador.ciudad || 'N/A'} />
           <DetailField label="Dirección" value={cableoperador.direccion || 'N/A'} className="md:col-span-2" />
+          <DetailField label="Departamento" value={cableoperador.departamento || 'N/A'} className="md:col-span-2" />
           <DetailField label="Representante" value={cableoperador.Representante || 'N/A'} />
           <DetailField label="Teléfono" value={cableoperador.telefono ? formatPhone(cableoperador.telefono) : 'N/A'} />
           <DetailField label="Correo" value={cableoperador.correo || 'N/A'} />
@@ -91,6 +92,7 @@ const CableOperadoresDetail = () => {
           <DetailField label="Preliquidación Letra" value={cableoperador.preliquidacion_letra || 'N/A'} />
           <DetailField label="Respuesta Preliquidación" value={cableoperador.respuesta_preliquidacion || 'N/A'} />
           <DetailField label="Observaciones" value={cableoperador.observaciones || 'N/A'} className="md:col-span-2" />
+          <DetailField label="Ejecutiva" value={cableoperador.ejecutiva?.first_name + ' ' + cableoperador.ejecutiva?.last_name || 'N/A'} className="md:col-span-2" />
         </div>
       </div>
     </div>

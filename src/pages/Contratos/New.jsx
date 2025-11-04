@@ -23,6 +23,43 @@ const ContratosNew = () => {
     valor_contrato: '',
     fecha_radicacion: '',
     tipo_fecha_radicacion: 'fija',
+    // Campos anidados por defecto
+    nap: {
+      tip8: '',
+      tip10: '',
+      tip12: '',
+      tip14: '',
+      tip15: '',
+      tip16: '',
+      tip20: '',
+    },
+    cable: {
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
+    },
+    caja_empalme: {
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
+    },
+    reserva: {
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
+    },
   })
 
   useEffect(() => {
@@ -36,7 +73,7 @@ const ContratosNew = () => {
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {
-      toast.error('Error al cargar cable-operadores')
+      toast.error('Error al cargar cableoperadores')
     } finally {
       setLoading(false)
     }
@@ -45,6 +82,16 @@ const ContratosNew = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
+  }
+
+  const handleNestedChange = (section, field, value) => {
+    setFormData({
+      ...formData,
+      [section]: {
+        ...(formData[section] || {}),
+        [field]: value,
+      },
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -63,12 +110,32 @@ const ContratosNew = () => {
     setSaving(true)
 
     try {
+      // Normalizar campos numéricos anidados (string -> int)
+      const normalizeNumbers = (obj, defaults = {}) => {
+        const out = {}
+        for (const k in obj) {
+          const v = obj[k]
+          out[k] = v === '' || v === null || v === undefined ? (defaults[k] || 0) : parseInt(v)
+        }
+        return out
+      }
+
+      const nestedPayload = {
+        nap: normalizeNumbers(formData.nap),
+        cable: normalizeNumbers(formData.cable),
+        caja_empalme: normalizeNumbers(formData.caja_empalme),
+        reserva: normalizeNumbers(formData.reserva),
+      }
+
       const dataToSend = {
+        // Campos principales (fechas/strings)
         ...formData,
-        cableoperador: parseInt(formData.cableoperador),
+        cableoperador_id: parseInt(formData.cableoperador),
         duracion_anos: formData.duracion_anos ? parseInt(formData.duracion_anos) : 0,
         valor_contrato: formData.valor_contrato ? parseFloat(formData.valor_contrato) : 0,
         fecha_radicacion: formData.fecha_radicacion ? parseInt(formData.fecha_radicacion) : 0,
+        // Reemplazar objetos anidados por versiones normalizadas
+        ...nestedPayload,
       }
 
       await contratosService.create(dataToSend)
@@ -159,6 +226,65 @@ const ContratosNew = () => {
             ]}
             required
           />
+        </div>
+
+        {/* Secciones anidadas: Nap, Cable, Caja Empalme, Reserva */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">NAP</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.nap[key]}
+                onChange={(e) => handleNestedChange('nap', key, e.target.value)}
+              />
+            ))}
+          </div>
+
+          <h3 className="text-lg font-semibold">Cable</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.cable[key]}
+                onChange={(e) => handleNestedChange('cable', key, e.target.value)}
+              />
+            ))}
+          </div>
+
+          <h3 className="text-lg font-semibold">Caja Empalme</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.caja_empalme[key]}
+                onChange={(e) => handleNestedChange('caja_empalme', key, e.target.value)}
+              />
+            ))}
+          </div>
+
+          <h3 className="text-lg font-semibold">Reserva</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.reserva[key]}
+                onChange={(e) => handleNestedChange('reserva', key, e.target.value)}
+              />
+            ))}
+          </div>
         </div>
         <div className="flex gap-4">
           <Button type="submit" variant="primary" disabled={saving}>

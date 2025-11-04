@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+Air-e_api/
+Air-e_api/__pycache__/
+Air-e_api/*.pyc

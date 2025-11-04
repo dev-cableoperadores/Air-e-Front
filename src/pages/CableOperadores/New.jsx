@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 import cableoperadoresService from '../../services/cableoperadoresService'
 import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
@@ -9,6 +10,7 @@ import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION } from '../../utils/con
 
 const CableOperadoresNew = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     nombre: '',
@@ -23,7 +25,7 @@ const CableOperadoresNew = () => {
     Representante: '',
     telefono: '',
     correo: '',
-    ejecutiva: 1, // TODO: obtener de contexto
+    ejecutiva_id: user?.id, // ID del usuario autenticado
     observaciones: '',
     estado: '',
     vencimiento_factura: '',
@@ -42,6 +44,12 @@ const CableOperadoresNew = () => {
     setLoading(true)
 
     try {
+      if (!user?.id) {
+        toast.error('No se pudo obtener el ID del usuario')
+        return
+      }
+
+      console.log('Usuario actual:', user)
       // Convertir campos numéricos
       const dataToSend = {
         ...formData,
@@ -52,13 +60,15 @@ const CableOperadoresNew = () => {
         telefono: formData.telefono ? parseInt(formData.telefono) : null,
         vencimiento_factura: formData.vencimiento_factura ? parseInt(formData.vencimiento_factura) : null,
         preliquidacion_num: formData.preliquidacion_num ? parseInt(formData.preliquidacion_num) : null,
+        ejecutiva_id: formData.ejecutiva_id, // Mantener el ID de ejecutiva sin transformar
       }
 
+      console.log('Datos a enviar:', dataToSend)
       await cableoperadoresService.create(dataToSend)
-      toast.success('Cable-operador creado exitosamente')
+      toast.success('Cableoperador creado exitosamente')
       navigate('/cableoperadores')
     } catch (error) {
-      toast.error('Error al crear cable-operador')
+      toast.error('Error al crear cableoperador')
     } finally {
       setLoading(false)
     }
@@ -126,6 +136,13 @@ const CableOperadoresNew = () => {
             label="Dirección"
             name="direccion"
             value={formData.direccion}
+            onChange={handleChange}
+            className="md:col-span-2"
+          />
+          <Input
+            label="Departamento"
+            name="departamento"
+            value={formData.departamento}
             onChange={handleChange}
             className="md:col-span-2"
           />

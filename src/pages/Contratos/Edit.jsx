@@ -25,33 +25,120 @@ const ContratosEdit = () => {
     valor_contrato: '',
     fecha_radicacion: '',
     tipo_fecha_radicacion: 'fija',
+    // Campos anidados
+    nap: {
+      tip8: '',
+      tip10: '',
+      tip12: '',
+      tip14: '',
+      tip15: '',
+      tip16: '',
+      tip20: '',
+    },
+    cable: {
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
+    },
+    caja_empalme: {
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
+    },
+    reserva: {
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
+    },
   })
 
   useEffect(() => {
     loadData()
   }, [id])
 
-  const loadData = async () => {
+    const loadData = async () => {
     try {
       setLoading(true)
       const [contratoData, cableoperadoresData] = await Promise.all([
         contratosService.getById(id),
-        // Obtener todos los cable-operadores para el select
         cableoperadoresService.getAllAllPages(),
       ])
       
-      const items = Array.isArray(cableoperadoresData?.results) ? cableoperadoresData.results : (cableoperadoresData || [])
+      console.log('Datos del contrato cargado:', contratoData)
+      
+      const items = Array.isArray(cableoperadoresData?.results) 
+        ? cableoperadoresData.results 
+        : (cableoperadoresData || [])
+      
       setCableoperadores(items)
+
+      // Asegurarnos de que tenemos los datos del contrato
+      if (!contratoData) {
+        throw new Error('No se pudo cargar el contrato')
+      }
+
       setFormData({
         ...contratoData,
-        cableoperador: contratoData.cableoperador?.toString() || '',
+        // Usar el ID del cableoperador para el select (probar ambas estructuras)
+        cableoperador: contratoData.cableoperador?.id?.toString() || contratoData.cableoperador?.toString() || '',
         duracion_anos: contratoData.duracion_anos?.toString() || '',
         valor_contrato: contratoData.valor_contrato?.toString() || '',
         fecha_radicacion: contratoData.fecha_radicacion?.toString() || '',
         inicio_vigencia: formatDateForInput(contratoData.inicio_vigencia),
         fin_vigencia: formatDateForInput(contratoData.fin_vigencia),
+        tipo_fecha_radicacion: contratoData.tipo_fecha_radicacion || 'fija',
+        // Rellenar campos anidados
+        nap: {
+          tip8: contratoData.nap?.tip8?.toString() || '',
+          tip10: contratoData.nap?.tip10?.toString() || '',
+          tip12: contratoData.nap?.tip12?.toString() || '',
+          tip14: contratoData.nap?.tip14?.toString() || '',
+          tip15: contratoData.nap?.tip15?.toString() || '',
+          tip16: contratoData.nap?.tip16?.toString() || '',
+          tip20: contratoData.nap?.tip20?.toString() || '',
+        },
+        cable: {
+          tipo8: contratoData.cable?.tipo8?.toString() || '',
+          tipo10: contratoData.cable?.tipo10?.toString() || '',
+          tipo12: contratoData.cable?.tipo12?.toString() || '',
+          tipo14: contratoData.cable?.tipo14?.toString() || '',
+          tipo15: contratoData.cable?.tipo15?.toString() || '',
+          tipo16: contratoData.cable?.tipo16?.toString() || '',
+          tipo20: contratoData.cable?.tipo20?.toString() || '',
+        },
+        caja_empalme: {
+          tipo8: contratoData.caja_empalme?.tipo8?.toString() || '',
+          tipo10: contratoData.caja_empalme?.tipo10?.toString() || '',
+          tipo12: contratoData.caja_empalme?.tipo12?.toString() || '',
+          tipo14: contratoData.caja_empalme?.tipo14?.toString() || '',
+          tipo15: contratoData.caja_empalme?.tipo15?.toString() || '',
+          tipo16: contratoData.caja_empalme?.tipo16?.toString() || '',
+          tipo20: contratoData.caja_empalme?.tipo20?.toString() || '',
+        },
+        reserva: {
+          tipo8: contratoData.reserva?.tipo8?.toString() || '',
+          tipo10: contratoData.reserva?.tipo10?.toString() || '',
+          tipo12: contratoData.reserva?.tipo12?.toString() || '',
+          tipo14: contratoData.reserva?.tipo14?.toString() || '',
+          tipo15: contratoData.reserva?.tipo15?.toString() || '',
+          tipo16: contratoData.reserva?.tipo16?.toString() || '',
+          tipo20: contratoData.reserva?.tipo20?.toString() || '',
+        },
       })
     } catch (error) {
+      console.error('Error al cargar contrato:', error)
       toast.error('Error al cargar contrato')
       navigate('/contratos')
     } finally {
@@ -62,6 +149,16 @@ const ContratosEdit = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
+  }
+
+  const handleNestedChange = (section, field, value) => {
+    setFormData({
+      ...formData,
+      [section]: {
+        ...(formData[section] || {}),
+        [field]: value,
+      },
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -80,12 +177,29 @@ const ContratosEdit = () => {
     setSaving(true)
 
     try {
+      const normalizeNumbers = (obj, defaults = {}) => {
+        const out = {}
+        for (const k in obj) {
+          const v = obj[k]
+          out[k] = v === '' || v === null || v === undefined ? (defaults[k] || 0) : parseInt(v)
+        }
+        return out
+      }
+
+      const nestedPayload = {
+        nap: normalizeNumbers(formData.nap),
+        cable: normalizeNumbers(formData.cable),
+        caja_empalme: normalizeNumbers(formData.caja_empalme),
+        reserva: normalizeNumbers(formData.reserva),
+      }
+
       const dataToSend = {
         ...formData,
-        cableoperador: parseInt(formData.cableoperador),
+        cableoperador_id: parseInt(formData.cableoperador),
         duracion_anos: formData.duracion_anos ? parseInt(formData.duracion_anos) : 0,
         valor_contrato: formData.valor_contrato ? parseFloat(formData.valor_contrato) : 0,
         fecha_radicacion: formData.fecha_radicacion ? parseInt(formData.fecha_radicacion) : 0,
+        ...nestedPayload,
       }
 
       await contratosService.update(id, dataToSend)
@@ -176,6 +290,64 @@ const ContratosEdit = () => {
             ]}
             required
           />
+        </div>
+        {/* Secciones anidadas: Nap, Cable, Caja Empalme, Reserva */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">NAP</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.nap[key]}
+                onChange={(e) => handleNestedChange('nap', key, e.target.value)}
+              />
+            ))}
+          </div>
+
+          <h3 className="text-lg font-semibold">Cable</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.cable[key]}
+                onChange={(e) => handleNestedChange('cable', key, e.target.value)}
+              />
+            ))}
+          </div>
+
+          <h3 className="text-lg font-semibold">Caja Empalme</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.caja_empalme[key]}
+                onChange={(e) => handleNestedChange('caja_empalme', key, e.target.value)}
+              />
+            ))}
+          </div>
+
+          <h3 className="text-lg font-semibold">Reserva</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+              <Input
+                key={key}
+                label={key}
+                name={key}
+                type="number"
+                value={formData.reserva[key]}
+                onChange={(e) => handleNestedChange('reserva', key, e.target.value)}
+              />
+            ))}
+          </div>
         </div>
         <div className="flex gap-4">
           <Button type="submit" variant="primary" disabled={saving}>

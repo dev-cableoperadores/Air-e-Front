@@ -11,34 +11,60 @@ import { formatCurrency, formatDate } from '../../utils/formatters'
 const ContratosList = () => {
   const [contratos, setContratos] = useState([])
   const [cableoperadores, setCableoperadores] = useState([])
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const [filterEstado, setFilterEstado] = useState('')
   const [filterCableoperador, setFilterCableoperador] = useState('')
 
   useEffect(() => {
-    loadData()
-  }, [])
+    loadData(page)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
-  const loadData = async () => {
+  const loadData = async (pageToLoad = 1) => {
     try {
       setLoading(true)
-      const [contratosData, cableoperadoresData] = await Promise.all([
-        contratosService.getAll(),
-        // Obtener todos los cable-operadores (todas las páginas) para el select de filtro
-        cableoperadoresService.getAllAllPages(),
-      ])
-      console.log('Contratos cargados:', contratosData)
-      console.log('Cable-operadores cargados:', cableoperadoresData)
-      
-      // Asegurarse de que ambos sean arrays
-      const contratosArray = Array.isArray(contratosData) ? contratosData : []
-      const cableoperadoresArray = Array.isArray(cableoperadoresData?.results)
-        ? cableoperadoresData.results
-        : (cableoperadoresData?.results || cableoperadoresData || [])
 
-      setContratos(contratosArray)
-      setCableoperadores(cableoperadoresArray)
+      // Si hay término de búsqueda, usar búsqueda del servidor (opción A)
+      if (searchTerm && searchTerm.trim() !== '') {
+        const contratosResp = await contratosService.getAllFull({ page: pageToLoad, search: searchTerm })
+        console.log('Contratos (búsqueda por servidor) cargados:', contratosResp)
+        const items = contratosResp?.results || []
+        // Obtener igualmente los cable-operadores para el select
+        const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
+        const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
+          ? cableoperadoresResp.results
+          : (cableoperadoresResp?.results || cableoperadoresResp || [])
+
+        setContratos(items)
+        setCableoperadores(cableoperadoresArray)
+        setTotalCount(contratosResp?.count || items.length)
+        setPageSize(items.length)
+      } else {
+        // Cargar página específica desde el servidor
+        const [contratosResp, cableoperadoresResp] = await Promise.all([
+          contratosService.getAllFull({ page: pageToLoad }),
+          // Obtener todos los cable-operadores (todas las páginas) para el select de filtro
+          cableoperadoresService.getAllAllPages(),
+        ])
+
+        console.log('Contratos página cargada:', contratosResp)
+        console.log('Cable-operadores cargados:', cableoperadoresResp)
+
+        const contratosArray = contratosResp?.results || []
+        const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
+          ? cableoperadoresResp.results
+          : (cableoperadoresResp?.results || cableoperadoresResp || [])
+
+        setContratos(contratosArray)
+        setCableoperadores(cableoperadoresArray)
+        setTotalCount(contratosResp?.count || contratosArray.length)
+        setPageSize(contratosArray.length)
+      }
     } catch (error) {
       console.error('Error al cargar datos:', error.response?.data || error.message)
       toast.error(`Error al cargar datos: ${error.response?.data?.detail || error.message}`)
@@ -48,6 +74,18 @@ const ContratosList = () => {
       setLoading(false)
     }
   }
+
+  // Cuando cambia el término de búsqueda, recargar (buscar en todas las páginas)
+  useEffect(() => {
+    // Si hay búsqueda, resetear a página 1 y cargar todo en cliente
+    if (searchTerm && searchTerm.trim() !== '') {
+      loadData(1)
+    } else {
+      // Si se borró la búsqueda, volver a cargar la página actual desde servidor
+      loadData(page)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm])
 
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de eliminar este contrato?')) {
@@ -95,13 +133,42 @@ const ContratosList = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-4 space-y-4">
-        <input
-          type="text"
-          placeholder="Buscar por cable-operador..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Buscar por cable-operador... (Enter para buscar)"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setPage(1)
+                setSearchTerm(searchInput)
+              }
+            }}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setPage(1)
+              setSearchTerm(searchInput)
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          >
+            Buscar
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchInput('')
+              setSearchTerm('')
+              setPage(1)
+            }}
+            className="px-4 py-2 bg-gray-100 rounded-lg"
+          >
+            Limpiar
+          </button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Filtrar por Estado"
@@ -205,6 +272,26 @@ const ContratosList = () => {
                 ))}
               </tbody>
             </table>
+            <div className="px-4 py-3 bg-white border-t flex items-center justify-between">
+              <div className="text-sm text-gray-700">
+                Mostrando {contratos.length} de {totalCount} contratos
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => { if (page > 1) setPage(page - 1) }}
+                  disabled={page <= 1}
+                  className={`px-3 py-1 rounded ${page <= 1 ? 'opacity-50 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200'}`}>
+                  Anterior
+                </button>
+                <div className="text-sm">Página {page} de {Math.max(1, Math.ceil(totalCount / (pageSize || totalCount || 1)))}</div>
+                <button
+                  onClick={() => { if (page < Math.ceil(totalCount / (pageSize || totalCount || 1))) setPage(page + 1) }}
+                  disabled={page >= Math.ceil(totalCount / (pageSize || totalCount || 1))}
+                  className={`px-3 py-1 rounded ${page >= Math.ceil(totalCount / (pageSize || totalCount || 1)) ? 'opacity-50 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200'}`}>
+                  Siguiente
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

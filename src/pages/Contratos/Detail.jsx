@@ -94,7 +94,7 @@ const ContratosDetail = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DetailField label="Cable-operador" value={contrato.cableoperador?.nombre || 'N/A'} />
+          <DetailField label="Cableoperador" value={contrato.cableoperador?.nombre || 'N/A'} />
           <DetailField
             label="Estado del Contrato"
             value={

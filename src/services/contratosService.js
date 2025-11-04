@@ -35,8 +35,22 @@ const contratosService = {
   },
 
   getById: async (id) => {
-    const response = await api.get(`/api/contratos/detail/${id}/`)
-    return response.data
+    // Primero intentar obtener por la ruta detail
+    try {
+      const response = await api.get(`/api/contratos/list/${id}/`)
+      return response.data
+    } catch (error) {
+      // Si falla, buscar en la lista filtrada
+      const response = await api.get(`/api/contratos/list/`, { 
+        params: { id: id }
+      })
+      // Tomar el primer resultado que coincida
+      const contrato = response.data?.results?.find(c => c.id.toString() === id.toString())
+      if (!contrato) {
+        throw new Error('Contrato no encontrado')
+      }
+      return contrato
+    }
   },
 
   create: async (data) => {
@@ -45,15 +59,19 @@ const contratosService = {
   },
 
   update: async (id, data) => {
-    const response = await api.put(`/api/contratos/detail/${id}/`, data)
+    const response = await api.put(`/api/contratos/list/${id}/`, {
+      ...data,
+      _method: 'PUT', // Simular PUT vía POST para evitar 405
+    })
     return response.data
   },
 
   delete: async (id) => {
-    const response = await api.delete(`/api/contratos/detail/${id}/`)
+    const response = await api.post(`/api/contratos/list/${id}/`, {
+      _method: 'DELETE', // Simular DELETE vía POST
+    })
     return response.data
   },
 }
 
 export default contratosService
-

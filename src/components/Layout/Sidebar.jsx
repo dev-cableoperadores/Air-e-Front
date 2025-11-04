@@ -10,7 +10,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const menuItems = [
     { path: '/', label: 'Inicio', icon: Home },
-    { path: '/cableoperadores', label: 'Cable-operadores', icon: Cable },
+    { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
     { path: '/contratos', label: 'Contratos', icon: FileText },
   ]
 

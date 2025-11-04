@@ -8,36 +8,57 @@ import { formatPhone, formatNumber } from '../../utils/formatters'
 
 const CableOperadoresList = () => {
   const [cableoperadores, setCableoperadores] = useState([])
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
-    loadCableoperadores()
-  }, [])
+    loadCableoperadores(page)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
-  const loadCableoperadores = async () => {
+  const loadCableoperadores = async (pageToLoad = 1) => {
     try {
       setLoading(true)
-      const data = await cableoperadoresService.getAll()
-      console.log('Respuesta del servidor:', data)
-      // Asegurar que data es un array
-      if (!Array.isArray(data)) {
-        console.log('La respuesta no es un array:', typeof data, data)
-        // Si data.results existe y es un array, usar eso
-        const arrayData = data?.results || []
-        setCableoperadores(arrayData)
+
+      // Usar búsqueda del servidor cuando haya término de búsqueda (opción A)
+      if (searchTerm && searchTerm.trim() !== '') {
+        const resp = await cableoperadoresService.getAllFull({ page: pageToLoad, search: searchTerm })
+        console.log('Cableoperadores (búsqueda por servidor):', resp)
+        const items = resp?.results || []
+        setCableoperadores(items)
+        setTotalCount(resp?.count || items.length)
+        setPageSize(items.length)
       } else {
-        setCableoperadores(data)
+        // Cargar página específica desde el servidor
+        const resp = await cableoperadoresService.getAllFull({ page: pageToLoad })
+        console.log('Respuesta completa de cableoperadores:', resp)
+        const items = resp?.results || []
+        setCableoperadores(items)
+        setTotalCount(resp?.count || items.length)
+        setPageSize(items.length)
       }
     } catch (error) {
-      console.error('Error al cargar cable-operadores:', error.response?.data || error.message)
-      toast.error(`Error al cargar cable-operadores: ${error.response?.data?.detail || error.message}`)
+      console.error('Error al cargar cableoperadores:', error.response?.data || error.message)
+      toast.error(`Error al cargar cableoperadores: ${error.response?.data?.detail || error.message}`)
       setCableoperadores([])
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (searchTerm && searchTerm.trim() !== '') {
+      loadCableoperadores(1)
+    } else {
+      loadCableoperadores(page)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm])
 
   const handleDelete = async (id, nombre) => {
     if (window.confirm(`¿Estás seguro de eliminar ${nombre}?`)) {
@@ -67,16 +88,16 @@ const CableOperadoresList = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Cable-operadores
+            Cableoperadores
           </h1>
           <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
-            Gestiona los cable-operadores del sistema
+            Gestiona los cableoperadores del sistema
           </p>
         </div>
         <Link to="/cableoperadores/nuevo">
           <button className="flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
             <Plus className="w-4 h-4 mr-2" />
-            Nuevo Cable-operador
+            Nuevo Cableoperador
           </button>
         </Link>
       </div>
@@ -85,13 +106,42 @@ const CableOperadoresList = () => {
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Buscar por nombre, nombre largo o NIT..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2.5 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Buscar por nombre, nombre largo o NIT... (Enter para buscar)"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setPage(1)
+                  setSearchTerm(searchInput)
+                }
+              }}
+              className="pl-10 pr-4 py-2.5 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setPage(1)
+                setSearchTerm(searchInput)
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              Buscar
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchInput('')
+                setSearchTerm('')
+                setPage(1)
+              }}
+              className="px-4 py-2 bg-gray-100 rounded-lg"
+            >
+              Limpiar
+            </button>
+          </div>
         </div>
       </div>
 
@@ -100,7 +150,7 @@ const CableOperadoresList = () => {
         {filteredCableoperadores.length === 0 ? (
           <div className="col-span-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
             <Cable className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400">No se encontraron cable-operadores</p>
+            <p className="text-gray-500 dark:text-gray-400">No se encontraron cableoperadores</p>
           </div>
         ) : (
           filteredCableoperadores.map((co) => (
@@ -110,28 +160,28 @@ const CableOperadoresList = () => {
             >
               {/* Card Header */}
               <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white p-4">
-                <h3 className="text-lg font-bold text-center truncate">{co.nombre}</h3>
+                <h3 className="text-lg font-bold text-center truncate">{co.nombre_largo}</h3>
               </div>
               
               {/* Card Body */}
               <div className="p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Nombre</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                      {co.nombre || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Municipio</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                      {co.ciudad || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
                     <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">NIT</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                      {co.NIT ? formatNumber(co.NIT) : 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">País</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                      {co.pais || 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Código Interno</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                      {co.CodigoInterno || 'N/A'}
+                      {co.NIT || 'N/A'}
                     </p>
                   </div>
                   <div>
@@ -167,6 +217,26 @@ const CableOperadoresList = () => {
             </div>
           ))
         )}
+      </div>
+      <div className="mt-4 px-4 py-3 bg-white border-t flex items-center justify-between">
+        <div className="text-sm text-gray-700">
+          Mostrando {cableoperadores.length} de {totalCount} cableoperadores
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => { if (page > 1) setPage(page - 1) }}
+            disabled={page <= 1}
+            className={`px-3 py-1 rounded ${page <= 1 ? 'opacity-50 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200'}`}>
+            Anterior
+          </button>
+          <div className="text-sm">Página {page} de {Math.max(1, Math.ceil(totalCount / (pageSize || totalCount || 1)))}</div>
+          <button
+            onClick={() => { if (page < Math.ceil(totalCount / (pageSize || totalCount || 1))) setPage(page + 1) }}
+            disabled={page >= Math.ceil(totalCount / (pageSize || totalCount || 1))}
+            className={`px-3 py-1 rounded ${page >= Math.ceil(totalCount / (pageSize || totalCount || 1)) ? 'opacity-50 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200'}`}>
+            Siguiente
+          </button>
+        </div>
       </div>
     </div>
   )
