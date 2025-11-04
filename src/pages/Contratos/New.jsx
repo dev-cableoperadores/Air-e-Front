@@ -31,8 +31,10 @@ const ContratosNew = () => {
 
   const loadCableoperadores = async () => {
     try {
-      const data = await cableoperadoresService.getAll()
-      setCableoperadores(data)
+      // Traer todos los cable-operadores (todas las páginas) para el select
+      const data = await cableoperadoresService.getAllAllPages()
+      const items = Array.isArray(data?.results) ? data.results : (data || [])
+      setCableoperadores(items)
     } catch (error) {
       toast.error('Error al cargar cable-operadores')
     } finally {

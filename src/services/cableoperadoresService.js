@@ -1,31 +1,40 @@
 import api from '../utils/api'
 
 const cableoperadoresService = {
-  getAll: async () => {
-    try {
-      const response = await api.get('/api/cableoperadores/list/')
-      console.log('Respuesta completa de cable-operadores:', response.data)
-      // Extraer el array de results de la respuesta paginada
-      return response.data?.results || []
-    } catch (error) {
-      console.error('Error al obtener cable-operadores:', error)
-      throw error
-    }
+  // Devuelve la respuesta completa (útil para leer count, next, previous)
+  getAllFull: async (params = {}) => {
+    const response = await api.get('/api/cableoperadores/list/', { params })
+    return response.data
   },
 
-  getById: async (id) => {
-    try {
-      const response = await api.get(`/api/cableoperadores/detail/${id}/`)
-      console.log('Detalle del cable-operador:', response.data)
-      // Si la respuesta está paginada, tomar el primer resultado
-      if (response.data?.results && response.data.results.length > 0) {
-        return response.data.results[0]
-      }
-      return response.data
-    } catch (error) {
-      console.error('Error al obtener cable-operador por ID:', error)
-      throw error
+  // Devuelve solo el array de results (compatibilidad con llamadas existentes)
+  getAll: async (params = {}) => {
+    const data = await cableoperadoresService.getAllFull(params)
+    return data?.results || []
+  },
+
+  // Trae todos los items iterando páginas (use con cuidado - puede ser lento)
+  getAllAllPages: async (params = {}) => {
+    const accumulated = []
+    let url = '/api/cableoperadores/list/'
+    let query = { ...params }
+
+    // First request
+    let response = await api.get(url, { params: query })
+    const firstData = response.data
+    accumulated.push(...(firstData.results || []))
+    let next = firstData.next
+
+    // Iterate following pages
+    while (next) {
+      // next is a full URL; call it directly
+      response = await api.get(next)
+      const pageData = response.data
+      accumulated.push(...(pageData.results || []))
+      next = pageData.next
     }
+
+    return { results: accumulated, count: firstData.count }
   },
 
   getById: async (id) => {

@@ -4,40 +4,30 @@ import contratosService from './contratosService'
 const dashboardService = {
   getStats: async () => {
     try {
+      // Pedimos la respuesta completa para poder leer el `count`
       const [cableoperadoresResponse, contratosResponse] = await Promise.all([
-        cableoperadoresService.getAll(),
-        contratosService.getAll(),
+        cableoperadoresService.getAllFull(),
+        contratosService.getAllFull(),
       ])
 
-      // Django REST Framework retorna datos paginados en formato { results: [...], count, next, previous }
-      // Si tiene results, usar results, sino usar el array directo
-      const cableoperadores = Array.isArray(cableoperadoresResponse) 
-        ? cableoperadoresResponse 
-        : (cableoperadoresResponse.results || [])
-      
-      const contratos = Array.isArray(contratosResponse) 
-        ? contratosResponse 
-        : (contratosResponse.results || [])
+      const cableoperadoresCount = cableoperadoresResponse?.count ?? (Array.isArray(cableoperadoresResponse) ? cableoperadoresResponse.length : 0)
+      const contratosCount = contratosResponse?.count ?? (Array.isArray(contratosResponse) ? contratosResponse.length : 0)
 
-      // Si es paginado, usar count, sino usar length
-      const totalCableoperadores = cableoperadoresResponse.count !== undefined 
-        ? cableoperadoresResponse.count 
-        : cableoperadores.length
+      // Para calcular vigentes/vencidos necesitamos los items: si la respuesta contiene results, usamos esa lista,
+      // en caso contrario asumimos que la respuesta ya es el array
+      const contratosItems = Array.isArray(contratosResponse) ? contratosResponse : (contratosResponse.results || [])
 
-      const contratosVigentes = contratos.filter((c) => c.estado_contrato === 'Vigente').length
-      const contratosVencidos = contratos.filter((c) => c.estado_contrato === 'Vencido').length
-      const totalContratos = contratosResponse.count !== undefined 
-        ? contratosResponse.count 
-        : contratos.length
+      const contratosVigentes = contratosItems.filter((c) => c.estado_contrato === 'Vigente').length
+      const contratosVencidos = contratosItems.filter((c) => c.estado_contrato === 'Vencido').length
 
       return {
         cableoperadores: {
-          count: totalCableoperadores,
+          count: cableoperadoresCount,
         },
-        totalCableoperadores,
+        totalCableoperadores: cableoperadoresCount,
         contratosVigentes,
         contratosVencidos,
-        totalContratos,
+        totalContratos: contratosCount,
       }
     } catch (error) {
       console.error('Error en dashboardService.getStats:', error)

@@ -1,31 +1,42 @@
 import api from '../utils/api'
 
 const contratosService = {
-  getAll: async () => {
-    try {
-      const response = await api.get('/api/contratos/list/')
-      console.log('Respuesta completa de contratos:', response.data)
-      // Extraer el array de results de la respuesta paginada
-      return response.data?.results || []
-    } catch (error) {
-      console.error('Error al obtener contratos:', error)
-      throw error
+  // Devuelve la respuesta completa (count, next, results...)
+  getAllFull: async (params = {}) => {
+    const response = await api.get('/api/contratos/list/', { params })
+    return response.data
+  },
+
+  // Compatibilidad: devuelve solo el array de items
+  getAll: async (params = {}) => {
+    const data = await contratosService.getAllFull(params)
+    return data?.results || []
+  },
+
+  // Trae todas las páginas concatenadas
+  getAllAllPages: async (params = {}) => {
+    const accumulated = []
+    let url = '/api/contratos/list/'
+    let query = { ...params }
+
+    let response = await api.get(url, { params: query })
+    const firstData = response.data
+    accumulated.push(...(firstData.results || []))
+    let next = firstData.next
+
+    while (next) {
+      response = await api.get(next)
+      const pageData = response.data
+      accumulated.push(...(pageData.results || []))
+      next = pageData.next
     }
+
+    return { results: accumulated, count: firstData.count }
   },
 
   getById: async (id) => {
-    try {
-      const response = await api.get(`/api/contratos/detail/${id}/`)
-      console.log('Detalle del contrato:', response.data)
-      // Si la respuesta está paginada, tomar el primer resultado
-      if (response.data?.results && response.data.results.length > 0) {
-        return response.data.results[0]
-      }
-      return response.data
-    } catch (error) {
-      console.error('Error al obtener contrato por ID:', error)
-      throw error
-    }
+    const response = await api.get(`/api/contratos/detail/${id}/`)
+    return response.data
   },
 
   create: async (data) => {

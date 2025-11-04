@@ -36,10 +36,12 @@ const ContratosEdit = () => {
       setLoading(true)
       const [contratoData, cableoperadoresData] = await Promise.all([
         contratosService.getById(id),
-        cableoperadoresService.getAll(),
+        // Obtener todos los cable-operadores para el select
+        cableoperadoresService.getAllAllPages(),
       ])
       
-      setCableoperadores(cableoperadoresData)
+      const items = Array.isArray(cableoperadoresData?.results) ? cableoperadoresData.results : (cableoperadoresData || [])
+      setCableoperadores(items)
       setFormData({
         ...contratoData,
         cableoperador: contratoData.cableoperador?.toString() || '',

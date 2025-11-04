@@ -25,17 +25,19 @@ const ContratosList = () => {
       setLoading(true)
       const [contratosData, cableoperadoresData] = await Promise.all([
         contratosService.getAll(),
-        cableoperadoresService.getAll(),
+        // Obtener todos los cable-operadores (todas las páginas) para el select de filtro
+        cableoperadoresService.getAllAllPages(),
       ])
       console.log('Contratos cargados:', contratosData)
       console.log('Cable-operadores cargados:', cableoperadoresData)
       
       // Asegurarse de que ambos sean arrays
       const contratosArray = Array.isArray(contratosData) ? contratosData : []
-      const cableoperadoresArray = Array.isArray(cableoperadoresData) ? cableoperadoresData : []
-      
+      const cableoperadoresArray = Array.isArray(cableoperadoresData?.results)
+        ? cableoperadoresData.results
+        : (cableoperadoresData?.results || cableoperadoresData || [])
+
       setContratos(contratosArray)
-      setCableoperadores(cableoperadoresArray)
       setCableoperadores(cableoperadoresArray)
     } catch (error) {
       console.error('Error al cargar datos:', error.response?.data || error.message)
