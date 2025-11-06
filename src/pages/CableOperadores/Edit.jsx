@@ -7,6 +7,7 @@ import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
+import Textarea from '../../components/UI/Textarea'
 import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION } from '../../utils/constants'
 
 const CableOperadoresEdit = () => {
@@ -238,9 +239,10 @@ const CableOperadoresEdit = () => {
             onChange={handleChange}
             options={RESPUESTA_PRELiquidACION}
           />
-          <Input
+          <Textarea
             label="Observaciones"
             name="observaciones"
+            type="textarea"
             value={formData.observaciones}
             onChange={handleChange}
             className="md:col-span-2"
@@ -249,7 +251,7 @@ const CableOperadoresEdit = () => {
         </div>
         <div className="flex gap-4">
           <Button type="submit" variant="primary" disabled={saving}>
-            {saving ? 'Guardando...' : 'Actualizar Cable-operador'}
+            {saving ? 'Guardando...' : 'Actualizar Cableoperador'}
           </Button>
           <Button
             type="button"

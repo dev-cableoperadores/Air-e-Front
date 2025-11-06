@@ -42,7 +42,13 @@ export const RESPUESTA_PRELiquidACION = [
   { value: 'Calendarios', label: 'Calendarios' },
   { value: 'Habiles', label: 'Hábiles' },
 ]
-
+// Notificaciones
+export const TIPO_CHOICES = [
+    { value: 'cobro_multa', label: 'Cobro de Multa' },
+    { value: 'suspension_nuevos_accesos', label: 'Suspensión de Nuevos Accesos' },
+    { value: 'cobro_prejuridico', label: 'Cobro Prejurídico' },
+    { value: 'incumplimiento_pago_factura', label: 'Incumplimiento de Pago de Factura' },
+]
 // Paleta de colores
 export const COLORS = {
   primary: '#0055b3',

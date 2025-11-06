@@ -56,6 +56,17 @@ const cableoperadoresService = {
     const response = await api.delete(`/api/cableoperadores/detail/${id}/`)
     return response.data
   },
+  // trae todas las notificaciones de un cableoperador
+  getNotificaciones: async (id) => {
+    const response = await api.get(`/api/cableoperadores/${id}/notificaciones/`)
+    return response.data
+  },
+  // trae todas las notificaciones de un cableoperador
+  postNotificaciones: async (id, data) => {
+    const response = await api.post(`/api/cableoperadores/${id}/notificaciones/`, data)
+    
+    return response.data
+  },
 }
 
 export default cableoperadoresService

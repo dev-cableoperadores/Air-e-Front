@@ -64,10 +64,10 @@ const CableOperadoresList = () => {
     if (window.confirm(`¿Estás seguro de eliminar ${nombre}?`)) {
       try {
         await cableoperadoresService.delete(id)
-        toast.success('Cable-operador eliminado')
+        toast.success('Cableoperador eliminado')
         loadCableoperadores()
       } catch (error) {
-        toast.error('Error al eliminar cable-operador')
+        toast.error('Error al eliminar cableoperador')
       }
     }
   }

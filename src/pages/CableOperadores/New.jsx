@@ -6,6 +6,7 @@ import cableoperadoresService from '../../services/cableoperadoresService'
 import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
+import Textarea from '../../components/UI/Textarea'
 import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION } from '../../utils/constants'
 
 const CableOperadoresNew = () => {
@@ -203,7 +204,7 @@ const CableOperadoresNew = () => {
             onChange={handleChange}
             options={RESPUESTA_PRELiquidACION}
           />
-          <Input
+          <Textarea
             label="Observaciones"
             name="observaciones"
             value={formData.observaciones}

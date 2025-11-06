@@ -541,7 +541,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
 
           <h3 className="text-lg font-semibold">Cable</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+            {['Altura 8m','Altura 10m','Altura 12m','Altura 14m','Altura 15m','Altura 16m','Altura 20m'].map((key) => (
               <Input
                 key={key}
                 label={key}
@@ -555,7 +555,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
 
           <h3 className="text-lg font-semibold">Caja Empalme</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+            {['Altura 8m','Altura 10m','Altura 12m','Altura 14m','Altura 15m','Altura 16m','Altura 20m'].map((key) => (
               <Input
                 key={key}
                 label={key}
@@ -569,7 +569,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
 
           <h3 className="text-lg font-semibold">Reserva</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
+            {['Altura 8m','Altura 10m','Altura 12m','Altura 14m','Altura 15m','Altura 16m','Altura 20m'].map((key) => (
               <Input
                 key={key}
                 label={key}
