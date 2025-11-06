@@ -7,7 +7,7 @@ import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
-import { ESTADOS_CONTRATO } from '../../utils/constants'
+import { ESTADOS_CONTRATO,VIGENCIA_AMPARO_POLIZA, MONTO_ASEGURADO_POLIZA_RCE, MONTO_ASEGURADO_POLIZA_CUMPLIMIENTO  } from '../../utils/constants'
 import { formatDateForInput } from '../../utils/formatters'
 
 const ContratosEdit = () => {
@@ -222,7 +222,7 @@ const ContratosEdit = () => {
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Select
-            label="Cable-operador"
+            label="Cableoperador"
             name="cableoperador"
             value={formData.cableoperador}
             onChange={handleChange}
@@ -290,8 +290,213 @@ const ContratosEdit = () => {
             ]}
             required
           />
+          <Input
+            label="Tomador"
+            name="tomador"
+            type="text"
+            value={formData.tomador}
+            onChange={handleChange}
+          />
+          <Input
+            label="Aseguradora"
+            name="aseguradora"
+            type="text"
+            value={formData.aseguradora}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fecha preliquidacion"
+            name="fecha_preliquidacion"
+            type="date"
+            value={formData.fecha_preliquidacion}
+            onChange={handleChange}
+          />
+        </div>
+        {/*Secciones de la poliza*/}
+        <h3 className="text-lg font-semibold">Campos de la Póliza de cumplimiento</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Campos de la póliza de cumplimiento */}
+          <Input
+            label="Número de poliza de cumplimiento"
+            name="numero_poliza_cumplimiento"
+            type="number"
+            step="0.01"
+            value={formData.numero_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Inicio de vigencia de poliza de cumplimiento"
+            name="inicio_vigencia_poliza_cumplimiento"
+            type="date"
+            value={formData.inicio_vigencia_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fin de vigencia de poliza de cumplimiento"
+            name="fin_vigencia_poliza_cumplimiento"
+            type="date"
+            value={formData.fin_vigencia_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Select
+            label="Vigencia de amparo de la póliza"
+            name="vigencia_amparo_poliza_cumplimiento"
+            value={formData.vigencia_amparo_poliza_cumplimiento}
+            onChange={handleChange}
+            options={VIGENCIA_AMPARO_POLIZA}
+          />
+          <Input
+            label="Inicio de vigencia de amparo de la póliza"
+            name="inicio_vigencia_amparo_poliza_cumplimiento"
+            type="date"
+            value={formData.inicio_vigencia_amparo_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fin de vigencia de amparo de la póliza"
+            name="fin_vigencia_amparo_poliza_cumplimiento"
+            type="date"
+            value={formData.fin_vigencia_amparo_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Select
+            label="Monto asegurado de la póliza"
+            name="monto_asegurado_poliza_cumplimiento"
+            value={formData.monto_asegurado_poliza_cumplimiento}
+            onChange={handleChange}
+            options={MONTO_ASEGURADO_POLIZA_CUMPLIMIENTO}
+          />
+          <Input
+            label="Valor Monto asegurado de la póliza"
+            name="valor_monto_asegurado_poliza_cumplimiento"
+            type="number"
+            step="0.01"
+            value={formData.valor_monto_asegurado_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Valor asegurado de la póliza"
+            name="valor_asegurado_poliza_cumplimiento"
+            type="number"
+            step="0.01"
+            value={formData.valor_asegurado_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Inicio amparo de la póliza"
+            name="inicio_amparo_poliza_cumplimiento"
+            type="date"
+            value={formData.inicio_amparo_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fin amparo de la póliza"
+            name="fin_amparo_poliza_cumplimiento"
+            type="date"
+            value={formData.fin_amparo_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Expedicion de la póliza"
+            name="expedicion_poliza_cumplimiento"
+            type="date"
+            value={formData.expedicion_poliza_cumplimiento}
+            onChange={handleChange}
+          />
+        </div>
+        <h3 className="text-lg font-semibold">Campos de la Póliza de RCE</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Campos de la póliza de RCE */}
+          <Input
+            label="Número de poliza de RCE"
+            name="numero_poliza_rce"
+            type="number"
+            step="0.01"
+            value={formData.numero_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Inicio de vigencia de poliza de rce"
+            name="inicio_vigencia_poliza_rce"
+            type="date"
+            value={formData.inicio_vigencia_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fin de vigencia de poliza de rce"
+            name="fin_vigencia_poliza_rce"
+            type="date"
+            value={formData.fin_vigencia_poliza_rce}
+            onChange={handleChange}
+          />
+          <Select
+            label="Vigencia de amparo de la rce"
+            name="vigencia_amparo_poliza_rce"
+            value={formData.vigencia_amparo_poliza_rce}
+            onChange={handleChange}
+            options={VIGENCIA_AMPARO_POLIZA}
+          />
+          <Input
+            label="Inicio de vigencia de amparo de la póliza"
+            name="inicio_vigencia_amparo_poliza_rce"
+            type="date"
+            value={formData.inicio_vigencia_amparo_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fin de vigencia de amparo de la póliza"
+            name="fin_vigencia_amparo_poliza_rce"
+            type="date"
+            value={formData.fin_vigencia_amparo_poliza_rce}
+            onChange={handleChange}
+          />
+          <Select
+            label="Monto asegurado de la póliza"
+            name="monto_asegurado_poliza_rce"
+            value={formData.monto_asegurado_poliza_rce}
+            onChange={handleChange}
+            options={MONTO_ASEGURADO_POLIZA_RCE}
+          />
+          <Input
+            label="Valor Monto asegurado de la póliza"
+            name="valor_monto_asegurado_poliza_rce"
+            type="number"
+            step="0.01"
+            value={formData.valor_monto_asegurado_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Valor asegurado de la rce"
+            name="valor_asegurado_poliza_rce"
+            type="number"
+            step="0.01"
+            value={formData.valor_asegurado_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Inicio amparo de la póliza"
+            name="inicio_amparo_poliza_rce"
+            type="date"
+            value={formData.inicio_amparo_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fin amparo de la póliza"
+            name="fin_amparo_poliza_rce"
+            type="date"
+            value={formData.fin_amparo_poliza_rce}
+            onChange={handleChange}
+          />
+          <Input
+            label="Expedicion de la póliza"
+            name="expedicion_poliza_rce"
+            type="date"
+            value={formData.expedicion_poliza_rce}
+            onChange={handleChange}
+          />
         </div>
         {/* Secciones anidadas: Nap, Cable, Caja Empalme, Reserva */}
+        <h3 className="text-lg font-semibold">Seccion de Usos</h3>
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">NAP</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -214,7 +214,7 @@ const CableOperadoresNew = () => {
         </div>
         <div className="flex gap-4">
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Guardando...' : 'Crear Cable-operador'}
+            {loading ? 'Guardando...' : 'Crear Cableoperador'}
           </Button>
           <Button
             type="button"

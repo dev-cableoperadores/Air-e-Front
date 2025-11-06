@@ -32,7 +32,7 @@ const ContratosList = () => {
       // Si hay término de búsqueda, usar búsqueda del servidor (opción A)
       if (searchTerm && searchTerm.trim() !== '') {
         const contratosResp = await contratosService.getAllFull({ page: pageToLoad, search: searchTerm })
-        console.log('Contratos (búsqueda por servidor) cargados:', contratosResp)
+        //console.log('Contratos (búsqueda por servidor) cargados:', contratosResp)
         const items = contratosResp?.results || []
         // Obtener igualmente los cable-operadores para el select
         const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
@@ -52,8 +52,8 @@ const ContratosList = () => {
           cableoperadoresService.getAllAllPages(),
         ])
 
-        console.log('Contratos página cargada:', contratosResp)
-        console.log('Cable-operadores cargados:', cableoperadoresResp)
+        //console.log('Contratos página cargada:', contratosResp)
+        //console.log('Cableoperadores cargados:', cableoperadoresResp)
 
         const contratosArray = contratosResp?.results || []
         const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
@@ -208,7 +208,7 @@ const ContratosList = () => {
               <thead className="bg-primary text-white">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Cable-operador
+                    Cableoperador
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Estado

@@ -3,7 +3,28 @@ import api from '../utils/api'
 const contratosService = {
   // Devuelve la respuesta completa (count, next, results...)
   getAllFull: async (params = {}) => {
-    const response = await api.get('/api/contratos/list/', { params })
+    // Normalizar y limpiar params para evitar valores inválidos que provoquen 400
+    const safeParams = {}
+    Object.entries(params || {}).forEach(([k, v]) => {
+      if (v === undefined || v === null) return
+      if (typeof v === 'string') {
+        const trimmed = v.trim()
+        if (trimmed === '') return
+        // Manejar casos donde venga con prefijo ':' (ej. ':1') por accidente
+        const withoutColon = trimmed.startsWith(':') ? trimmed.slice(1) : trimmed
+        // Si es un número en string, convertir a Number
+        if (/^-?\d+$/.test(withoutColon)) {
+          safeParams[k] = Number(withoutColon)
+        } else {
+          safeParams[k] = withoutColon
+        }
+        return
+      }
+      // Pasar números y booleanos directamente
+      safeParams[k] = v
+    })
+
+    const response = await api.get('/api/contratos/list/', { params: safeParams })
     return response.data
   },
 

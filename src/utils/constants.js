@@ -10,7 +10,27 @@ export const ESTADOS_CABLEOPERADOR = [
   { value: 'En_Gestion', label: 'En Gestión' },
   { value: 'Sin_usos', label: 'Sin Usos' },
 ]
-
+// monto asegurado póliza de cumplimiento
+export const MONTO_ASEGURADO_POLIZA_CUMPLIMIENTO = [
+  { value: '15%_valor_contrato', label: '15% Valor del Contrato' },
+  { value: '20%_valor_contrato', label: '20% Valor del Contrato' },
+  { value: '30%_valor_contrato', label: '30% Valor del Contrato' },
+  { value: '20%_valor_base_constitucion_poliza', label: '20% Valor base de Constitución de Póliza' },
+  { value: '30%_valor_base_constitucion_poliza', label: '30% Valor base de Constitución de Póliza' },
+]
+// monto asegurado póliza de rce
+export const MONTO_ASEGURADO_POLIZA_RCE = [
+  { value: 'no_inferior_100_SMLMV', label: 'No inferior a 100 SMLMV' },
+  { value: 'no_inferior_200_SMLMV', label: 'No inferior a 200 SMLMV' },
+  { value: 'no_inferior_300_SMLMV', label: 'No inferior a 300 SMLMV' },
+]
+// vigencia amparo póliza
+export const VIGENCIA_AMPARO_POLIZA = [
+  { value: 'Igual_a_Duracion_de_Contrato_mas_12_Meses', label: 'Igual a Duración de Contrato + 12 Meses' },
+  { value: 'Igual_a_Duracion_de_Contrato_mas_6_Meses', label: 'Igual a Duración de Contrato + 6 Meses' },
+  { value: 'Igual_a_Duracion_de_Contrato_mas_4_Meses', label: 'Igual a Duración de Contrato + 4 Meses' },
+  { value: 'Igual_a_Duracion_de_Contrato_mas_2_Meses', label: 'Igual a Duración de Contrato + 2 Meses' },
+]
 // Estados de contratos
 export const ESTADOS_CONTRATO = [
   { value: 'Vigente', label: 'Vigente' },

@@ -10,6 +10,9 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+Air-e_api/
+Air-e_api/__pycache__/
+Air-e_api/*.pyc
 *.local
 
 # Editor directories and files
@@ -22,6 +25,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-Air-e_api/
-Air-e_api/__pycache__/
-Air-e_api/*.pyc
+

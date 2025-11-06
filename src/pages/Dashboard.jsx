@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const statsCards = [
     {
-      title: 'Total Cable-operadores',
+      title: 'Total Cableoperadores',
       value: stats?.totalCableoperadores || stats?.cableoperadores?.count || 0,
       icon: Cable,
       color: 'bg-blue-500',
