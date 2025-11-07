@@ -99,14 +99,13 @@ const CableOperadoresDetail = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DetailField label="NIT" value={cableoperador.NIT ? formatNumber(cableoperador.NIT) : 'N/A'} />
-          <DetailField label="Dígito de Verificación" value={cableoperador.Digito_verificacion || 'N/A'} />
+          <DetailField label="NIT" value={cableoperador.NIT + ' - ' + cableoperador.Digito_verificacion || 'N/A'} />
           <DetailField label="Registro TIC" value={cableoperador.RegistroTic || 'N/A'} />
           <DetailField label="Código Interno" value={cableoperador.CodigoInterno || 'N/A'} />
           <DetailField label="País" value={cableoperador.pais || 'N/A'} />
           <DetailField label="Ciudad" value={cableoperador.ciudad || 'N/A'} />
-          <DetailField label="Dirección" value={cableoperador.direccion || 'N/A'} className="md:col-span-2" />
-          <DetailField label="Departamento" value={cableoperador.departamento || 'N/A'} className="md:col-span-2" />
+          <DetailField label="Departamento" value={cableoperador.departamento || 'N/A'}  />
+          <DetailField label="Dirección" value={cableoperador.direccion || 'N/A'}  />
           <DetailField label="Representante" value={cableoperador.Representante || 'N/A'} />
           <DetailField label="Teléfono" value={cableoperador.telefono ? formatPhone(cableoperador.telefono) : 'N/A'} />
           <DetailField label="Correo" value={cableoperador.correo || 'N/A'} />
@@ -115,8 +114,8 @@ const CableOperadoresDetail = () => {
           <DetailField label="Preliquidación Número" value={cableoperador.preliquidacion_num || 'N/A'} />
           <DetailField label="Preliquidación Letra" value={cableoperador.preliquidacion_letra || 'N/A'} />
           <DetailField label="Respuesta Preliquidación" value={cableoperador.respuesta_preliquidacion || 'N/A'} />
-          <DetailField label="Observaciones" value={cableoperador.observaciones || 'N/A'} className="md:col-span-2" />
-          <DetailField label="Ejecutiva" value={cableoperador.ejecutiva?.first_name + ' ' + cableoperador.ejecutiva?.last_name || 'N/A'} className="md:col-span-2" />
+          <DetailField label="Ejecutiva" value={cableoperador.ejecutiva?.first_name + ' ' + cableoperador.ejecutiva?.last_name || 'N/A'} />
+          <DetailField label="Observaciones" value={cableoperador.observaciones || 'N/A'} />
         </div>
       </div>
       <br />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import contratosService from '../../services/contratosService'
@@ -20,83 +20,84 @@ const ContratosList = () => {
   const [filterEstado, setFilterEstado] = useState('')
   const [filterCableoperador, setFilterCableoperador] = useState('')
 
-  useEffect(() => {
-    loadData(page)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
+// 🚨 1. Función estable para cargar SOLO Contratos
+  // Usa useCallback para evitar re-creación innecesaria, solo se actualiza si searchTerm cambia.
+  const loadContratos = useCallback(async (pageToLoad = 1) => {
+      try {
+          setLoading(true)
+          let contratosResp;
 
-  const loadData = async (pageToLoad = 1) => {
-    try {
-      setLoading(true)
+          // Si hay término de búsqueda, usar búsqueda del servidor 
+          if (searchTerm && searchTerm.trim() !== '') {
+              // Solo cargamos contratos, los cableoperadores ya están en el estado
+              contratosResp = await contratosService.getAllFull({ page: pageToLoad, search: searchTerm })
+          } else {
+              // Cargar página específica desde el servidor
+              contratosResp = await contratosService.getAllFull({ page: pageToLoad })
+          }
+          
+          const contratosArray = contratosResp?.results || []
 
-      // Si hay término de búsqueda, usar búsqueda del servidor (opción A)
-      if (searchTerm && searchTerm.trim() !== '') {
-        const contratosResp = await contratosService.getAllFull({ page: pageToLoad, search: searchTerm })
-        //console.log('Contratos (búsqueda por servidor) cargados:', contratosResp)
-        const items = contratosResp?.results || []
-        // Obtener igualmente los cable-operadores para el select
-        const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
-        const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
-          ? cableoperadoresResp.results
-          : (cableoperadoresResp?.results || cableoperadoresResp || [])
-
-        setContratos(items)
-        setCableoperadores(cableoperadoresArray)
-        setTotalCount(contratosResp?.count || items.length)
-        setPageSize(items.length)
-      } else {
-        // Cargar página específica desde el servidor
-        const [contratosResp, cableoperadoresResp] = await Promise.all([
-          contratosService.getAllFull({ page: pageToLoad }),
-          // Obtener todos los cable-operadores (todas las páginas) para el select de filtro
-          cableoperadoresService.getAllAllPages(),
-        ])
-
-        //console.log('Contratos página cargada:', contratosResp)
-        //console.log('Cableoperadores cargados:', cableoperadoresResp)
-
-        const contratosArray = contratosResp?.results || []
-        const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
-          ? cableoperadoresResp.results
-          : (cableoperadoresResp?.results || cableoperadoresResp || [])
-
-        setContratos(contratosArray)
-        setCableoperadores(cableoperadoresArray)
-        setTotalCount(contratosResp?.count || contratosArray.length)
-        setPageSize(contratosArray.length)
+          setContratos(contratosArray)
+          setTotalCount(contratosResp?.count || contratosArray.length)
+          setPageSize(contratosArray.length)
+          
+      } catch (error) {
+          toast.error(`Error al cargar datos: ${error.response?.data?.detail || error.message}`)
+          setContratos([])
+      } finally {
+          setLoading(false)
       }
-    } catch (error) {
-      //console.error('Error al cargar datos:', error.response?.data || error.message)
-      toast.error(`Error al cargar datos: ${error.response?.data?.detail || error.message}`)
-      setContratos([])
-      setCableoperadores([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [searchTerm]) // Dependencia: solo searchTerm
 
-  // Cuando cambia el término de búsqueda, recargar (buscar en todas las páginas)
+  // 🚨 2. Carga inicial de Cableoperadores (Se ejecuta SOLO una vez al montar)
   useEffect(() => {
-    // Si hay búsqueda, resetear a página 1 y cargar todo en cliente
-    if (searchTerm && searchTerm.trim() !== '') {
-      loadData(1)
-    } else {
-      // Si se borró la búsqueda, volver a cargar la página actual desde servidor
-      loadData(page)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm])
+      const loadCableoperadores = async () => {
+          try {
+              // 🛠️ Esta llamada costosa se hace SOLO al montar el componente.
+              const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
+              const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
+                  ? cableoperadoresResp.results
+                  : (cableoperadoresResp?.results || cableoperadoresResp || [])
+              setCableoperadores(cableoperadoresArray)
+          } catch (error) {
+              console.error('Error al cargar cableoperadores para filtros:', error);
+              toast.error('Error al cargar la lista de cableoperadores.');
+          }
+      }
+      loadCableoperadores();
+  }, []) // 🚨 Dependencia vacía: se ejecuta una sola vez al montar.
+
+
+  // 🚨 3. useEffect para Paginación (Cambio de página o primer montaje sin búsqueda)
+  useEffect(() => {
+      // Lógica de paginación normal (solo si no estamos en modo búsqueda)
+      if (!searchTerm) {
+          loadContratos(page)
+      }
+  }, [page, searchTerm, loadContratos]) 
+
+  // 🚨 4. useEffect para la Búsqueda
+  useEffect(() => {
+      // Cuando cambia el término de búsqueda, forzamos la recarga en la página 1
+      if (searchTerm && searchTerm.trim() !== '') {
+          loadContratos(1)
+      } else {
+          // Si la búsqueda se vacía, forzamos la recarga de la página actual
+            loadContratos(page)
+      }
+  }, [searchTerm, loadContratos, page])
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de eliminar este contrato?')) {
-      try {
-        await contratosService.delete(id)
-        toast.success('Contrato eliminado')
-        loadData()
-      } catch (error) {
-        toast.error('Error al eliminar contrato')
+      if (window.confirm('¿Estás seguro de eliminar este contrato?')) {
+          try {
+              await contratosService.delete(id)
+              toast.success('Contrato eliminado')
+              loadContratos(page) // Recargar la página actual
+          } catch (error) {
+              toast.error('Error al eliminar contrato')
+          }
       }
-    }
   }
 
   //console.log('Estado actual de contratos:', contratos)

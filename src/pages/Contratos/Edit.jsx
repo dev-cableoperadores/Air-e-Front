@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import contratosService from '../../services/contratosService'
@@ -160,6 +160,52 @@ const ContratosEdit = () => {
       },
     })
   }
+
+  // Lógica para determinar el estado del contrato y calcular fin_vigencia automáticamente
+  const determinarEstado = useCallback((inicio, fin) => {
+    const hoy = new Date()
+    const hoyString = hoy.toISOString().split('T')[0]
+    const fechaActual = new Date(hoyString + 'T00:00:00')
+
+    const fechaInicio = inicio ? new Date(inicio + 'T00:00:00') : null
+    const fechaFin = fin ? new Date(fin + 'T00:00:00') : null
+
+    if (!fechaInicio || !fechaFin) return ''
+
+    // Si la fecha de inicio es futura, consideramos 'Vigente' (o ajustar a 'Pendiente' si aplica)
+    if (fechaInicio > fechaActual) return 'Vigente'
+
+    if (fechaActual < fechaFin) return 'Vigente'
+
+    return 'Vencido'
+  }, [])
+
+  useEffect(() => {
+    const inicioVigencia = formData.inicio_vigencia
+    const duracionAnos = Number(formData.duracion_anos)
+
+    if (inicioVigencia && !isNaN(duracionAnos) && duracionAnos >= 0) {
+      const fechaInicio = new Date(inicioVigencia + 'T00:00:00')
+      if (!isNaN(fechaInicio.getTime())) {
+        const fechaFin = new Date(fechaInicio)
+        fechaFin.setFullYear(fechaFin.getFullYear() + duracionAnos)
+
+        const year = fechaFin.getFullYear()
+        const month = String(fechaFin.getMonth() + 1).padStart(2, '0')
+        const day = String(fechaFin.getDate()).padStart(2, '0')
+        const finVigenciaCalculada = `${year}-${month}-${day}`
+
+        if (formData.fin_vigencia !== finVigenciaCalculada) {
+          setFormData(prevData => ({ ...prevData, fin_vigencia: finVigenciaCalculada }))
+        }
+      }
+    }
+
+    const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vigencia)
+    if (formData.estado_contrato !== nuevoEstado) {
+      setFormData(prevData => ({ ...prevData, estado_contrato: nuevoEstado }))
+    }
+  }, [formData.inicio_vigencia, formData.fin_vigencia, formData.duracion_anos, formData.estado_contrato, determinarEstado])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Search, Plus, Eye, Edit, Trash2, Cable } from 'lucide-react'
 import { toast } from 'react-hot-toast'
@@ -16,60 +16,68 @@ const CableOperadoresList = () => {
   const [searchInput, setSearchInput] = useState('')
   const navigate = useNavigate()
 
-  useEffect(() => {
-    loadCableoperadores(page)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
+// 🚨 1. Función estable para cargar Cableoperadores
+  // Usamos useCallback. Ahora depende solo de searchTerm.
+  const loadCableoperadores = useCallback(async (pageToLoad = 1) => {
+      try {
+          setLoading(true)
+          
+          // Usar la página actual si no se especifica una (ej. al cambiar búsqueda)
+          const actualPage = pageToLoad; 
 
-  const loadCableoperadores = async (pageToLoad = 1) => {
-    try {
-      setLoading(true)
+          // Construir parámetros de la solicitud
+          const params = { page: actualPage };
+          if (searchTerm && searchTerm.trim() !== '') {
+              params.search = searchTerm;
+          }
 
-      // Usar búsqueda del servidor cuando haya término de búsqueda (opción A)
-      if (searchTerm && searchTerm.trim() !== '') {
-        const resp = await cableoperadoresService.getAllFull({ page: pageToLoad, search: searchTerm })
-        //console.log('Cableoperadores (búsqueda por servidor):', resp)
-        const items = resp?.results || []
-        setCableoperadores(items)
-        setTotalCount(resp?.count || items.length)
-        setPageSize(items.length)
-      } else {
-        // Cargar página específica desde el servidor
-        const resp = await cableoperadoresService.getAllFull({ page: pageToLoad })
-        //console.log('Respuesta completa de cableoperadores:', resp)
-        const items = resp?.results || []
-        setCableoperadores(items)
-        setTotalCount(resp?.count || items.length)
-        setPageSize(items.length)
+          const resp = await cableoperadoresService.getAllFull(params);
+          const items = resp?.results || [];
+              
+          setCableoperadores(items);
+          setTotalCount(resp?.count || items.length);
+          setPageSize(items.length);
+          setPage(actualPage); // Actualiza la página después de cargar
+
+      } catch (error) {
+          console.error('Error al cargar cableoperadores:', error.response?.data || error.message)
+          toast.error(`Error al cargar cableoperadores: ${error.response?.data?.detail || error.message}`)
+          setCableoperadores([])
+      } finally {
+          setLoading(false)
       }
-    } catch (error) {
-      console.error('Error al cargar cableoperadores:', error.response?.data || error.message)
-      toast.error(`Error al cargar cableoperadores: ${error.response?.data?.detail || error.message}`)
-      setCableoperadores([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [searchTerm]) // 🚨 CLAVE: Solo depende de searchTerm
 
+  // 🚨 2. useEffect para Paginación (Se ejecuta al cambiar la página)
   useEffect(() => {
-    if (searchTerm && searchTerm.trim() !== '') {
-      loadCableoperadores(1)
-    } else {
+      // Ejecutar loadCableoperadores cuando la página cambie
       loadCableoperadores(page)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm])
+  }, [page, loadCableoperadores]) 
+
+  // 🚨 3. useEffect para Búsqueda (Se ejecuta al cambiar el término de búsqueda)
+  useEffect(() => {
+      // Cuando cambia el término, forzar la recarga en la página 1.
+      // Esto automáticamente dispara el useEffect de [page].
+      if (searchTerm !== '') {
+          setPage(1); 
+      } else {
+            // Si se borra la búsqueda, forzar recarga de la página actual.
+          loadCableoperadores(page);
+      }
+  }, [searchTerm, loadCableoperadores]) 
 
   const handleDelete = async (id, nombre) => {
-    if (window.confirm(`¿Estás seguro de eliminar ${nombre}?`)) {
-      try {
-        await cableoperadoresService.delete(id)
-        toast.success('Cableoperador eliminado')
-        loadCableoperadores()
-      } catch (error) {
-        toast.error('Error al eliminar cableoperador')
+      // ... (lógica de eliminación)
+      if (window.confirm(`¿Estás seguro de eliminar ${nombre}?`)) {
+          try {
+              await cableoperadoresService.delete(id)
+              toast.success('Cableoperador eliminado')
+              // Recargar la página actual
+              loadCableoperadores(page) 
+          } catch (error) {
+              toast.error('Error al eliminar cableoperador')
+          }
       }
-    }
   }
 
   const filteredCableoperadores = cableoperadores.filter((co) =>

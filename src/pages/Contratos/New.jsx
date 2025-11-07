@@ -180,12 +180,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
         }
         
     }, [formData.inicio_vigencia, formData.fin_vigencia, formData.estado_contrato, setFormData, determinarEstado]);
-
-
     
-      
-      
-
   const handleSubmit = async (e) => {
     e.preventDefault()
 
