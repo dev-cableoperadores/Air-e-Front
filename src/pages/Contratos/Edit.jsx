@@ -7,6 +7,7 @@ import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
+import { ChevronDown } from 'lucide-react'
 import { ESTADOS_CONTRATO,VIGENCIA_AMPARO_POLIZA, MONTO_ASEGURADO_POLIZA_RCE, MONTO_ASEGURADO_POLIZA_CUMPLIMIENTO  } from '../../utils/constants'
 import { formatDateForInput } from '../../utils/formatters'
 
@@ -16,6 +17,12 @@ const ContratosEdit = () => {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [cableoperadores, setCableoperadores] = useState([])
+  const [openSections, setOpenSections] = useState({
+    nap: false,
+    cable: false,
+    caja_empalme: false,
+    reserva: false,
+  })
   const [formData, setFormData] = useState({
     cableoperador: '',
     estado_contrato: 'Vigente',
@@ -256,6 +263,13 @@ const ContratosEdit = () => {
     } finally {
       setSaving(false)
     }
+  }
+
+  const toggleSection = (section) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }))
   }
 
   if (loading) {
@@ -543,62 +557,49 @@ const ContratosEdit = () => {
         </div>
         {/* Secciones anidadas: Nap, Cable, Caja Empalme, Reserva */}
         <h3 className="text-lg font-semibold">Seccion de Usos</h3>
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">NAP</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((key) => (
-              <Input
-                key={key}
-                label={key}
-                name={key}
-                type="number"
-                value={formData.nap[key]}
-                onChange={(e) => handleNestedChange('nap', key, e.target.value)}
-              />
-            ))}
-          </div>
-
-          <h3 className="text-lg font-semibold">Cable</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
-              <Input
-                key={key}
-                label={key}
-                name={key}
-                type="number"
-                value={formData.cable[key]}
-                onChange={(e) => handleNestedChange('cable', key, e.target.value)}
-              />
-            ))}
-          </div>
-
-          <h3 className="text-lg font-semibold">Caja Empalme</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
-              <Input
-                key={key}
-                label={key}
-                name={key}
-                type="number"
-                value={formData.caja_empalme[key]}
-                onChange={(e) => handleNestedChange('caja_empalme', key, e.target.value)}
-              />
-            ))}
-          </div>
-
-          <h3 className="text-lg font-semibold">Reserva</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((key) => (
-              <Input
-                key={key}
-                label={key}
-                name={key}
-                type="number"
-                value={formData.reserva[key]}
-                onChange={(e) => handleNestedChange('reserva', key, e.target.value)}
-              />
-            ))}
-          </div>
+        <div className="space-y-2">
+          {['nap', 'cable', 'caja_empalme', 'reserva'].map((section) => (
+            <div key={section} className="border rounded-lg">
+              <button
+                type="button"
+                onClick={() => toggleSection(section)}
+                className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100"
+              >
+                <h3 className="text-lg font-semibold capitalize">{section.replace('_', ' ')}</h3>
+                <ChevronDown
+                  className={`transform transition-transform ${
+                    openSections[section] ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+              {openSections[section] && (
+                <div className="p-4 border-t">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      'tip8',
+                      'tip10',
+                      'tip12',
+                      'tip14',
+                      'tip15',
+                      'tip16',
+                      'tip20',
+                    ].map((key) => (
+                      <Input
+                        key={key}
+                        label={key}
+                        name={key}
+                        type="number"
+                        value={formData[section][key]}
+                        onChange={(e) =>
+                          handleNestedChange(section, key, e.target.value)
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
         <div className="flex gap-4">
           <Button type="submit" variant="primary" disabled={saving}>
@@ -614,4 +615,3 @@ const ContratosEdit = () => {
 }
 
 export default ContratosEdit
-
