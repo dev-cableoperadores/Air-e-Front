@@ -29,7 +29,7 @@ body {
   object-fit: contain !important;
   object-position: left center !important;
   display: block !important;
-  min-height: 160px !important;
+  min-height: 170px !important;
 }
 
 /* Contenedor del logo en Sidebar */

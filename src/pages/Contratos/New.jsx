@@ -82,7 +82,7 @@ const ContratosNew = () => {
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {
-      toast.error('Error al cargar cableoperadores')
+      toast.error('Error al cargar cableoperadores, vuelve a intentarlo')
     } finally {
       setLoading(false)
     }

@@ -76,7 +76,7 @@ const Login = () => {
               <div className="mb-6">
                 <div className="w-64 bg-white rounded-lg flex items-center justify-center shadow-lg p-3">
                   <img
-                    src="/logo-aire.png"
+                    src="/aire.png"
                     alt="AIR-E Logo"
                     className="w-full h-16 object-contain"
                     onError={(e) => {
@@ -90,7 +90,7 @@ const Login = () => {
               <h2 className="text-5xl font-bold mb-4 leading-tight">
                 Portal de Gestión
                 <br />
-                <span className="text-accent">Cable-Operadores</span>
+                <span className="text-accent">Infraestructura y Censo</span>
               </h2>
               <p className="text-xl text-white/90 leading-relaxed">
                 Plataforma integral para la gestión de cable-operadores y contratos de AIR-E
@@ -105,7 +105,7 @@ const Login = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Gestión Completa</h3>
-                  <p className="text-white/80 text-sm">Administra cable-operadores y contratos de forma eficiente</p>
+                  <p className="text-white/80 text-sm">visualizacion de cada cable-operador</p>
                 </div>
               </div>
 
@@ -114,8 +114,8 @@ const Login = () => {
                   <BarChart3 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">Dashboard en Tiempo Real</h3>
-                  <p className="text-white/80 text-sm">Monitorea métricas y estadísticas actualizadas</p>
+                  <h3 className="font-semibold text-lg mb-1">creacion de Contratos</h3>
+                  <p className="text-white/80 text-sm">contratos de forma eficiente</p>
                 </div>
               </div>
 
@@ -124,8 +124,8 @@ const Login = () => {
                   <Users className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">Control de Acceso</h3>
-                  <p className="text-white/80 text-sm">Sistema de autenticación seguro con JWT</p>
+                  <h3 className="font-semibold text-lg mb-1">Creacion de cableoperadores</h3>
+                  <p className="text-white/80 text-sm">Administra cable-operadores y contratos de forma eficiente</p>
                 </div>
               </div>
 

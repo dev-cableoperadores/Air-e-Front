@@ -72,7 +72,7 @@ const ContratosDetail = () => {
         <h2 className="text-2xl font-bold text-gray-800">Detalle Contrato</h2>
         <div className="flex gap-2">
           <Link to={`/contratos/${id}/editar`}>
-            <Button variant="secondary">Editar</Button>
+            <Button variant="secondary">Editar contrato</Button>
           </Link>
           <Button variant="danger" onClick={handleDelete}>
             Eliminar
