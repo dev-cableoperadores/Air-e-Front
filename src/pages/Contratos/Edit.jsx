@@ -82,7 +82,6 @@ const ContratosEdit = () => {
         contratosService.getById(id),
         cableoperadoresService.getAllAllPages(),
       ])
-      
       //console.log('Datos del contrato cargado:', contratoData)
       
       const items = Array.isArray(cableoperadoresData?.results) 
