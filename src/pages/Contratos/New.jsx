@@ -77,8 +77,8 @@ const ContratosNew = () => {
 
   const loadCableoperadores = async () => {
     try {
-      // Traer todos los cable-operadores (todas las páginas) para el select
-      const data = await cableoperadoresService.getAllAllPages()
+      // Traer solo la primera página para el select (más eficiente)
+      const data = await cableoperadoresService.getAllFull()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {
@@ -185,7 +185,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
             }));
         }
         
-    }, [formData.inicio_vigencia, formData.fin_vigencia, formData.estado_contrato, setFormData, determinarEstado]);
+    }, [formData.inicio_vigencia, formData.duracion_anos, determinarEstado]);
     
   const handleSubmit = async (e) => {
     e.preventDefault()

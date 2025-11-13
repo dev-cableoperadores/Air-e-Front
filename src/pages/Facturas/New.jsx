@@ -33,7 +33,7 @@ const FacturasNew = () => {
 
   const loadContratos = async () => {
     try {
-      const data = await contratosService.getAllAllPages()
+      const data = await contratosService.getAllFull()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setContratos(items)
     } catch (error) {

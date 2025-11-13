@@ -38,7 +38,7 @@ const FacturasEdit = () => {
       setLoading(true)
       const [facturaData, contratosData] = await Promise.all([
         facturasService.getById(id),
-        contratosService.getAllAllPages(),
+        contratosService.getAllFull(),
       ])
 
       const items = Array.isArray(contratosData?.results)

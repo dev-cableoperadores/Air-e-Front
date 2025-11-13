@@ -55,7 +55,7 @@ const ContratosList = () => {
       const loadCableoperadores = async () => {
           try {
               // 🛠️ Esta llamada costosa se hace SOLO al montar el componente.
-              const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
+              const cableoperadoresResp = await cableoperadoresService.getAllFull()
               const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
                   ? cableoperadoresResp.results
                   : (cableoperadoresResp?.results || cableoperadoresResp || [])
