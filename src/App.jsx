@@ -16,6 +16,7 @@ import FacturasList from './pages/Facturas/List'
 import FacturasNew from './pages/Facturas/New'
 import FacturasEdit from './pages/Facturas/Edit'
 import FacturasDetail from './pages/Facturas/Detail'
+import FacturasByCableoperador from './pages/Facturas/FacturasByCableoperador'
 import MainLayout from './components/Layout/MainLayout'
 
 function App() {
@@ -130,6 +131,16 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <FacturasNew />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facturas/cableoperador/:id"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <FacturasByCableoperador />
                 </MainLayout>
               </ProtectedRoute>
             }

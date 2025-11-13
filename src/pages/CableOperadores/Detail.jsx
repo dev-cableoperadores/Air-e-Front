@@ -81,6 +81,9 @@ const CableOperadoresDetail = () => {
           <Link to={`/cableoperadores/${id}/editar`}>
             <Button variant="secondary">Editar</Button>
           </Link>
+          <Link to={`/facturas/cableoperador/${id}`}>
+            <Button variant="primary">Ver Facturas</Button>
+          </Link>
           <Button variant="danger" onClick={handleDelete}>
             Eliminar
           </Button>

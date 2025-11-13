@@ -6,6 +6,10 @@ const facturasService = {
     const response = await api.get('/api/facturas/', { params })
     return response.data
   },
+  getAllF: async (params = {}) => {
+    const response = await api.get('/api/facturas/', { params })
+    return response.data
+  },
 
   getAll: async (params = {}) => {
     const data = await facturasService.getAllFull(params)
@@ -31,7 +35,7 @@ const facturasService = {
 
     return { results: accumulated, count: firstData.count }
   },
-
+  
   getById: async (id) => {
     const response = await api.get(`/api/facturas/${id}/`)
     return response.data
