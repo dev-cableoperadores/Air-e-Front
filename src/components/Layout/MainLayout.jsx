@@ -21,7 +21,12 @@ const MainLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        collapsed={isCollapsed}
+        onToggleCollapse={() => setIsCollapsed((v) => !v)}
+      />
       
       <div className={`flex flex-col flex-1 transition-all duration-300 ${
         isCollapsed ? 'lg:ml-16' : 'lg:ml-72'

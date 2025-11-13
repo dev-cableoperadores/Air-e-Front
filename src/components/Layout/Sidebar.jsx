@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Home, Cable, FileText, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, Cable, FileText, ChevronLeft, ChevronRight, Receipt } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
   const { user } = useAuth()
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  // Support controlled collapse via props, fallback to internal state
+  const [internalCollapsed, setInternalCollapsed] = useState(false)
+  const isCollapsed = typeof collapsed !== 'undefined' ? collapsed : internalCollapsed
   const location = useLocation()
 
   const menuItems = [
     { path: '/', label: 'Inicio', icon: Home },
     { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
     { path: '/contratos', label: 'Contratos', icon: FileText },
+    { path: '/facturas', label: 'Facturas', icon: Receipt },
   ]
 
   const isActiveRoute = (path) => {
@@ -20,7 +23,11 @@ const Sidebar = ({ isOpen, onClose }) => {
   }
 
   const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed)
+    if (typeof onToggleCollapse === 'function') {
+      onToggleCollapse()
+      return
+    }
+    setInternalCollapsed(!isCollapsed)
   }
 
   const SidebarContent = ({ expanded = false }) => (

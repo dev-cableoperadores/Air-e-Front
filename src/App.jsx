@@ -12,6 +12,10 @@ import ContratosList from './pages/Contratos/List'
 import ContratosNew from './pages/Contratos/New'
 import ContratosEdit from './pages/Contratos/Edit'
 import ContratosDetail from './pages/Contratos/Detail'
+import FacturasList from './pages/Facturas/List'
+import FacturasNew from './pages/Facturas/New'
+import FacturasEdit from './pages/Facturas/Edit'
+import FacturasDetail from './pages/Facturas/Detail'
 import MainLayout from './components/Layout/MainLayout'
 
 function App() {
@@ -106,6 +110,46 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <ContratosDetail />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facturas"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <FacturasList />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facturas/nueva"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <FacturasNew />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facturas/:id"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <FacturasDetail />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/facturas/:id/editar"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <FacturasEdit />
                 </MainLayout>
               </ProtectedRoute>
             }

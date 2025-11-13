@@ -77,8 +77,8 @@ const ContratosNew = () => {
 
   const loadCableoperadores = async () => {
     try {
-      // Traer todos los cable-operadores (todas las páginas) para el select
-      const data = await cableoperadoresService.getAllAllPages()
+      // Traer solo la primera página para el select (más eficiente)
+      const data = await cableoperadoresService.getAllFull()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {
@@ -110,8 +110,6 @@ const ContratosNew = () => {
     }))
   }
 
-
-
   // Valores de ejemplo para ESTADOS_CONTRATO (ajústalos según tu aplicación)
   const VIGENTE = 'Vigente';
   const VENCIDO = 'Vencido';
@@ -123,7 +121,6 @@ const ContratosNew = () => {
         // Creamos un string 'YYYY-MM-DD' de hoy para crear un nuevo Date sin hora local:
         const hoyString = hoy.toISOString().split('T')[0];
         const fechaActual = new Date(hoyString + 'T00:00:00');
-        
         // Convertir las fechas del formulario a objetos Date, asegurando que sean solo la fecha
         const fechaInicio = inicio ? new Date(inicio + 'T00:00:00') : null;
         const fechaFin = fin ? new Date(fin + 'T00:00:00') : null;
@@ -131,22 +128,17 @@ const ContratosNew = () => {
         if (!fechaInicio || !fechaFin) {
             return ''; // Estado indeterminado si faltan fechas
         }
-        
         // Lógica de 3 estados:
-
         // 1. Si la Fecha de Inicio es FUTURA, está PENDIENTE
         if (fechaInicio > fechaActual) {
             return VIGENTE; // O usa 'Pendiente' si tienes ese estado
         }
-
         // 2. Si la Fecha de Fin es FUTURA (Hoy < Fin), está VIGENTE
         if (fechaActual < fechaFin) {
             return VIGENTE;
         }
-
         // 3. En cualquier otro caso (Hoy >= Fin), está VENCIDO
         return VENCIDO;
-
     }, []); // No tiene dependencias externas
   useEffect(() => {
     const inicioVigencia = formData.inicio_vigencia;
@@ -193,7 +185,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
             }));
         }
         
-    }, [formData.inicio_vigencia, formData.fin_vigencia, formData.estado_contrato, setFormData, determinarEstado]);
+    }, [formData.inicio_vigencia, formData.duracion_anos, determinarEstado]);
     
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -80,9 +80,8 @@ const ContratosEdit = () => {
       setLoading(true)
       const [contratoData, cableoperadoresData] = await Promise.all([
         contratosService.getById(id),
-        cableoperadoresService.getAllAllPages(),
+        cableoperadoresService.getAllFull(),
       ])
-      
       //console.log('Datos del contrato cargado:', contratoData)
       
       const items = Array.isArray(cableoperadoresData?.results) 
@@ -212,7 +211,7 @@ const ContratosEdit = () => {
     if (formData.estado_contrato !== nuevoEstado) {
       setFormData(prevData => ({ ...prevData, estado_contrato: nuevoEstado }))
     }
-  }, [formData.inicio_vigencia, formData.fin_vigencia, formData.duracion_anos, formData.estado_contrato, determinarEstado])
+  }, [formData.inicio_vigencia, formData.duracion_anos, determinarEstado])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

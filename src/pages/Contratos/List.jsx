@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import contratosService from '../../services/contratosService'
 import cableoperadoresService from '../../services/cableoperadoresService'
@@ -19,6 +19,18 @@ const ContratosList = () => {
   const [searchInput, setSearchInput] = useState('')
   const [filterEstado, setFilterEstado] = useState('')
   const [filterCableoperador, setFilterCableoperador] = useState('')
+  const location = useLocation()
+
+  useEffect(() => {
+    // Si llegamos con query params (p. ej. desde el Dashboard), aplicarlos
+    const params = new URLSearchParams(location.search)
+    const estadoParam = params.get('estado') || ''
+    const pageParam = parseInt(params.get('page') || '1', 10)
+
+    setFilterEstado(estadoParam)
+    setPage(isNaN(pageParam) ? 1 : pageParam)
+    // La recarga de datos ocurrirá por el efecto que depende de `page` y `searchTerm`.
+  }, [location.search])
 
 // 🚨 1. Función estable para cargar SOLO Contratos
   // Usa useCallback para evitar re-creación innecesaria, solo se actualiza si searchTerm cambia.
@@ -55,7 +67,7 @@ const ContratosList = () => {
       const loadCableoperadores = async () => {
           try {
               // 🛠️ Esta llamada costosa se hace SOLO al montar el componente.
-              const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
+              const cableoperadoresResp = await cableoperadoresService.getAllFull()
               const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
                   ? cableoperadoresResp.results
                   : (cableoperadoresResp?.results || cableoperadoresResp || [])
@@ -183,7 +195,7 @@ const ContratosList = () => {
             ]}
           />
           <Select
-            label="Filtrar por Cable-operador"
+            label="Filtrar por Cableoperador"
             name="filterCableoperador"
             value={filterCableoperador}
             onChange={(e) => setFilterCableoperador(e.target.value)}
