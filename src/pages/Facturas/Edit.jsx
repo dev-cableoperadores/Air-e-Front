@@ -120,7 +120,7 @@ const FacturasEdit = () => {
             onChange={handleChange}
             options={contratos.map((c) => ({
               value: c.id.toString(),
-              label: `${c.cableoperador?.nombre_largo || c.cableoperador?.nombre} - ${c.Num_factura || 'Sin referencia'}`,
+              label: `${c.cableoperador?.nombre_largo || c.cableoperador?.nombre} - ${c.id || 'Sin referencia'}`,
             }))}
             required
           />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import facturasService from '../../services/facturasService'
 import Button from '../../components/UI/Button'
@@ -23,18 +23,34 @@ const FacturasList = () => {
   })
   const [currentPage, setCurrentPage] = useState(1)
 
+  const location = useLocation()
+
   useEffect(() => {
+    // Si la query string cambia (por ejemplo navegando desde Dashboard con ?estado=Pendiente)
+    // aplicamos los filtros iniciales (estado, page) y recargamos la página correspondiente.
+    const params = new URLSearchParams(location.search)
+    const estadoParam = params.get('estado') || ''
+    const pageParam = parseInt(params.get('page') || '1', 10)
+
+    // Actualizar filtros y página según la query
+    setFiltros((prev) => ({ ...prev, estado: estadoParam }))
+    setCurrentPage(isNaN(pageParam) ? 1 : pageParam)
+    // loadFacturas se ejecutará por el efecto que depende de currentPage
+  }, [location.search])
+
+  useEffect(() => {
+    // Cargar facturas al montar y cuando cambie la página.
+    // Los filtros se aplican en cliente para evitar llamadas extra al API.
     loadFacturas()
-  }, [filtros, currentPage])
+  }, [currentPage])
 
   const loadFacturas = async () => {
     try {
       setLoading(true)
       const params = {}
-      if (filtros.search) params.search = filtros.search
-      if (filtros.estado) params.estado = filtros.estado
       if (currentPage > 1) params.page = currentPage
 
+      // Traer solo la página solicitada. Los filtros se harán en cliente.
       const data = await facturasService.getAllFull(params)
       setFacturas(data.results || [])
       setPagination({
@@ -73,6 +89,19 @@ const FacturasList = () => {
 
   const itemsPerPage = 10
   const totalPages = Math.ceil(pagination.count / itemsPerPage)
+
+  // Aplicar filtros en cliente (no hacen llamadas al API)
+  const filteredFacturas = facturas.filter((factura) => {
+    const term = (filtros.search || '').toLowerCase()
+    const matchesSearch = !term || (
+      String(factura.Num_factura || '').toLowerCase().includes(term) ||
+      String(factura.cableoperador || '').toLowerCase().includes(term)
+    )
+
+    const matchesEstado = !filtros.estado || factura.estado === filtros.estado
+
+    return matchesSearch && matchesEstado
+  })
 
   const getEstadoColor = (estado) => {
     const colors = {
@@ -135,7 +164,7 @@ const FacturasList = () => {
                     Nº Factura
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Contrato
+                    Cableoperador
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                     Fecha Facturación
@@ -158,13 +187,13 @@ const FacturasList = () => {
                 </tr>
               </thead>
               <tbody>
-                {facturas.map((factura) => (
+                {filteredFacturas.map((factura) => (
                   <tr key={factura.id} className="border-b hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
                       {factura.Num_factura}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {factura.contratos?.cableoperador || factura.contratos?.cableoperador?.nombre || 'N/A'}
+                      {factura.cableoperador  || 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
                       {formatDate(factura.Fecha_facturacion)}

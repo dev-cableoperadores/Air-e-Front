@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Cable, FileText, CheckCircle, AlertTriangle, Activity, TrendingUp, Plus } from 'lucide-react'
+import { Cable, FileText, CheckCircle, AlertTriangle, Activity, TrendingUp, Plus, Receipt } from 'lucide-react'
 import dashboardService from '../services/dashboardService'
 import { toast } from 'react-hot-toast'
 import Loading from '../components/UI/Loading'
@@ -11,6 +11,8 @@ const Dashboard = () => {
     contratosVigentes: 0,
     contratosVencidos: 0,
     totalContratos: 0,
+    totalFacturas: 0,
+    facturasVigentes: 0,
   })
   const [loading, setLoading] = useState(true)
 
@@ -33,6 +35,8 @@ const Dashboard = () => {
         contratosVigentes: 0,
         contratosVencidos: 0,
         totalContratos: 0,
+        totalFacturas: 0,
+        facturasVigentes: 0,
       })
     } finally {
       setLoading(false)
@@ -53,18 +57,32 @@ const Dashboard = () => {
       link: '/cableoperadores'
     },
     {
+      title: 'Facturas Pendientes',
+      value: stats?.facturasVigentes || 0,
+      icon: Receipt,
+      color: 'bg-yellow-500',
+      link: '/facturas?estado=Pendiente'
+    },
+    {
+      title: 'Total Facturas',
+      value: stats?.totalFacturas || 0,
+      icon: FileText,
+      color: 'bg-indigo-500',
+      link: '/facturas'
+    },
+    {
       title: 'Contratos Activos',
       value: stats?.contratosVigentes || 0,
       icon: CheckCircle,
       color: 'bg-green-500',
-      link: '/contratos'
+      link: '/contratos?estado=Vigente'
     },
     {
       title: 'Contratos Vencidos',
       value: stats?.contratosVencidos || 0,
       icon: AlertTriangle,
       color: 'bg-orange-500',
-      link: '/contratos'
+      link: '/contratos?estado=Vencido'
     },
     {
       title: 'Total Contratos',
