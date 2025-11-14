@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import contratosService from '../../services/contratosService'
 import cableoperadoresService from '../../services/cableoperadoresService'
@@ -19,18 +19,6 @@ const ContratosList = () => {
   const [searchInput, setSearchInput] = useState('')
   const [filterEstado, setFilterEstado] = useState('')
   const [filterCableoperador, setFilterCableoperador] = useState('')
-  const location = useLocation()
-
-  useEffect(() => {
-    // Si llegamos con query params (p. ej. desde el Dashboard), aplicarlos
-    const params = new URLSearchParams(location.search)
-    const estadoParam = params.get('estado') || ''
-    const pageParam = parseInt(params.get('page') || '1', 10)
-
-    setFilterEstado(estadoParam)
-    setPage(isNaN(pageParam) ? 1 : pageParam)
-    // La recarga de datos ocurrirá por el efecto que depende de `page` y `searchTerm`.
-  }, [location.search])
 
 // 🚨 1. Función estable para cargar SOLO Contratos
   // Usa useCallback para evitar re-creación innecesaria, solo se actualiza si searchTerm cambia.
@@ -67,7 +55,7 @@ const ContratosList = () => {
       const loadCableoperadores = async () => {
           try {
               // 🛠️ Esta llamada costosa se hace SOLO al montar el componente.
-              const cableoperadoresResp = await cableoperadoresService.getAllFull()
+              const cableoperadoresResp = await cableoperadoresService.getAllAllPages()
               const cableoperadoresArray = Array.isArray(cableoperadoresResp?.results)
                   ? cableoperadoresResp.results
                   : (cableoperadoresResp?.results || cableoperadoresResp || [])
@@ -139,13 +127,13 @@ const ContratosList = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">Contratos</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Contratos</h2>
         <Link to="/contratos/nuevo">
           <Button variant="primary">➕ Nuevo Contrato</Button>
         </Link>
       </div>
 
-      <div className=" rounded-lg shadow-md p-4 space-y-4">
+      <div className="  space-y-4">
         <div className="flex gap-2">
           <input
             type="text"
@@ -177,15 +165,15 @@ const ContratosList = () => {
               setSearchTerm('')
               setPage(1)
             }}
-            className="px-4 py-2 bg-gray-100 rounded-lg"
+            className="px-4 py-2 bg-gray-100 rounded-lg text-gray-800 "
           >
             Limpiar
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 dark:text-gray-800">
           <Select
             label="Filtrar por Estado"
-            name="filterEstado"
+            name="filterEstado "
             value={filterEstado}
             onChange={(e) => setFilterEstado(e.target.value)}
             options={[
@@ -210,9 +198,9 @@ const ContratosList = () => {
         </div>
       </div>
 
-      <div className="rounded-lg shadow-md overflow-hidden">
+      <div className=" rounded-lg shadow-md overflow-hidden dark:text-gray-100 text-2xl font-bold text-gray-800">
         {filteredContratos.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-gray-500 dark:text-gray-100 text-2xl font-bold text-gray-800">
             <p>No se encontraron contratos</p>
           </div>
         ) : (
@@ -237,7 +225,7 @@ const ContratosList = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {filteredContratos.map((contrato) => (
                   <tr key={contrato.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -247,7 +235,7 @@ const ContratosList = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        className={`px-2 py-1 text-xs font-semibold rounded-full${
                           contrato.estado_contrato === 'Vigente'
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'

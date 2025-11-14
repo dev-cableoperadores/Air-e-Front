@@ -13,7 +13,7 @@ const Select = ({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-800">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
