@@ -6,7 +6,7 @@ import Button from '../../components/UI/Button'
 import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Loading from '../../components/UI/Loading'
-import { formatDate, formatNumber } from '../../utils/formatters'
+import { formatDate, formatNumber, formatMonthYear } from '../../utils/formatters'
 
 const FacturasList = () => {
   const navigate = useNavigate()
@@ -93,9 +93,13 @@ const FacturasList = () => {
   // Aplicar filtros en cliente (no hacen llamadas al API)
   const filteredFacturas = facturas.filter((factura) => {
     const term = (filtros.search || '').toLowerCase()
+    const cableName = (typeof factura.cableoperador === 'string')
+      ? factura.cableoperador
+      : (factura.cableoperador?.nombre || factura.cableoperador?.nombre_largo || '')
+
     const matchesSearch = !term || (
       String(factura.Num_factura || '').toLowerCase().includes(term) ||
-      String(factura.cableoperador || '').toLowerCase().includes(term)
+      String(cableName).toLowerCase().includes(term)
     )
 
     const matchesEstado = !filtros.estado || factura.estado === filtros.estado
@@ -193,10 +197,12 @@ const FacturasList = () => {
                       {factura.Num_factura}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {factura.cableoperador  || 'N/A'}
+                      {typeof factura.cableoperador === 'string'
+                        ? factura.cableoperador
+                        : (factura.cableoperador?.nombre || factura.cableoperador?.nombre_largo || 'N/A')}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {formatDate(factura.Fecha_facturacion)}
+                      {formatMonthYear(factura.Mes_uso)}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
                       ${formatNumber(factura.Valor_facturado_iva)}

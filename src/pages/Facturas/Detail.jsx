@@ -6,7 +6,7 @@ import Loading from '../../components/UI/Loading'
 import Button from '../../components/UI/Button'
 import Input from '../../components/UI/Input'
 import Modal from '../../components/UI/Modal'
-import { formatPhone, formatNumber, formatDate } from '../../utils/formatters'
+import { formatPhone, formatNumber, formatDate, formatMonthYear } from '../../utils/formatters'
 
 const FacturasDetail = () => {
   const { id } = useParams()
@@ -169,10 +169,10 @@ const FacturasDetail = () => {
 
         {/* Información de la factura */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DetailField label="Mes de Uso" value={formatDate(factura.Mes_uso)} />
+          <DetailField label="Mes de Uso" value={formatMonthYear(factura.Mes_uso)} />
           <DetailField label="Fecha Facturación" value={formatDate(factura.Fecha_facturacion)} />
           <DetailField label="Fecha Vencimiento" value={formatDate(factura.Fecha_vencimiento)} />
-          <DetailField label="Período Vencimiento" value={formatDate(factura.Periodo_vencimiento)} />
+          <DetailField label="Período Vencimiento" value={formatMonthYear(factura.Periodo_vencimiento)} />
           <DetailField label="Valor Facturado (IVA)" value={`$${formatNumber(factura.Valor_facturado_iva)}`} />
           <DetailField label="Valor IVA (millones)" value={`$${formatNumber(factura.Valor_iva_millones)}`} />
           <DetailField label="Estado" value={

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
+import ErrorBoundary from '../ErrorBoundary'
 
 const MainLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -35,7 +36,9 @@ const MainLayout = ({ children }) => {
         
         <main className="flex-1 px-3 py-3 sm:px-5 md:px-6 md:py-6 overflow-auto touch-pan-x touch-pan-y">
           <div className="mx-auto w-full transition-all duration-300 max-w-full xl:max-w-7xl">
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </div>
         </main>
       </div>

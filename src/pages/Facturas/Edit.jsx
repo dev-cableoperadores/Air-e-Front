@@ -8,7 +8,7 @@ import Select from '../../components/UI/Select'
 import SearchableSelect from '../../components/UI/SearchableSelect'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
-import { formatDateForInput } from '../../utils/formatters'
+import { formatDateForInput, convertMonthToDate, addOneMonth } from '../../utils/formatters'
 
 const FacturasEdit = () => {
   const { id } = useParams()
@@ -57,7 +57,7 @@ const FacturasEdit = () => {
         Valor_facturado_iva: facturaData.Valor_facturado_iva?.toString() || '',
         Valor_iva_millones: facturaData.Valor_iva_millones?.toString() || '',
         monto_total: facturaData.monto_total?.toString() || '0',
-        Mes_uso: formatDateForInput(facturaData.Mes_uso),
+        Mes_uso: facturaData.Mes_uso ? facturaData.Mes_uso.slice(0, 7) : '',
         Fecha_facturacion: formatDateForInput(facturaData.Fecha_facturacion),
         Fecha_vencimiento: formatDateForInput(facturaData.Fecha_vencimiento),
         Periodo_vencimiento: formatDateForInput(facturaData.Periodo_vencimiento),
@@ -72,7 +72,14 @@ const FacturasEdit = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    const newFormData = { ...formData, [name]: value }
+    
+    // Si cambia Mes_uso, calcular automáticamente Periodo_vencimiento
+    if (name === 'Mes_uso' && value) {
+      newFormData.Periodo_vencimiento = addOneMonth(value)
+    }
+    
+    setFormData(newFormData)
   }
 
   const handleSubmit = async (e) => {
@@ -92,6 +99,8 @@ const FacturasEdit = () => {
         Valor_facturado_iva: parseFloat(formData.Valor_facturado_iva) || 0,
         Valor_iva_millones: parseFloat(formData.Valor_iva_millones) || 0,
         monto_total: parseFloat(formData.monto_total) || 0,
+        Mes_uso: convertMonthToDate(formData.Mes_uso),
+        Periodo_vencimiento: convertMonthToDate(formData.Periodo_vencimiento),
       }
 
       await facturasService.update(id, dataToSend)
@@ -135,7 +144,7 @@ const FacturasEdit = () => {
           <Input
             label="Mes de Uso"
             name="Mes_uso"
-            type="date"
+            type="month"
             value={formData.Mes_uso}
             onChange={handleChange}
             required
@@ -159,9 +168,10 @@ const FacturasEdit = () => {
           <Input
             label="Período de Vencimiento"
             name="Periodo_vencimiento"
-            type="date"
+            type="month"
             value={formData.Periodo_vencimiento}
             onChange={handleChange}
+            disabled
             required
           />
           <Input
