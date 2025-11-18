@@ -16,55 +16,38 @@ const CableOperadoresList = () => {
   const [searchInput, setSearchInput] = useState('')
   const navigate = useNavigate()
 
-// 🚨 1. Función estable para cargar Cableoperadores
-  // Usamos useCallback. Ahora depende solo de searchTerm.
-  const loadCableoperadores = useCallback(async (pageToLoad = 1) => {
-      try {
-          setLoading(true)
-          
-          // Usar la página actual si no se especifica una (ej. al cambiar búsqueda)
-          const actualPage = pageToLoad; 
+  // 1. useCallback ahora recibe la página y el término de búsqueda como argumentos.
+  // Su array de dependencias está vacío para que la función sea estable.
+  const loadCableoperadores = useCallback(async (pageToLoad, currentSearchTerm) => {
+    try {
+      setLoading(true)
+      const params = { page: pageToLoad }
 
-          // Construir parámetros de la solicitud
-          const params = { page: actualPage };
-          if (searchTerm && searchTerm.trim() !== '') {
-              params.search = searchTerm;
-          }
-
-          const resp = await cableoperadoresService.getAllFull(params);
-          const items = resp?.results || [];
-              
-          setCableoperadores(items);
-          setTotalCount(resp?.count || items.length);
-          setPageSize(items.length);
-          setPage(actualPage); // Actualiza la página después de cargar
-
-      } catch (error) {
-          console.error('Error al cargar cableoperadores:', error.response?.data || error.message)
-          toast.error(`Error al cargar cableoperadores: ${error.response?.data?.detail || error.message}`)
-          setCableoperadores([])
-      } finally {
-          setLoading(false)
+      if (currentSearchTerm && currentSearchTerm.trim() !== '') {
+        params.search = currentSearchTerm
       }
-  }, [searchTerm]) // 🚨 CLAVE: Solo depende de searchTerm
 
-  // 🚨 2. useEffect para Paginación (Se ejecuta al cambiar la página)
-  useEffect(() => {
-      // Ejecutar loadCableoperadores cuando la página cambie
-      loadCableoperadores(page)
-  }, [page, loadCableoperadores]) 
+      const resp = await cableoperadoresService.getAllFull(params)
+      const items = resp?.results || []
 
-  // 🚨 3. useEffect para Búsqueda (Se ejecuta al cambiar el término de búsqueda)
+      setCableoperadores(items)
+      setTotalCount(resp?.count || items.length)
+      setPageSize(items.length)
+      setPage(pageToLoad) // Actualiza el estado de la página si la carga fue exitosa
+    } catch (error) {
+      console.error('Error al cargar cableoperadores:', error.response?.data || error.message)
+      toast.error(`Error al cargar cableoperadores: ${error.response?.data?.detail || error.message}`)
+      setCableoperadores([])
+    } finally {
+      setLoading(false)
+    }
+  }, []) // Dependencia vacía para estabilidad.
+
+  // 2. Único useEffect para manejar la carga de datos.
+  // Se activa cuando 'page' o 'searchTerm' cambian.
   useEffect(() => {
-      // Cuando cambia el término, forzar la recarga en la página 1.
-      // Esto automáticamente dispara el useEffect de [page].
-      if (searchTerm !== '') {
-          setPage(1); 
-      } else {
-            // Si se borra la búsqueda, forzar recarga de la página actual.
-          loadCableoperadores(page);
-      }
-  }, [searchTerm, loadCableoperadores]) 
+    loadCableoperadores(page, searchTerm)
+  }, [page, searchTerm, loadCableoperadores]) 
 
   const handleDelete = async (id, nombre) => {
       // ... (lógica de eliminación)
@@ -72,20 +55,28 @@ const CableOperadoresList = () => {
           try {
               await cableoperadoresService.delete(id)
               toast.success('Cableoperador eliminado')
-              // Recargar la página actual
-              loadCableoperadores(page) 
+              // Recargar los datos de la página actual con el término de búsqueda actual
+              loadCableoperadores(page, searchTerm)
           } catch (error) {
               toast.error('Error al eliminar cableoperador')
           }
       }
   }
 
-  const filteredCableoperadores = cableoperadores.filter((co) =>
-    co.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    co.nombre_largo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    co.NIT?.toString().includes(searchTerm)
-  )
+  // 3. Lógica para manejar el envío de una nueva búsqueda.
+  const handleSearch = () => {
+    setSearchTerm(searchInput)
+    // Si ya estamos en la página 1, el useEffect no se disparará por el cambio de página,
+    // pero sí por el cambio en searchTerm. Si estamos en otra página,
+    // setPage(1) disparará el useEffect.
+    if (page !== 1) {
+      setPage(1)
+    }
+  }
 
+  // El filtrado ahora se hace en el backend, por lo que no es necesario
+  // un filtrado local. Simplemente usamos los datos que vienen del estado.
+  const filteredCableoperadores = cableoperadores
   if (loading) {
     return <Loading fullScreen />
   }
@@ -121,19 +112,13 @@ const CableOperadoresList = () => {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setPage(1)
-                  setSearchTerm(searchInput)
-                }
+                if (e.key === 'Enter') handleSearch()
               }}
               className="pl-10 pr-4 py-2.5 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
             />
             <button
               type="button"
-              onClick={() => {
-                setPage(1)
-                setSearchTerm(searchInput)
-              }}
+              onClick={handleSearch}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg"
             >
               Buscar
@@ -141,6 +126,7 @@ const CableOperadoresList = () => {
             <button
               type="button"
               onClick={() => {
+                // Limpia los estados y vuelve a la página 1.
                 setSearchInput('')
                 setSearchTerm('')
                 setPage(1)
@@ -251,4 +237,3 @@ const CableOperadoresList = () => {
 }
 
 export default CableOperadoresList
-
