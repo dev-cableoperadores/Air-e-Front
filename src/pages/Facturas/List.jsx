@@ -130,7 +130,7 @@ const FacturasList = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Input
-            label="Buscar por Número de Factura o Cable-Operador"
+            label="Buscar por Número de Factura o CableOperador"
             name="search"
             type="text"
             placeholder="Número de factura..."
