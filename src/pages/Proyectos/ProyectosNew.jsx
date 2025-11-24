@@ -1,0 +1,152 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
+import proyectosService from '../../services/proyectosService'
+import inspectoresService from '../../services/inspectoresService'
+import SearchableSelect from '../../components/UI/SearchableSelect'
+import Input from '../../components/UI/Input'
+import Select from '../../components/UI/Select'
+import Button from '../../components/UI/Button'
+
+const departamentosOptions = [
+  { value: 'atlantico', label: 'Atlantico' },
+  { value: 'magdalena', label: 'Magdalena' },
+  { value: 'la_guajira', label: 'La Guajira' },
+]
+
+const ProyectosNew = () => {
+  const navigate = useNavigate()
+  const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [ingresos, setIngresos] = useState([])
+  const [inspectores, setInspectores] = useState([])
+  const [formData, setFormData] = useState({
+    datos_ingreso_id: '',
+    inspector_responsable: '',
+    estado_actual: '',
+    fecha_inspeccion: '',
+    fecha_analisis_inspeccion: '',
+    cable: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
+    caja_empalme: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
+    reserva: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
+    nap: { tip8:0,tip10:0,tip12:0,tip14:0,tip15:0,tip16:0,tip20:0 },
+  })
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true)
+        const ing = await proyectosService.getIngresoAll()
+        setIngresos(ing || [])
+        const ins = await inspectoresService.getAll()
+        setInspectores(ins || [])
+      } catch (err) {
+        toast.error('Error al cargar datos')
+      } finally { setLoading(false) }
+    }
+    load()
+  }, [])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const handleNestedChange = (group, name, value) => {
+    setFormData({ ...formData, [group]: { ...(formData[group]||{}), [name]: value === '' ? 0 : parseInt(value,10) } })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!formData.datos_ingreso_id || !formData.fecha_inspeccion || !formData.fecha_analisis_inspeccion) {
+      toast.error('Completa datos obligatorios: ingreso y fechas')
+      return
+    }
+    setSaving(true)
+    try {
+      const payload = { ...formData }
+      await proyectosService.createProyecto(payload)
+      toast.success('Proyecto creado')
+      navigate('/proyectos')
+    } catch (err) {
+      console.error(err)
+      const detail = err.response?.data || err.message || 'Error desconocido'
+      toast.error(`Error al crear proyecto: ${JSON.stringify(detail)}`)
+    } finally { setSaving(false) }
+  }
+
+  if (loading) return <div className="p-6"><p>Cargando...</p></div>
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Nuevo Proyecto</h2>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SearchableSelect
+            label="Ingreso Proyecto (OT_AIRE)"
+            name="datos_ingreso_id"
+            value={formData.datos_ingreso_id}
+            onChange={handleChange}
+            options={ingresos.map((it) => ({ value: it.OT_AIRE, label: `${it.OT_AIRE} - ${it.nombre || ''}` }))}
+            required
+          />
+
+          <SearchableSelect
+            label="Inspector Responsable"
+            name="inspector_responsable"
+            value={formData.inspector_responsable}
+            onChange={handleChange}
+            options={inspectores.map((it) => ({ value: it.id?.toString?.() || it.pk || it.id, label: it.nombre || it.nombre_completo || String(it.id) }))}
+          />
+
+          <Input label="Estado Actual" name="estado_actual" value={formData.estado_actual} onChange={handleChange} />
+          <Input label="Fecha Inspección" name="fecha_inspeccion" type="date" value={formData.fecha_inspeccion} onChange={handleChange} required />
+          <Input label="Fecha Análisis Inspección" name="fecha_analisis_inspeccion" type="date" value={formData.fecha_analisis_inspeccion} onChange={handleChange} required />
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="font-semibold">Cables</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => (
+              <Input key={k} label={k} name={k} type="number" value={formData.cable[k]} onChange={(e)=>handleNestedChange('cable', k, e.target.value)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="font-semibold">Caja Empalme</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => (
+              <Input key={k} label={k} name={k} type="number" value={formData.caja_empalme[k]} onChange={(e)=>handleNestedChange('caja_empalme', k, e.target.value)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="font-semibold">Reserva</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => (
+              <Input key={k} label={k} name={k} type="number" value={formData.reserva[k]} onChange={(e)=>handleNestedChange('reserva', k, e.target.value)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="font-semibold">NAP (Usos)</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((k) => (
+              <Input key={k} label={k} name={k} type="number" value={formData.nap[k]} onChange={(e)=>handleNestedChange('nap', k, e.target.value)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <Button type="submit" variant="primary" disabled={saving}>{saving ? 'Guardando...' : 'Crear Proyecto'}</Button>
+          <Button type="button" variant="outline" onClick={() => navigate('/proyectos')}>Cancelar</Button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+export default ProyectosNew

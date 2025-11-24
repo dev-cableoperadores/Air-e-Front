@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Home, Cable, FileText, ChevronLeft, ChevronRight, Receipt } from 'lucide-react'
+import { Home, Cable, FileText, ChevronLeft, ChevronRight, Receipt, Layers } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
@@ -14,13 +14,31 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/', label: 'Inicio', icon: Home },
     { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
     { path: '/contratos', label: 'Contratos', icon: FileText },
+    { path: '/proyectos', label: 'Proyectos', icon: Layers },
+    { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
     { path: '/facturas', label: 'Facturas', icon: Receipt },
   ]
 
   const isActiveRoute = (path) => {
     if (path === '/') return location.pathname === '/'
-    return location.pathname.startsWith(path)
+    return location.pathname === path || location.pathname.startsWith(path + '/')
   }
+
+  // Determine the single most-specific active path (longest matching)
+  const activeMenuPath = (() => {
+    let best = null
+    for (const item of menuItems) {
+      const p = item.path
+      if (p === '/') {
+        if (location.pathname === '/') best = p
+        continue
+      }
+      if (location.pathname === p || location.pathname.startsWith(p + '/')) {
+        if (!best || p.length > best.length) best = p
+      }
+    }
+    return best
+  })()
 
   const toggleCollapse = () => {
     if (typeof onToggleCollapse === 'function') {

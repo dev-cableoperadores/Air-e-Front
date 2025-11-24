@@ -17,6 +17,14 @@ import FacturasNew from './pages/Facturas/New'
 import FacturasEdit from './pages/Facturas/Edit'
 import FacturasDetail from './pages/Facturas/Detail'
 import FacturasByCableoperador from './pages/Facturas/FacturasByCableoperador'
+import IngresoList from './pages/Proyectos/IngresoList'
+import IngresoNew from './pages/Proyectos/IngresoNew'
+import IngresoDetail from './pages/Proyectos/IngresoDetail'
+import IngresoEdit from './pages/Proyectos/IngresoEdit'
+import ProyectosList from './pages/Proyectos/ProyectosList'
+import ProyectosNew from './pages/Proyectos/ProyectosNew'
+import ProyectosDetail from './pages/Proyectos/ProyectosDetail'
+import ProyectosEdit from './pages/Proyectos/ProyectosEdit'
 import MainLayout from './components/Layout/MainLayout'
 
 function App() {
@@ -161,6 +169,86 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <FacturasEdit />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/ingreso"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <IngresoList />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ProyectosList />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/nuevo"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ProyectosNew />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/:id"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ProyectosDetail />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/:id/editar"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ProyectosEdit />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/ingreso/nuevo"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <IngresoNew />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/ingreso/:id"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <IngresoDetail />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos/ingreso/:id/editar"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <IngresoEdit />
                 </MainLayout>
               </ProtectedRoute>
             }
