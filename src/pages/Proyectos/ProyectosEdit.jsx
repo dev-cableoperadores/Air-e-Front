@@ -137,7 +137,7 @@ const ProyectosEdit = () => {
         <div className="space-y-3">
           <h3 className="font-semibold">NAP (Usos)</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((k) => (
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => (
               <Input key={k} label={k} name={k} type="number" value={formData.nap[k]} onChange={(e)=>handleNestedChange('nap', k, e.target.value)} />
             ))}
           </div>

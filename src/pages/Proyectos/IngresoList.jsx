@@ -56,8 +56,8 @@ const IngresoList = () => {
     <div className="space-y-6 max-w-full">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Ingresos de Proyecto</h1>
-          <p className="text-sm text-gray-600">Gestión de ingresos (viabilidad)</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Ingresos de Proyecto</h1>
+          <p className="text-2xl md:text-1xl font-bold text-gray-900 dark:text-gray-100 text-1xl font-bold text-gray-800">Gestión de ingresos (viabilidad)</p>
         </div>
         <Link to="/proyectos/ingreso/nuevo">
           <Button variant="primary">Nuevo Ingreso</Button>
