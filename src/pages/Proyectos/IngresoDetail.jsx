@@ -61,13 +61,20 @@ const IngresoDetail = () => {
         <div>
           <h3 className="font-semibold">Altura Inicial Poste</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
-            {item.altura_inicial_poste && Object.entries(item.altura_inicial_poste).map(([k,v]) => (
+          {item.altura_inicial_poste && Object.entries(item.altura_inicial_poste).map(([k,v]) => {
+          // 💡 Paso 1: Generar el texto descriptivo
+          // k.replace('tipo', '') toma 'tipo8' y lo convierte en '8'.
+          // Luego usamos un template literal (comillas inversas `) para construir el string.
+          const textoDescriptivo = `Altura ${k.replace('tipo', '')}m`;
+            return (
               <div key={k} className="bg-gray-50 p-2 rounded">
-                <p className="text-xs text-gray-500">{k}</p>
+                {/* 🚀 Usamos la variable generada aquí */}
+                <p className="text-xs text-gray-500">{textoDescriptivo}</p>
                 <p className="font-semibold">{v}</p>
               </div>
-            ))}
-          </div>
+            );
+          })}
+        </div>
         </div>
         <div>
           <h3 className="font-semibold">Observaciones</h3>

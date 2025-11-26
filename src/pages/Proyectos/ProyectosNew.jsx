@@ -25,7 +25,7 @@ const ProyectosNew = () => {
     datos_ingreso_id: '',
     inspector_responsable: '',
     estado_inicial: 'gestionar_escritorio',
-    estado_actual: '',
+    //estado_actual: '',
     fecha_inspeccion: '',
     fecha_analisis_inspeccion: '',
     fecha_entrega_pj: '',
@@ -34,13 +34,14 @@ const ProyectosNew = () => {
     caja_empalme: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
     reserva: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
     nap: { tip8:0,tip10:0,tip12:0,tip14:0,tip15:0,tip16:0,tip20:0 },
+    altura_final_poste: { tipo8:0,tipo9:0,tipo10:0,tipo11:0,tipo12:0,tipo14:0,tipo16:0 },
   })
 
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true)
-        const ing = await proyectosService.getIngresoAll()
+        const ing = await proyectosService.getIngresoNoVinculatedAll()
         setIngresos(ing || [])
         const ins = await inspectoresService.getAll()
         setInspectores(ins || [])
@@ -106,7 +107,7 @@ const ProyectosNew = () => {
             options={inspectores.map((it) => ({ value: it.id?.toString?.() || it.pk || it.id, label: it.nombre || it.nombre_completo || String(it.user.username) }))}
           />
 
-          <Input label="Estado Actual" name="estado_actual" value={formData.estado_actual} onChange={handleChange} />
+          {/*<Input label="Estado Actual" name="estado_actual" value={formData.estado_actual} onChange={handleChange} />*/}
           <Select label="Estado Inicial" name="estado_inicial" value={formData.estado_inicial} onChange={handleChange} options={ESTADO_INICIAL} />
           <Input label="Fecha Entrega PJ" name="fecha_entrega_pj" type="date" value={formData.fecha_entrega_pj} onChange={handleChange} />
           <Input label="Fecha Notificación PRST" name="fecha_notificacion_prst" type="date" value={formData.fecha_notificacion_prst} onChange={handleChange} />
@@ -146,6 +147,15 @@ const ProyectosNew = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((k) => (
               <Input key={k} label={k} name={k} type="number" value={formData.nap[k]} onChange={(e)=>handleNestedChange('nap', k, e.target.value)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="font-semibold">Altura Final Poste</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {['tipo8','tipo9','tipo10','tipo11','tipo12','tipo14','tipo16'].map((k) => (
+              <Input key={k} label={k} name={k} type="number" value={formData.altura_final_poste[k]} onChange={(e)=>handleNestedChange('altura_final_poste', k, e.target.value)} />
             ))}
           </div>
         </div>

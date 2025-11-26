@@ -58,6 +58,12 @@ const ProyectosDetail = () => {
             <pre className="text-sm">{JSON.stringify(item.caja_empalme || {}, null, 2)}</pre>
           </div>
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <h4 className="font-semibold">Altura Final Poste</h4>
+            <pre className="text-sm">{JSON.stringify(item.altura_final_poste || {}, null, 2)}</pre>
+          </div>
+        </div>
       </div>
     </div>
   )

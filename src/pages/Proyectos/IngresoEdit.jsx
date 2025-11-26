@@ -142,12 +142,30 @@ const IngresoEdit = () => {
         </div>
 
         <div className="bg-gray-50 p-4 rounded">
-          <h3 className="font-semibold mb-2">Altura Inicial Poste (opcional)</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {Object.keys(formData.altura_inicial_poste_input).map((k) => (
-              <Input key={k} label={k} name={k} type="number" value={formData.altura_inicial_poste_input[k]} onChange={handleAlturaChange} />
-            ))}
-          </div>
+        <h3 className="font-semibold mb-2">Altura Inicial Poste (opcional)</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {Object.keys(formData.altura_inicial_poste_input).map((k) => {
+            
+            // 💡 Transformación del Key (k) a Label descriptiva
+            // 'tipo8' -> '8' -> 'Altura 8m'
+            const displayLabel = `Altura ${k.replace('tipo', '')}m`;
+            
+            return (
+              <Input 
+                key={k} 
+                // 🚀 Asignamos la etiqueta descriptiva al 'label'
+                label={displayLabel} 
+                
+                // Mantenemos el nombre original del campo para el manejo de datos
+                name={k} 
+                
+                type="number" 
+                value={formData.altura_inicial_poste_input[k]} 
+                onChange={handleAlturaChange} 
+              />
+              );
+            })}
+        </div>
         </div>
 
         <div>

@@ -51,7 +51,7 @@ const IngresoNew = () => {
   const loadCableoperadores = async () => {
     try {
       setLoading(true)
-      const data = await cableoperadoresService.getAllFull()
+      const data = await cableoperadoresService.getAllAllPages()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (err) {

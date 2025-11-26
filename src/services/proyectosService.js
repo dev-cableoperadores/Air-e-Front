@@ -6,10 +6,20 @@ const proyectosService = {
     const response = await api.get('/api/proyectos/ingreso/', { params })
     return response.data
   },
+  getIngresoNoVinculated: async (params = {}) => {
+    const response = await api.get('/api/proyectos/ingreso-no-vinculados/', { params })
+    return response.data
+  },
   getIngresoAll: async (params = {}) => {
     const data = await proyectosService.getIngresoAllFull(params)
     return data?.results || []
   },
+  getIngresoNoVinculatedAll: async (params = {}) => {
+    const data = await proyectosService.getIngresoNoVinculated(params)
+    return data?.results || []
+  },
+  // Obtiene todos los ingresos que no han sido vinculados con un proyecto
+
   getIngresoById: async (id) => {
     const response = await api.get(`/api/proyectos/ingreso/${id}/`)
     return response.data
