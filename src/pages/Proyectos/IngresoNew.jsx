@@ -113,13 +113,13 @@ const IngresoNew = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Nuevo Ingreso de Proyecto</h2>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800 text-2xl font-bold mb-6">Nuevo Ingreso de Proyecto</h2>
+      <form onSubmit={handleSubmit} className="bg-blue-100 rounded-lg shadow-md p-6 space-y-6">
+        <div className="text-black grid grid-cols-1 md:grid-cols-2 gap-4">
           <SearchableSelect
             label="Cableoperador"
             name="cableoperador_id"
-            value={formData.cableoperador_id}
+            value={formData.cableoperador_id} 
             onChange={handleChange}
             options={cableoperadores.map((co) => ({ value: co.id.toString(), label: co.nombre_largo || co.nombre }))}
             required
