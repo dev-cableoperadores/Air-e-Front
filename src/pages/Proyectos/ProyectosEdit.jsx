@@ -43,7 +43,7 @@ const ProyectosEdit = () => {
           cable: data.cable || { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
           caja_empalme: data.caja_empalme || { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
           reserva: data.reserva || { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
-          nap: data.nap || { tip8:0,tip10:0,tip12:0,tip14:0,tip15:0,tip16:0,tip20:0 },
+          nap: data.nap || { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
           altura_final_poste: data.altura_final_poste || { tipo8:0,tipo9:0,tipo10:0,tipo11:0,tipo12:0,tipo14:0,tipo16:0 },
         })
         const ing = await proyectosService.getIngresoAll()
@@ -95,7 +95,7 @@ const ProyectosEdit = () => {
             name="datos_ingreso_id"
             value={formData.datos_ingreso_id}
             onChange={handleChange}
-            options={ingresos.map((it) => ({ value: it.OT_AIRE, label: `${it.OT_AIRE} - ${it.nombre || ''}` }))}
+            options={ingresos.map((it) => ({ value: it.OT_AIRE, label: `${it.OT_AIRE} - ${it.TipoIngreso || ''}` }))}
             required
           />
 
@@ -202,12 +202,12 @@ const ProyectosEdit = () => {
         <div className="space-y-3">
           <h3 className="font-semibold">NAP (Usos)</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((k) => {
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => {
               
               // 💡 Transformación de 'tipo8' a 'Altura 8m'
               // 1. k.replace('tipo', '') extrae el número (ej: '8')
               // 2. El template literal construye la cadena 'Altura 8m'
-              const alturaLabel = `Altura ${k.replace('tip', '')}m`; 
+              const alturaLabel = `Altura ${k.replace('tipo', '')}m`; 
 
               return (
                 <Input 

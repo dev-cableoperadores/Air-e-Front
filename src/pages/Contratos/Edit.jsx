@@ -34,13 +34,13 @@ const ContratosEdit = () => {
     tipo_fecha_radicacion: 'fija',
     // Campos anidados
     nap: {
-      tip8: '',
-      tip10: '',
-      tip12: '',
-      tip14: '',
-      tip15: '',
-      tip16: '',
-      tip20: '',
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
     },
     cable: {
       tipo8: '',
@@ -107,13 +107,13 @@ const ContratosEdit = () => {
         tipo_fecha_radicacion: contratoData.tipo_fecha_radicacion || 'fija',
         // Rellenar campos anidados
         nap: {
-          tip8: contratoData.nap?.tip8?.toString() || '',
-          tip10: contratoData.nap?.tip10?.toString() || '',
-          tip12: contratoData.nap?.tip12?.toString() || '',
-          tip14: contratoData.nap?.tip14?.toString() || '',
-          tip15: contratoData.nap?.tip15?.toString() || '',
-          tip16: contratoData.nap?.tip16?.toString() || '',
-          tip20: contratoData.nap?.tip20?.toString() || '',
+          tipo8: contratoData.nap?.tipo8?.toString() || '',
+          tipo10: contratoData.nap?.tipo10?.toString() || '',
+          tipo12: contratoData.nap?.tipo12?.toString() || '',
+          tipo14: contratoData.nap?.tipo14?.toString() || '',
+          tipo15: contratoData.nap?.tipo15?.toString() || '',
+          tipo16: contratoData.nap?.tipo16?.toString() || '',
+          tipo20: contratoData.nap?.tipo20?.toString() || '',
         },
         cable: {
           tipo8: contratoData.cable?.tipo8?.toString() || '',
@@ -575,25 +575,38 @@ const ContratosEdit = () => {
                 <div className="p-4 border-t">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {[
-                      'tip8',
-                      'tip10',
-                      'tip12',
-                      'tip14',
-                      'tip15',
-                      'tip16',
-                      'tip20',
-                    ].map((key) => (
-                      <Input
-                        key={key}
-                        label={key}
-                        name={key}
-                        type="number"
-                        value={formData[section][key]}
-                        onChange={(e) =>
-                          handleNestedChange(section, key, e.target.value)
-                        }
-                      />
-                    ))}
+                      'tipo8',
+                      'tipo10',
+                      'tipo12',
+                      'tipo14',
+                      'tipo15',
+                      'tipo16',
+                      'tipo20',
+                    ].map((key) => {
+                            // 🚀 Función de transformación: 'tipoX' -> 'Altura X m'
+                            const getLabel = (inputKey) => {
+                                // Elimina la parte "tipo" y convierte el resto a número
+                                const altura = inputKey.replace('tipo', '');
+                                
+                                // Construye el string final
+                                return `Altura ${altura} m`;
+                            };
+                            const labelText = getLabel(key);
+                            // -----------------------------------------------------
+                            return (
+                                <Input
+                                    key={key}
+                                    // Usa la nueva etiqueta aquí
+                                    label={labelText} 
+                                    name={key}
+                                    type="number"
+                                    value={formData[section][key]}
+                                    onChange={(e) =>
+                                        handleNestedChange(section, key, e.target.value)
+                                    }
+                                />
+                            );
+                      })}
                   </div>
                 </div>
               )}

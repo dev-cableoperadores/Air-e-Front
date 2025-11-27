@@ -33,7 +33,7 @@ const ProyectosNew = () => {
     cable: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
     caja_empalme: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
     reserva: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
-    nap: { tip8:0,tip10:0,tip12:0,tip14:0,tip15:0,tip16:0,tip20:0 },
+    nap: { tipo8:0,tipo10:0,tipo12:0,tipo14:0,tipo15:0,tipo16:0,tipo20:0 },
     altura_final_poste: { tipo8:0,tipo9:0,tipo10:0,tipo11:0,tipo12:0,tipo14:0,tipo16:0 },
   })
 
@@ -145,7 +145,7 @@ const ProyectosNew = () => {
         <div className="space-y-3">
           <h3 className="font-semibold">NAP (Usos)</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {['tip8','tip10','tip12','tip14','tip15','tip16','tip20'].map((k) => (
+            {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => (
               <Input key={k} label={k} name={k} type="number" value={formData.nap[k]} onChange={(e)=>handleNestedChange('nap', k, e.target.value)} />
             ))}
           </div>
