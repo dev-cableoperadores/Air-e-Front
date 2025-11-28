@@ -34,13 +34,13 @@ const ContratosNew = () => {
     tipo_fecha_radicacion: 'fija',
     // Campos anidados por defecto
     nap: {
-      tip8: '',
-      tip10: '',
-      tip12: '',
-      tip14: '',
-      tip15: '',
-      tip16: '',
-      tip20: '',
+      tipo8: '',
+      tipo10: '',
+      tipo12: '',
+      tipo14: '',
+      tipo15: '',
+      tipo16: '',
+      tipo20: '',
     },
     cable: {
       tipo8: '',
@@ -542,22 +542,41 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
               </button>
               {openSections[section] && (
                 <div className="p-4 border-t">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {[
-                      'Altura 8m','Altura 10m','Altura 12m','Altura 14m','Altura 15m','Altura 16m','Altura 20m',
-                    ].map((key) => (
-                      <Input
-                        key={key}
-                        label={key}
-                        name={key}
-                        type="number"
-                        value={formData[section][key]}
-                        onChange={(e) =>
-                          handleNestedChange(section, key, e.target.value)
-                        }
-                      />
-                    ))}
-                  </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {[
+                            'tipo8',
+                            'tipo10',
+                            'tipo12',
+                            'tipo14',
+                            'tipo15',
+                            'tipo16',
+                            'tipo20',
+                        ].map((key) => {
+                            // 🚀 Función de transformación: 'tipoX' -> 'Altura X m'
+                            const getLabel = (inputKey) => {
+                                // Elimina la parte "tipo" y convierte el resto a número
+                                const altura = inputKey.replace('tipo', '');
+                                
+                                // Construye el string final
+                                return `Altura ${altura} m`;
+                            };
+                            const labelText = getLabel(key);
+                            // -----------------------------------------------------
+                            return (
+                                <Input
+                                    key={key}
+                                    // Usa la nueva etiqueta aquí
+                                    label={labelText} 
+                                    name={key}
+                                    type="number"
+                                    value={formData[section][key]}
+                                    onChange={(e) =>
+                                        handleNestedChange(section, key, e.target.value)
+                                    }
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
               )}
             </div>

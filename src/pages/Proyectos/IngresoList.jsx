@@ -87,7 +87,7 @@ const IngresoList = () => {
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="px-4 py-2 text-left">OT_AIRE</th>
+                  <th className="px-4 py-2 text-left">OT AIRE</th>
                   <th className="px-4 py-2 text-left">Nombre</th>
                   <th className="px-4 py-2 text-left">Cableoperador</th>
                   <th className="px-4 py-2 text-left">Departamento</th>
