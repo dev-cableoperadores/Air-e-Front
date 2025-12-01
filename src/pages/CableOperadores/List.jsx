@@ -86,10 +86,10 @@ const CableOperadoresList = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-2xl md:text-1xl font-bold text-gray-900 dark:text-gray-100 text-1xl font-bold text-gray-800">
             Cableoperadores
           </h1>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-100 mt-1">
+          <p className="text-2xl md:text-1xl font-bold text-gray-900 dark:text-gray-100 text-1xl font-bold text-gray-800">
             Gestiona los cableoperadores del sistema
           </p>
         </div>
@@ -102,7 +102,7 @@ const CableOperadoresList = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+      <div className="dark:bg-blue-100 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <div className="flex gap-2">
@@ -140,7 +140,7 @@ const CableOperadoresList = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="bg-blue-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {filteredCableoperadores.length === 0 ? (
           <div className="col-span-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
             <Cable className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -213,7 +213,7 @@ const CableOperadoresList = () => {
         )}
       </div>
       <div className="mt-4 px-4 py-3 border-t flex items-center justify-between">
-        <div className="text-sm text-gray-700">
+        <div className="text-xl md:text-1xl font-bold text-gray-900 dark:text-gray-100 text-1xl font-bold text-gray-800">
           Mostrando {cableoperadores.length} de {totalCount} cableoperadores
         </div>
         <div className="flex items-center space-x-2">
