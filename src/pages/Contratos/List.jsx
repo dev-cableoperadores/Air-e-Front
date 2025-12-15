@@ -210,6 +210,9 @@ const ContratosList = () => {
                     Vigencia
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Inicio de Vigencia
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Acciones
                   </th>
                 </tr>
@@ -237,7 +240,10 @@ const ContratosList = () => {
                       {formatCurrency(contrato.valor_contrato)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {formatDate(contrato.inicio_vigencia)} - {formatDate(contrato.fin_vigencia)}
+                      {contrato.duracion_anos} años
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {formatDate(contrato.inicio_vigencia)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link
@@ -256,13 +262,13 @@ const ContratosList = () => {
                           Editar
                         </Button>
                       </Link>
-                      <Button
+                      {/* <Button
                         variant="danger"
                         size="sm"
                         onClick={() => handleDelete(contrato.id)}
                       >
                         Eliminar
-                      </Button>
+                      </Button> */}
                     </td>
                   </tr>
                 ))}

@@ -27,8 +27,6 @@ const FacturasNew = () => {
     estado: 'Pendiente',
     Factura_aceptada: true,
     Factura_CRC: false,
-    Fecha_aplicacion: '',
-    Fecha_confirmacion: '',
   })
 
   useEffect(() => {
@@ -82,8 +80,6 @@ const FacturasNew = () => {
         estado: formData.estado,
         Factura_aceptada: formData.Factura_aceptada,
         Factura_CRC: formData.Factura_CRC,
-        ...(formData.Fecha_aplicacion && { Fecha_aplicacion: formData.Fecha_aplicacion }),
-        ...(formData.Fecha_confirmacion && { Fecha_confirmacion: formData.Fecha_confirmacion }),
       }
 
       await facturasService.create(dataToSend)
@@ -213,20 +209,6 @@ const FacturasNew = () => {
             />
             <label htmlFor="Factura_CRC" className="text-sm font-medium text-gray-700">Factura CRC</label>
           </div>
-          <Input
-            label="Fecha de Aplicación"
-            name="Fecha_aplicacion"
-            type="date"
-            value={formData.Fecha_aplicacion}
-            onChange={handleChange}
-          />
-          <Input
-            label="Fecha de Confirmación"
-            name="Fecha_confirmacion"
-            type="date"
-            value={formData.Fecha_confirmacion}
-            onChange={handleChange}
-          />
         </div>
 
         <div className="flex gap-4">

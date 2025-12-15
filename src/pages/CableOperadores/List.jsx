@@ -200,12 +200,12 @@ const CableOperadoresList = () => {
                       Editar
                     </button>
                   </Link>
-                  <button
+                  {/* <button
                     onClick={() => handleDelete(co.id, co.nombre)}
                     className="flex items-center justify-center px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

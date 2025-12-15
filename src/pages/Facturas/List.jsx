@@ -182,18 +182,15 @@ const FacturasList = () => {
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     Estado
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     Aceptada
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     CRC
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Fecha Aplicación
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  </th> */}
+                  {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     Fecha Confirmación
-                  </th>
+                  </th> */}
                   <th className="px-6 py-3 text-center text-sm font-semibold text-gray-900">
                     Acciones
                   </th>
@@ -227,18 +224,15 @@ const FacturasList = () => {
                         {factura.estado}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    {/* <td className="px-6 py-4 text-sm text-gray-700">
                       {factura.Factura_aceptada ? 'Sí' : 'No'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
                       {factura.Factura_CRC ? 'Sí' : 'No'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {factura.Fecha_aplicacion ? formatDate(factura.Fecha_aplicacion) : 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    </td> */}
+                    {/* <td className="px-6 py-4 text-sm text-gray-700">
                       {factura.Fecha_confirmacion ? formatDate(factura.Fecha_confirmacion) : 'N/A'}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 text-center">
                       <div className="flex gap-2 justify-center">
                         <Button
