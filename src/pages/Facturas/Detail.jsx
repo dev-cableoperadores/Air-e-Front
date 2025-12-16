@@ -245,7 +245,7 @@ const FacturasDetail = () => {
           </div>
         </div>
 
-        {/* Tabla de pagos */}
+        {/* Registros de pagos - Diseño de tarjetas */}
         <div className="border-t pt-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-gray-800">Registros de Pago ({factura.pagos?.length || 0})</h3>
@@ -258,94 +258,75 @@ const FacturasDetail = () => {
           </div>
 
           {factura.pagos && factura.pagos.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Fecha Pago
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Período Pago
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Monto Pagado
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Fecha Aplicacion
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Fecha Confirmación
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Fecha Indicador Recaudo
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Factura Interés
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      Interés Gravado IVA
-                    </th>
-                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {factura.pagos.map((pago) => (
-                    <tr key={pago.id} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {formatDate(pago.fecha_pago)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {formatMonthYearString(pago.periodo_pago)}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-semibold text-green-600">
-                        ${formatNumber(pago.monto_pagado)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {formatDate(pago.fecha_aplicacion || '-')}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {formatDate(pago.fecha_confirmacion || '-')}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {pago.observaciones || '-'}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {formatMonthYearString(pago.fecha_indicador_recaudo)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {pago.factura_interes ? 'Sí' : 'No'}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {pago.interes_gravado_iva ? 'Sí' : 'No'}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <div className="flex gap-2 justify-center">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => handleEditPago(pago)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={() => handleDeletePago(pago.id)}
-                          >
-                            Eliminar
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-4">
+              {factura.pagos.map((pago) => (
+                <div key={pago.id} className="bg-gray-200 rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <p className="font-semibold text-black-600">Fecha Pago</p>
+                      <p className="text-sm text-gray-900">{formatDate(pago.fecha_pago)}</p>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-black-600">Monto</p>
+                      <p className="text-2xl font-bold text-green-600">${formatNumber(pago.monto_pagado)}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div>
+                      <p className="font-semibold text-gray-600">Período Pago</p>
+                      <p className="text-sm font-medium">{formatMonthYearString(pago.periodo_pago)}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-600">Fecha Indicador Recaudo</p>
+                      <p className="text-sm">{pago.fecha_indicador_recaudo ? formatMonthYearString(pago.fecha_indicador_recaudo) : '-'}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-600">Fecha Aplicación</p>
+                      <p className="text-sm">{pago.fecha_aplicacion ? formatDate(pago.fecha_aplicacion) : '-'}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-600">Fecha Confirmación</p>
+                      <p className="text-sm">{pago.fecha_confirmacion ? formatDate(pago.fecha_confirmacion) : '-'}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div>
+                      <p className="font-semibold text-gray-600">Factura Interés</p>
+                      <p className="text-sm font-medium">{pago.factura_interes ? 'Sí' : 'No'}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-600">Interés Gravado IVA</p>
+                      <p className="text-sm font-medium">{pago.interes_gravado_iva ? 'Sí' : 'No'}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <p className="font-semibold text-gray-600">Observaciones</p>
+                      <p className="text-sm text-gray-700">{pago.observaciones || '-'}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 justify-end">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handleEditPago(pago)}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() => handleDeletePago(pago.id)}
+                    >
+                      Eliminar
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-4">No hay pagos registrados</p>
+            <p className="text-gray-500 text-center py-8">No hay pagos registrados</p>
           )}
         </div>
       </div>
