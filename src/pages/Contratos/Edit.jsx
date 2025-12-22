@@ -80,7 +80,7 @@ const ContratosEdit = () => {
       setLoading(true)
       const [contratoData, cableoperadoresData] = await Promise.all([
         contratosService.getById(id),
-        cableoperadoresService.getAllFull(),
+        cableoperadoresService.getAllAllPages(),
       ])
       //console.log('Datos del contrato cargado:', contratoData)
       
