@@ -8,7 +8,7 @@ import Button from '../../components/UI/Button'
 import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Loading from '../../components/UI/Loading'
-import { formatDate, formatNumber, formatMonthYear } from '../../utils/formatters'
+import { formatDate, formatNumber, formatMonthYear, formatDecimal, formatMonthYearString } from '../../utils/formatters'
 
 const FacturasByCableoperador = () => {
 	const { id } = useParams()
@@ -114,9 +114,9 @@ const FacturasByCableoperador = () => {
 	}
 
 	// Calcular totales
-	const totalFacturado = filteredFacturas.reduce((sum, f) => sum + (f.Valor_facturado_iva || 0), 0)
-	const totalPagado = filteredFacturas.reduce((sum, f) => sum + (f.monto_pagado || 0), 0)
-	const totalPendiente = filteredFacturas.reduce((sum, f) => sum + (f.monto_pendiente || 0), 0)
+	const totalFacturado = filteredFacturas.reduce((sum, f) => sum + (parseFloat(f.Valor_facturado_iva) || 0), 0)
+	const totalPagado = filteredFacturas.reduce((sum, f) => sum + (parseFloat(f.monto_pagado) || 0), 0)
+	const totalPendiente = filteredFacturas.reduce((sum, f) => sum + (parseFloat(f.monto_pendiente) || 0), 0)
 
 	return (
 		<div className="max-w-6xl mx-auto">
@@ -150,19 +150,19 @@ const FacturasByCableoperador = () => {
 					<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-blue-500">
 						<p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Facturado</p>
 						<p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-							${formatNumber(totalFacturado)}
+							${formatDecimal(totalFacturado)}
 						</p>
 					</div>
 					<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-green-500">
 						<p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Pagado</p>
 						<p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-							${formatNumber(totalPagado)}
+							${formatDecimal(totalPagado)}
 						</p>
 					</div>
 					<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-red-500">
 						<p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Pendiente</p>
 						<p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
-							${formatNumber(totalPendiente)}
+							${formatDecimal(totalPendiente)}
 						</p>
 					</div>
 				</div>
@@ -228,13 +228,7 @@ const FacturasByCableoperador = () => {
 										Aceptada
 									</th>
 									<th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-										CRC
-									</th>
-									<th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
 										Fecha Aplicación
-									</th>
-									<th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-										Fecha Confirmación
 									</th>
 									<th className="px-6 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
 										Acciones
@@ -248,16 +242,16 @@ const FacturasByCableoperador = () => {
 											{factura.Num_factura}
 										</td>
 									<td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-										{formatMonthYear(factura.Mes_uso)}
+										{formatMonthYearString(factura.Mes_uso)}
 									</td>
-										<td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 font-semibold">
-											${formatNumber(factura.Valor_facturado_iva)}
+									<td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 font-semibold">
+											${formatDecimal(factura.Valor_facturado_iva)}
 										</td>
 										<td className="px-6 py-4 text-sm text-green-600 dark:text-green-400 font-semibold">
-											${formatNumber(factura.monto_pagado)}
+											${formatDecimal(factura.monto_pagado)}
 										</td>
 										<td className="px-6 py-4 text-sm text-red-600 dark:text-red-400 font-semibold">
-											${formatNumber(factura.monto_pendiente)}
+											${formatDecimal(factura.monto_pendiente)}
 										</td>
 										<td className="px-6 py-4">
 											<span className={`px-3 py-1 rounded-full text-xs font-semibold ${getEstadoColor(factura.estado)}`}>
@@ -268,13 +262,7 @@ const FacturasByCableoperador = () => {
 											{factura.Factura_aceptada ? 'Sí' : 'No'}
 										</td>
 										<td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-											{factura.Factura_CRC ? 'Sí' : 'No'}
-										</td>
-										<td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
 											{factura.Fecha_aplicacion ? formatDate(factura.Fecha_aplicacion) : 'N/A'}
-										</td>
-										<td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-											{factura.Fecha_confirmacion ? formatDate(factura.Fecha_confirmacion) : 'N/A'}
 										</td>
 										<td className="px-6 py-4 text-center">
 											<div className="flex gap-2 justify-center">

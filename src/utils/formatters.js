@@ -39,7 +39,18 @@ export const formatNumber = (value) => {
   if (value === null || value === undefined) return '0'
   return new Intl.NumberFormat('es-CO').format(value)
 }
+// Formato decimal con dos decimales
+export const formatDecimal = (value) => {
+  if (value === null || value === undefined || value === '') return '0.00';
 
+  // Convertimos a número por si acaso viene como string
+  const number = parseFloat(value);
+
+  return new Intl.NumberFormat('es-CO', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
+};
 // Formatear teléfono
 export const formatPhone = (phone) => {
   if (!phone) return ''

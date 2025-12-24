@@ -73,7 +73,7 @@ const FacturasNew = () => {
         Mes_uso: convertMonthToDate(formData.Mes_uso),
         Fecha_facturacion: formData.Fecha_facturacion,
         Num_factura: formData.Num_factura,
-        Valor_facturado_iva: parseFloat(formData.Valor_facturado_iva) || 0,
+        Valor_facturado_iva: formData.Valor_facturado_iva || "0.00",
         Valor_iva_millones: parseFloat(formData.Valor_iva_millones) || 0,
         Fecha_vencimiento: formData.Fecha_vencimiento,
         Periodo_vencimiento: convertMonthToDate(formData.Periodo_vencimiento),

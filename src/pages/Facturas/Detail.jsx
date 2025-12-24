@@ -92,7 +92,7 @@ const FacturasDetail = () => {
       const dataToSend = {
         fecha_pago: pagoForm.fecha_pago,
         periodo_pago: convertMonthToDate(pagoForm.periodo_pago),
-        monto_pagado: parseFloat(pagoForm.monto_pagado),
+        monto_pagado: pagoForm.monto_pagado,
         observaciones: pagoForm.observaciones,
         facturacion: parseInt(id),
         ...(pagoForm.fecha_aplicacion && { fecha_aplicacion: pagoForm.fecha_aplicacion }),
