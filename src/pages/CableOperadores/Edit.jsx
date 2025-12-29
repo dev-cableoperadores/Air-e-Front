@@ -8,7 +8,7 @@ import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
 import Textarea from '../../components/UI/Textarea'
-import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION } from '../../utils/constants'
+import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION, PAISES, DEPARTAMENTOS_COLOMBIA, MUNICIPIOS_COLOMBIA } from '../../utils/constants'
 
 const CableOperadoresEdit = () => {
   const { id } = useParams()
@@ -16,6 +16,7 @@ const CableOperadoresEdit = () => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [selectedDepartamento, setSelectedDepartamento] = useState('')
   const [formData, setFormData] = useState({
     nombre: '',
     nombre_largo: '',
@@ -53,8 +54,11 @@ const CableOperadoresEdit = () => {
       // Eliminar el campo ejecutiva para no dejar un objeto dentro del form state
       delete cleaned.ejecutiva
 
+      setSelectedDepartamento(data.departamento || '')
       setFormData({
         ...cleaned,
+        pais: data.pais || 'Colombia',
+        departamento: data.departamento || '',
         NIT: data.NIT?.toString() || '',
         Digito_verificacion: data.Digito_verificacion?.toString() || '',
         RegistroTic: data.RegistroTic?.toString() || '',
@@ -73,7 +77,12 @@ const CableOperadoresEdit = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    if (name === 'departamento') {
+      setSelectedDepartamento(value)
+      setFormData({ ...formData, [name]: value, ciudad: '' }) // Reset municipio
+    } else {
+      setFormData({ ...formData, [name]: value })
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -156,29 +165,31 @@ const CableOperadoresEdit = () => {
             value={formData.CodigoInterno}
             onChange={handleChange}
           />
-          <Input
+          <Select
             label="País"
             name="pais"
             value={formData.pais}
             onChange={handleChange}
+            options={PAISES}
           />
-          <Input
-            label="Ciudad"
+          <Select
+            label="Departamento"
+            name="departamento"
+            value={formData.departamento}
+            onChange={handleChange}
+            options={DEPARTAMENTOS_COLOMBIA}
+          />
+          <Select
+            label="Municipio"
             name="ciudad"
             value={formData.ciudad}
             onChange={handleChange}
+            options={MUNICIPIOS_COLOMBIA[selectedDepartamento] || []}
           />
           <Input
             label="Dirección"
             name="direccion"
             value={formData.direccion}
-            onChange={handleChange}
-            className="md:col-span-2"
-          />
-          <Input
-            label="Departamento"
-            name="departamento"
-            value={formData.departamento}
             onChange={handleChange}
             className="md:col-span-2"
           />

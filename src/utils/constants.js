@@ -65,3 +65,233 @@ export const COLORS = {
   successHover: '#028a7a',
 }
 
+// Países
+export const PAISES = [
+  { value: 'Colombia', label: 'Colombia' }
+]
+
+// Departamentos de Colombia
+export const DEPARTAMENTOS_COLOMBIA = [
+  { value: 'Amazonas', label: 'Amazonas' },
+  { value: 'Antioquia', label: 'Antioquia' },
+  { value: 'Atlántico', label: 'Atlántico' },
+  { value: 'Arauca', label: 'Arauca' },
+  { value: 'Bogotá D.C.', label: 'Bogotá D.C.' },
+  { value: 'Bolívar', label: 'Bolívar' },
+  { value: 'Boyacá', label: 'Boyacá' },
+  { value: 'Caldas', label: 'Caldas' },
+  { value: 'Caquetá', label: 'Caquetá' },
+  { value: 'Casanare', label: 'Casanare' },
+  { value: 'Cauca', label: 'Cauca' },
+  { value: 'Cesar', label: 'Cesar' },
+  { value: 'Chocó', label: 'Chocó' },
+  { value: 'Córdoba', label: 'Córdoba' },
+  { value: 'Cundinamarca', label: 'Cundinamarca' },
+  { value: 'Guainía', label: 'Guainía' },
+  { value: 'Guaviare', label: 'Guaviare' },
+  { value: 'Huila', label: 'Huila' },
+  { value: 'La Guajira', label: 'La Guajira' },
+  { value: 'Magdalena', label: 'Magdalena' },
+  { value: 'Meta', label: 'Meta' },
+  { value: 'Nariño', label: 'Nariño' },
+  { value: 'Norte de Santander', label: 'Norte de Santander' },
+  { value: 'Putumayo', label: 'Putumayo' },
+  { value: 'Quindío', label: 'Quindío' },
+  { value: 'Risaralda', label: 'Risaralda' },
+  { value: 'San Andrés y Providencia', label: 'San Andrés y Providencia' },
+  { value: 'Santander', label: 'Santander' },
+  { value: 'Sucre', label: 'Sucre' },
+  { value: 'Tolima', label: 'Tolima' },
+  { value: 'Valle del Cauca', label: 'Valle del Cauca' },
+  { value: 'Vaupés', label: 'Vaupés' },
+  { value: 'Vichada', label: 'Vichada' },
+]
+
+// Municipios de Colombia por departamento (lista simplificada)
+export const MUNICIPIOS_COLOMBIA = {
+  'Amazonas': [
+    { value: 'Leticia', label: 'Leticia' },
+    { value: 'Puerto Nariño', label: 'Puerto Nariño' },
+  ],
+  'Antioquia': [
+    { value: 'Medellín', label: 'Medellín' },
+    { value: 'Envigado', label: 'Envigado' },
+    { value: 'Itagüí', label: 'Itagüí' },
+    { value: 'Bello', label: 'Bello' },
+    { value: 'Sabaneta', label: 'Sabaneta' },
+    { value: 'Rionegro', label: 'Rionegro' },
+    { value: 'Apartadó', label: 'Apartadó' },
+  ],
+  'Arauca': [
+    { value: 'Arauca', label: 'Arauca' },
+    { value: 'Arauquita', label: 'Arauquita' },
+    { value: 'Saravena', label: 'Saravena' },
+    { value: 'Tame', label: 'Tame' },
+  ],
+  'Atlántico': [
+    { value: 'Barranquilla', label: 'Barranquilla' },
+    { value: 'Soledad', label: 'Soledad' },
+    { value: 'Malambo', label: 'Malambo' },
+    { value: 'Baranoa', label: 'Baranoa' },
+    { value: 'Sabanalarga', label: 'Sabanalarga' },
+    { value: 'Santo Tomás', label: 'Santo Tomás' },
+    { value: 'Juan de Acosta', label: 'Juan de Acosta' },
+    { value: 'Sabanagrande', label: 'Sabanagrande' },
+    { value: 'Manatí', label: 'Manatí' },
+    { value: 'Ponedera', label: 'Ponedera' },
+    { value: 'Puerto Colombia', label: 'Puerto Colombia' },
+  ],
+  'Bolívar': [
+    { value: 'Cartagena', label: 'Cartagena' },
+    { value: 'Magangué', label: 'Magangué' },
+    { value: 'Turbaco', label: 'Turbaco' },
+  ],
+  'Boyacá': [
+    { value: 'Tunja', label: 'Tunja' },
+    { value: 'Duitama', label: 'Duitama' },
+    { value: 'Sogamoso', label: 'Sogamoso' },
+  ],
+  'Caldas': [
+    { value: 'Manizales', label: 'Manizales' },
+    { value: 'Villamaría', label: 'Villamaría' },
+    { value: 'La Dorada', label: 'La Dorada' },
+  ],
+  'Caquetá': [
+    { value: 'Florencia', label: 'Florencia' },
+    { value: 'San Vicente del Caguán', label: 'San Vicente del Caguán' },
+  ],
+  'Casanare': [
+    { value: 'Yopal', label: 'Yopal' },
+    { value: 'Aguazul', label: 'Aguazul' },
+  ],
+  'Cauca': [
+    { value: 'Popayán', label: 'Popayán' },
+    { value: 'Santander de Quilichao', label: 'Santander de Quilichao' },
+  ],
+  'Cesar': [
+    { value: 'Valledupar', label: 'Valledupar' },
+    { value: 'Aguachica', label: 'Aguachica' },
+    { value: 'Codazzi', label: 'Codazzi' },
+    { value: 'Astrea', label: 'Astrea' },
+    { value: 'El Copey', label: 'El Copey' },
+  ],
+  'Chocó': [
+    { value: 'Quibdó', label: 'Quibdó' },
+    { value: 'Istmina', label: 'Istmina' },
+  ],
+  'Córdoba': [
+    { value: 'Montería', label: 'Montería' },
+    { value: 'Cereté', label: 'Cereté' },
+    { value: 'Sahagún', label: 'Sahagún' },
+    { value: 'Montelibano', label: 'Montelibano' },
+  ],
+  'Cundinamarca': [
+    { value: 'Chía', label: 'Chía' },
+    { value: 'Zipaquirá', label: 'Zipaquirá' },
+    { value: 'Fusagasugá', label: 'Fusagasugá' },
+    { value: 'Soacha', label: 'Soacha' },
+    { value: 'Girardot', label: 'Girardot' },
+    { value: 'Facatativá', label: 'Facatativá' },
+    { value: 'Bogotá', label: 'Bogotá' },
+    { value: 'Funza', label: 'Funza' },
+    { value: 'Bojacá', label: 'Bojacá' },
+  ],
+  'Guainía': [
+    { value: 'Inírida', label: 'Inírida' },
+  ],
+  'Guaviare': [
+    { value: 'San José del Guaviare', label: 'San José del Guaviare' },
+  ],
+  'Huila': [
+    { value: 'Neiva', label: 'Neiva' },
+    { value: 'Pitalito', label: 'Pitalito' },
+    { value: 'Garzón', label: 'Garzón' },
+  ],
+  'La Guajira': [
+    { value: 'Riohacha', label: 'Riohacha' },
+    { value: 'Maicao', label: 'Maicao' },
+    { value: 'San Juan del Cesar', label: 'San Juan del Cesar' },
+    { value: 'Dibulla', label: 'Dibulla' },
+    { value: 'Albania', label: 'Albania' },
+    { value: 'Fonseca', label: 'Fonseca' },
+    { value: 'Hatonuevo', label: 'Hatonuevo' },
+    { value: 'Barrancas', label: 'Barrancas' },
+    { value: 'Manaure', label: 'Manaure' },
+    { value: 'Uribia', label: 'Uribia' },
+    { value: 'San Juan del Cesar', label: 'San Juan del Cesar' },
+    { value: 'Manaure', label: 'Manaure' },
+  ],
+  'Magdalena': [
+    { value: 'Santa Marta', label: 'Santa Marta' },
+    { value: 'Ciénaga', label: 'Ciénaga' },
+    { value: 'Fundación', label: 'Fundación' },
+    { value: 'Pueblo Viejo', label: 'Pueblo Viejo' },
+    { value: 'Zona Bananera', label: 'Zona Bananera' },
+    { value: 'Aracataca', label: 'Aracataca' },
+  ],
+  'Meta': [
+    { value: 'Villavicencio', label: 'Villavicencio' },
+    { value: 'Acacías', label: 'Acacías' },
+    { value: 'Granada', label: 'Granada' },
+  ],
+  'Nariño': [
+    { value: 'Pasto', label: 'Pasto' },
+    { value: 'Tumaco', label: 'Tumaco' },
+    { value: 'Ipiales', label: 'Ipiales' },
+  ],
+  'Norte de Santander': [
+    { value: 'Cúcuta', label: 'Cúcuta' },
+    { value: 'Ocaña', label: 'Ocaña' },
+    { value: 'Villa del Rosario', label: 'Villa del Rosario' },
+    { value: 'Pamplona', label: 'Pamplona' },
+  ],
+  'Putumayo': [
+    { value: 'Mocoa', label: 'Mocoa' },
+    { value: 'Puerto Asís', label: 'Puerto Asís' },
+  ],
+  'Quindío': [
+    { value: 'Armenia', label: 'Armenia' },
+    { value: 'Calarcá', label: 'Calarcá' },
+    { value: 'Quimbaya', label: 'Quimbaya' },
+  ],
+  'Risaralda': [
+    { value: 'Pereira', label: 'Pereira' },
+    { value: 'Dosquebradas', label: 'Dosquebradas' },
+    { value: 'Santa Rosa de Cabal', label: 'Santa Rosa de Cabal' },
+  ],
+  'San Andrés y Providencia': [
+    { value: 'San Andrés', label: 'San Andrés' },
+    { value: 'Providencia', label: 'Providencia' },
+  ],
+  'Santander': [
+    { value: 'Bucaramanga', label: 'Bucaramanga' },
+    { value: 'Floridablanca', label: 'Floridablanca' },
+    { value: 'Girón', label: 'Girón' },
+    { value: 'Piedecuesta', label: 'Piedecuesta' },
+    { value: 'Barrancabermeja', label: 'Barrancabermeja' },
+  ],
+  'Sucre': [
+    { value: 'Sincelejo', label: 'Sincelejo' },
+    { value: 'Corozal', label: 'Corozal' },
+  ],
+  'Tolima': [
+    { value: 'Ibagué', label: 'Ibagué' },
+    { value: 'Espinal', label: 'Espinal' },
+    { value: 'Melgar', label: 'Melgar' },
+  ],
+  'Valle del Cauca': [
+    { value: 'Cali', label: 'Cali' },
+    { value: 'Palmira', label: 'Palmira' },
+    { value: 'Buenaventura', label: 'Buenaventura' },
+    { value: 'Tuluá', label: 'Tuluá' },
+    { value: 'Buga', label: 'Buga' },
+    { value: 'Jamundí', label: 'Jamundí' },
+  ],
+  'Vaupés': [
+    { value: 'Mitú', label: 'Mitú' },
+  ],
+  'Vichada': [
+    { value: 'Puerto Carreño', label: 'Puerto Carreño' },
+  ],
+};
+

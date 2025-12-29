@@ -106,7 +106,7 @@ const CableOperadoresDetail = () => {
           <DetailField label="Registro TIC" value={cableoperador.RegistroTic || 'N/A'} />
           <DetailField label="Código Interno" value={cableoperador.CodigoInterno || 'N/A'} />
           <DetailField label="País" value={cableoperador.pais || 'N/A'} />
-          <DetailField label="Ciudad" value={cableoperador.ciudad || 'N/A'} />
+          <DetailField label="Municipio" value={cableoperador.ciudad || 'N/A'} />
           <DetailField label="Departamento" value={cableoperador.departamento || 'N/A'}  />
           <DetailField label="Dirección" value={cableoperador.direccion || 'N/A'}  />
           <DetailField label="Representante" value={cableoperador.Representante || 'N/A'} />

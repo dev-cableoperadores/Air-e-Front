@@ -7,12 +7,13 @@ import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Textarea from '../../components/UI/Textarea'
-import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION } from '../../utils/constants'
+import { ESTADOS_CABLEOPERADOR, RESPUESTA_PRELiquidACION, PAISES, DEPARTAMENTOS_COLOMBIA, MUNICIPIOS_COLOMBIA } from '../../utils/constants'
 
 const CableOperadoresNew = () => {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [selectedDepartamento, setSelectedDepartamento] = useState('')
   const [formData, setFormData] = useState({
     nombre: '',
     nombre_largo: '',
@@ -20,7 +21,8 @@ const CableOperadoresNew = () => {
     Digito_verificacion: '',
     RegistroTic: '',
     CodigoInterno: '',
-    pais: '',
+    pais: 'Colombia',
+    departamento: '',
     ciudad: '',
     direccion: '',
     Representante: '',
@@ -37,7 +39,12 @@ const CableOperadoresNew = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    if (name === 'departamento') {
+      setSelectedDepartamento(value)
+      setFormData({ ...formData, [name]: value, ciudad: '' }) // Reset municipio
+    } else {
+      setFormData({ ...formData, [name]: value })
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -77,7 +84,7 @@ const CableOperadoresNew = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Nuevo Cable-operador</h2>
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Nuevo Cableoperador</h2>
       <form onSubmit={handleSubmit} className="bg-blue-100 rounded-lg shadow-md p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
@@ -121,29 +128,32 @@ const CableOperadoresNew = () => {
             value={formData.CodigoInterno}
             onChange={handleChange}
           />
-          <Input
+          <Select
             label="País"
             name="pais"
             value={formData.pais}
             onChange={handleChange}
+            options={PAISES}
+            disabled
           />
-          <Input
-            label="Ciudad"
+          <Select
+            label="Departamento"
+            name="departamento"
+            value={formData.departamento}
+            onChange={handleChange}
+            options={DEPARTAMENTOS_COLOMBIA}
+          />
+          <Select
+            label="Municipio"
             name="ciudad"
             value={formData.ciudad}
             onChange={handleChange}
+            options={MUNICIPIOS_COLOMBIA[selectedDepartamento] || []}
           />
           <Input
             label="Dirección"
             name="direccion"
             value={formData.direccion}
-            onChange={handleChange}
-            className="md:col-span-2"
-          />
-          <Input
-            label="Departamento"
-            name="departamento"
-            value={formData.departamento}
             onChange={handleChange}
             className="md:col-span-2"
           />
