@@ -207,6 +207,7 @@ const FacturasEdit = () => {
               { value: 'PagadaParcial', label: 'Pago Parcial' },
               { value: 'Pagada', label: 'Pagada' },
               { value: 'Anulada', label: 'Anulada' },
+              { value: 'Acuerdo de pago', label: 'Acuerdo de pago' },
             ]}
           />
         </div>

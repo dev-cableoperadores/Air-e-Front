@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import facturasService from '../../services/facturasService'
+import acuerdoService from '../../services/acuerdoService'
 import Loading from '../../components/UI/Loading'
 import Button from '../../components/UI/Button'
 import Input from '../../components/UI/Input'
@@ -27,6 +28,16 @@ const FacturasDetail = () => {
   })
   const [savingPago, setSavingPago] = useState(false)
   const [editingPago, setEditingPago] = useState(null)
+  const [acuerdo, setAcuerdo] = useState(null)
+  const [showAcuerdoModal, setShowAcuerdoModal] = useState(false)
+  const [acuerdoForm, setAcuerdoForm] = useState({
+    fecha_acuerdo: new Date().toISOString().split('T')[0],
+    monto_acuerdo: '',
+    fecha_pago_acuerdo: '',
+    numero_cuotas: 1,
+    observaciones: '',
+  })
+  const [savingAcuerdo, setSavingAcuerdo] = useState(false)
 
   useEffect(() => {
     loadFactura()
@@ -37,6 +48,8 @@ const FacturasDetail = () => {
       setLoading(true)
       const data = await facturasService.getById(id)
       setFactura(data)
+      const acuerdoData = await acuerdoService.getByFactura(id)
+      setAcuerdo(acuerdoData)
     } catch (error) {
       toast.error('Error al cargar factura')
       navigate('/facturas')
@@ -165,6 +178,100 @@ const FacturasDetail = () => {
     }
   }
 
+  const handleAcuerdoChange = (e) => {
+    const { name, value } = e.target
+    setAcuerdoForm({ ...acuerdoForm, [name]: value })
+  }
+
+  const handleAddAcuerdo = async (e) => {
+    e.preventDefault()
+
+    if (!acuerdoForm.monto_acuerdo) {
+      toast.error('Ingresa el monto del acuerdo')
+      return
+    }
+
+    setSavingAcuerdo(true)
+
+    try {
+      const dataToSend = {
+        facturacion: parseInt(id),
+        fecha_acuerdo: acuerdoForm.fecha_acuerdo,
+        monto_acuerdo: acuerdoForm.monto_acuerdo,
+        numero_cuotas: acuerdoForm.numero_cuotas,
+        observaciones: acuerdoForm.observaciones,
+        ...(acuerdoForm.fecha_pago_acuerdo && { fecha_pago_acuerdo: acuerdoForm.fecha_pago_acuerdo }),
+      }
+
+      if (acuerdo) {
+        // Actualizar acuerdo existente
+        await acuerdoService.update(acuerdo.id, dataToSend)
+        toast.success('Acuerdo actualizado exitosamente')
+      } else {
+        // Crear nuevo acuerdo
+        await acuerdoService.create(dataToSend)
+        toast.success('Acuerdo registrado exitosamente')
+      }
+
+      setShowAcuerdoModal(false)
+      setAcuerdoForm({
+        fecha_acuerdo: new Date().toISOString().split('T')[0],
+        monto_acuerdo: '',
+        fecha_pago_acuerdo: '',
+        numero_cuotas: 1,
+        observaciones: '',
+      })
+      loadFactura()
+    } catch (error) {
+      const resp = error?.response
+      const serverData = resp?.data
+      let message = acuerdo ? 'Error al actualizar acuerdo' : 'Error al registrar acuerdo'
+      if (serverData) {
+        if (typeof serverData === 'string') {
+          message = serverData
+        } else if (serverData.detail) {
+          message = serverData.detail
+        } else {
+          try {
+            const parts = []
+            for (const [k, v] of Object.entries(serverData)) {
+              parts.push(`${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+            }
+            if (parts.length) message = parts.join(' | ')
+          } catch (e) {
+            message = JSON.stringify(serverData)
+          }
+        }
+      }
+      toast.error(message)
+    } finally {
+      setSavingAcuerdo(false)
+    }
+  }
+
+  const handleEditAcuerdo = () => {
+    setAcuerdoForm({
+      fecha_acuerdo: acuerdo.fecha_acuerdo,
+      monto_acuerdo: acuerdo.monto_acuerdo.toString(),
+      fecha_pago_acuerdo: acuerdo.fecha_pago_acuerdo || '',
+      numero_cuotas: acuerdo.numero_cuotas,
+      observaciones: acuerdo.observaciones || '',
+    })
+    setShowAcuerdoModal(true)
+  }
+
+  const handleDeleteAcuerdo = async () => {
+    if (window.confirm('¿Estás seguro de eliminar este acuerdo de pago?')) {
+      try {
+        await acuerdoService.delete(acuerdo.id)
+        toast.success('Acuerdo eliminado')
+        setAcuerdo(null)
+      } catch (error) {
+        toast.error('Error al eliminar acuerdo')
+      }
+    }
+  }
+
   if (loading) {
     return <Loading fullScreen />
   }
@@ -224,6 +331,7 @@ const FacturasDetail = () => {
           } />
           <DetailField label="Factura Aceptada" value={factura.Factura_aceptada ? 'Sí' : 'No'} />
           <DetailField label="Factura CRC" value={factura.Factura_CRC ? 'Sí' : 'No'} />
+          <DetailField label="Acuerdo de Pago" value={factura.acuerdo_pago ? 'Sí' : 'No'} />
         </div>
 
         {/* Resumen de pagos */}
@@ -327,6 +435,52 @@ const FacturasDetail = () => {
             </div>
           ) : (
             <p className="text-gray-500 text-center py-8">No hay pagos registrados</p>
+          )}
+        </div>
+
+        {/* Acuerdo de pago */}
+        <div className="border-t pt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-gray-800">Acuerdo de Pago</h3>
+            {acuerdo ? (
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={handleEditAcuerdo}
+                >
+                  Editar Acuerdo
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={handleDeleteAcuerdo}
+                >
+                  Eliminar Acuerdo
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => setShowAcuerdoModal(true)}
+              >
+                + Crear Acuerdo
+              </Button>
+            )}
+          </div>
+
+          {acuerdo ? (
+            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DetailField label="Fecha de Acuerdo" value={formatDate(acuerdo.fecha_acuerdo)} />
+                <DetailField label="Monto del Acuerdo" value={`$${formatNumber(acuerdo.monto_acuerdo)}`} />
+                <DetailField label="Fecha de Pago del Acuerdo" value={acuerdo.fecha_pago_acuerdo ? formatDate(acuerdo.fecha_pago_acuerdo) : '-'} />
+                <DetailField label="Número de Cuotas" value={acuerdo.numero_cuotas} />
+                <div className="md:col-span-2">
+                  <DetailField label="Observaciones" value={acuerdo.observaciones || '-'} />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-8">No hay acuerdo de pago registrado</p>
           )}
         </div>
       </div>
@@ -444,6 +598,84 @@ const FacturasDetail = () => {
               type="button"
               variant="outline"
               onClick={() => setShowPagoModal(false)}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal para registrar/editar acuerdo */}
+      <Modal
+        isOpen={showAcuerdoModal}
+        onClose={() => {
+          setShowAcuerdoModal(false)
+          setAcuerdoForm({
+            fecha_acuerdo: new Date().toISOString().split('T')[0],
+            monto_acuerdo: '',
+            fecha_pago_acuerdo: '',
+            numero_cuotas: 1,
+            observaciones: '',
+          })
+        }}
+        title={acuerdo ? "Editar Acuerdo de Pago" : "Crear Acuerdo de Pago"}
+      >
+        <form onSubmit={handleAddAcuerdo} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Fecha de Acuerdo"
+              name="fecha_acuerdo"
+              type="date"
+              value={acuerdoForm.fecha_acuerdo}
+              onChange={handleAcuerdoChange}
+              required
+            />
+            <Input
+              label="Monto del Acuerdo"
+              name="monto_acuerdo"
+              type="number"
+              step="0.01"
+              value={acuerdoForm.monto_acuerdo}
+              onChange={handleAcuerdoChange}
+              required
+            />
+            <Input
+              label="Fecha de Pago del Acuerdo"
+              name="fecha_pago_acuerdo"
+              type="date"
+              value={acuerdoForm.fecha_pago_acuerdo}
+              onChange={handleAcuerdoChange}
+            />
+            <Input
+              label="Número de Cuotas"
+              name="numero_cuotas"
+              type="number"
+              min="1"
+              value={acuerdoForm.numero_cuotas}
+              onChange={handleAcuerdoChange}
+              required
+            />
+          </div>
+          <Input
+            label="Observaciones"
+            name="observaciones"
+            type="textarea"
+            value={acuerdoForm.observaciones}
+            onChange={handleAcuerdoChange}
+            placeholder="Observaciones del acuerdo"
+          />
+          <div className="flex gap-2">
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={savingAcuerdo}
+            >
+              {savingAcuerdo ? 'Guardando...' : (acuerdo ? 'Actualizar Acuerdo' : 'Crear Acuerdo')}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowAcuerdoModal(false)}
             >
               Cancelar
             </Button>
