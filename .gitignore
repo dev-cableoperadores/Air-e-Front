@@ -26,3 +26,4 @@ Air-e_api/*.pyc
 *.sln
 *.sw?
 
+.env
