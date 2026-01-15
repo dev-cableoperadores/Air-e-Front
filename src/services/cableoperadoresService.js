@@ -5,6 +5,12 @@ const CABLEOPERADORES_CACHE_KEY = 'cableoperadores_list_cache';
 const CACHE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutos en milisegundos
 const PAGE_SIZE = 50; // Tamaño de página por defecto
 
+// Función auxiliar para limpiar el caché
+const clearCache = () => {
+  localStorage.removeItem(CABLEOPERADORES_CACHE_KEY);
+  console.log('CABLEOPERADORES: Caché limpiado.');
+};
+
 const cableoperadoresService = {
   // Devuelve la respuesta completa (útil para leer count, next, previous)
   // Transforma page -> desplazamiento (offset)
@@ -95,6 +101,7 @@ const cableoperadoresService = {
   create: async (data) => {
     try {
         const response = await api.post('/api/cableoperadores/list/', data)
+        clearCache(); // Limpiar caché después de crear
         return response.data
     } catch (error) {
         // 🚨 Verificar si el error contiene la data de validación de DRF (e.g., 400)
@@ -112,13 +119,13 @@ const cableoperadoresService = {
 
   update: async (id, data) => {
     const response = await api.put(`/api/cableoperadores/detail/${id}/`, data)
-    // 💡 Puedes agregar aquí cache.delete_pattern() si usas cache de BE
+    clearCache(); // Limpiar caché después de actualizar
     return response.data
   },
 
   delete: async (id) => {
     const response = await api.delete(`/api/cableoperadores/detail/${id}/`)
-    // 💡 Puedes agregar aquí cache.delete_pattern() si usas cache de BE
+    clearCache(); // Limpiar caché después de eliminar
     return response.data
   },
   // trae todas las notificaciones de un cableoperador
@@ -132,6 +139,9 @@ const cableoperadoresService = {
     
     return response.data
   },
+  
+  // Función pública para limpiar el caché manualmente
+  clearCache: clearCache,
 }
 
 export default cableoperadoresService
