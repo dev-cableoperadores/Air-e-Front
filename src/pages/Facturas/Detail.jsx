@@ -72,7 +72,14 @@ const FacturasDetail = () => {
 
   const handlePagoChange = (e) => {
     const { name, value } = e.target
-    setPagoForm({ ...pagoForm, [name]: value })
+    const updatedForm = { ...pagoForm, [name]: value }
+    
+    // Si cambia la fecha_pago, establecer automáticamente el periodo_pago
+    if (name === 'fecha_pago' && value) {
+      updatedForm.periodo_pago = convertDateToMonth(value)
+    }
+    
+    setPagoForm(updatedForm)
   }
 
   const handleEditPago = (pago) => {
