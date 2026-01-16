@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import cableoperadoresService from '../../services/cableoperadoresService'
@@ -15,6 +15,8 @@ const APPS_SCRIPT_URL = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL ||
 const CableOperadoresDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const formRef = useRef(null)
+  const historialRef = useRef(null)
   const [loading, setLoading] = useState(true)
   const [cableoperador, setCableoperador] = useState(null)
   const [notificaciones, setNotificaciones] = useState({
@@ -25,6 +27,7 @@ const CableOperadoresDetail = () => {
   })
   const [archivosSeleccionados, setArchivosSeleccionados] = useState([])
   const [enviandoNotificacion, setEnviandoNotificacion] = useState(false)
+  const [resetKey, setResetKey] = useState(0)
 
   useEffect(() => {
     loadCableoperador()
@@ -132,7 +135,7 @@ const CableOperadoresDetail = () => {
     {/* Formulario para agregar notificación */}
     <div className="border-b pb-4 mb-4">
       <h3 className="text-xl font-bold text-gray-800 mb-4">Nueva Notificación</h3>
-      <form onSubmit={async (e) => {
+      <form ref={formRef} onSubmit={async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         
@@ -193,8 +196,18 @@ const CableOperadoresDetail = () => {
           // Recargar notificaciones
           const responseData = await cableoperadoresService.getNotificaciones(id);
           setNotificaciones(responseData);
+          
+          // Limpiar formulario completamente
           setArchivosSeleccionados([]);
-          e.target.reset();
+          setResetKey(prev => prev + 1); // Fuerza re-render del FileUploadWithDrive
+          if (formRef.current) {
+            formRef.current.reset();
+          }
+          
+          // Hacer scroll al historial
+          setTimeout(() => {
+            historialRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
         } catch (error) {
             const resp = error?.response;
             console.error('Error creando notificación', resp || error);
@@ -251,6 +264,7 @@ const CableOperadoresDetail = () => {
 
         {/* Upload de archivos */}
         <FileUploadWithDrive
+          key={resetKey}
           onFilesSelect={setArchivosSeleccionados}
           acceptedTypes="image/*,application/pdf"
         />
@@ -262,51 +276,75 @@ const CableOperadoresDetail = () => {
     </div>
 
     {/* Lista de notificaciones */}
-    <h3 className="text-xl font-bold text-gray-800 border-b pb-2">Historial de Notificaciones ({notificaciones.count})</h3>
-    {notificaciones.count === 0 ? (
-      <p className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">No hay notificaciones registradas para este cableoperador.</p>
-    ) : (
-      <div className="space-y-4">
-          {notificaciones.results.map(notificacion => (
-            <div key={notificacion.id} className="border p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
-              <div className="flex justify-between items-start mb-2">
-                <p className="text-lg font-semibold text-primary">
-                  {TIPO_CHOICES.find(tipo => tipo.value === notificacion.tipo_notificacion)?.label || notificacion.tipo_notificacion}
-                </p>
-                <p className="text-xs text-gray-500">
-                  📅 {formatDate(notificacion.fecha)}
-                </p>
-              </div>
-              
-              {/* Mostrar archivos */}
-              {Array.isArray(notificacion.ruta) && notificacion.ruta.length > 0 && (
-                <div className="mt-3 pt-3 border-t">
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    📎 Archivos ({notificacion.ruta.length}):
+    <div ref={historialRef}>
+      <h3 className="text-xl font-bold text-gray-800 border-b pb-2">Historial de Notificaciones ({notificaciones.count})</h3>
+      {notificaciones.count === 0 ? (
+        <p className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">No hay notificaciones registradas para este cableoperador.</p>
+      ) : (
+        <div className="space-y-4 mt-4">
+            {notificaciones.results.map(notificacion => (
+              <div key={notificacion.id} className="border p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
+                <div className="flex justify-between items-start mb-3">
+                  <p className="text-lg font-semibold text-primary">
+                    {TIPO_CHOICES.find(tipo => tipo.value === notificacion.tipo_notificacion)?.label || notificacion.tipo_notificacion}
                   </p>
-                  <div className="space-y-2">
-                    {notificacion.ruta.map((archivo, idx) => (
-                      <div key={archivo.id || idx} className="flex items-center justify-between bg-white p-2 rounded text-sm">
-                        <a 
-                          href={archivo.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline truncate"
-                        >
-                          {archivo.nombre}
-                        </a>
-                        <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
-                          {formatBytes(archivo.tamaño)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  <p className="text-xs text-gray-500">
+                    📅 {formatDate(notificacion.fecha)}
+                  </p>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-    )}
+                
+                {/* Mostrar archivos con vista previa */}
+                {Array.isArray(notificacion.ruta) && notificacion.ruta.length > 0 && (
+                  <div className="mt-4 pt-4 border-t">
+                    <p className="text-sm font-medium text-gray-700 mb-3">
+                      📎 Archivos adjuntos ({notificacion.ruta.length}):
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {notificacion.ruta.map((archivo, idx) => (
+                        <div key={archivo.id || idx} className="bg-white p-3 rounded border border-gray-200 hover:border-blue-400 transition">
+                          <div className="flex items-start gap-2">
+                            {/* Icono del tipo de archivo */}
+                            <span className="text-2xl flex-shrink-0 mt-1">
+                              {archivo.tipo.startsWith('image/') ? '🖼️' : archivo.tipo === 'application/pdf' ? '📄' : '📎'}
+                            </span>
+                            
+                            {/* Info del archivo */}
+                            <div className="flex-1 min-w-0">
+                              <a 
+                                href={archivo.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate"
+                              >
+                                {archivo.nombre}
+                              </a>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {formatBytes(archivo.tamaño)}
+                                {archivo.fechaSubida && ` • ${formatDate(archivo.fechaSubida)}`}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          {/* Vista previa para imágenes */}
+                          {archivo.tipo.startsWith('image/') && (
+                            <div className="mt-2 rounded overflow-hidden">
+                              <img 
+                                src={archivo.url} 
+                                alt={archivo.nombre}
+                                className="w-full h-40 object-cover hover:opacity-90 transition"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+      )}
+    </div>
   </div>
 </div>
   )
