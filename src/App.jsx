@@ -8,6 +8,7 @@ import CableOperadoresList from './pages/CableOperadores/List'
 import CableOperadoresNew from './pages/CableOperadores/New'
 import CableOperadoresEdit from './pages/CableOperadores/Edit'
 import CableOperadoresDetail from './pages/CableOperadores/Detail'
+import Postes from './pages/CableOperadores/Postes'
 import ContratosList from './pages/Contratos/List'
 import ContratosNew from './pages/Contratos/New'
 import ContratosEdit from './pages/Contratos/Edit'
@@ -79,6 +80,27 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <CableOperadoresDetail />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          {/* Ruta para los postes de cableoperadores */}
+          <Route
+            path="/postes"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Postes />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/postes/cableoperador/:cableoperadorId"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Postes />
                 </MainLayout>
               </ProtectedRoute>
             }
