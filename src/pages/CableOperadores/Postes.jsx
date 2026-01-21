@@ -146,7 +146,14 @@ function Postes() {
                       <strong>Observaciones:</strong> {poste.observaciones} <br />
                     </>
                   )}
-                  <strong>Coordenadas:</strong> {poste.coordenada_x}, {poste.coordenada_y}
+                  <strong>Coordenadas:</strong> {poste.coordenada_y}, {poste.coordenada_x}
+                  {/* Modal para editar poste */}
+                  <div className="mt-2">
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(`/postes/${poste.id}/editar`)}
+                    >Editar Poste</Button>
+                  </div>
                 </div>
               </Popup>
             </Marker>

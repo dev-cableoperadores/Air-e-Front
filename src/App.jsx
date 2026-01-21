@@ -9,6 +9,7 @@ import CableOperadoresNew from './pages/CableOperadores/New'
 import CableOperadoresEdit from './pages/CableOperadores/Edit'
 import CableOperadoresDetail from './pages/CableOperadores/Detail'
 import Postes from './pages/CableOperadores/Postes'
+import PostesEdit from './pages/CableOperadores/PostesEdit'
 import ContratosList from './pages/Contratos/List'
 import ContratosNew from './pages/Contratos/New'
 import ContratosEdit from './pages/Contratos/Edit'
@@ -105,6 +106,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/postes/:id/editar"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <PostesEdit />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          {/* Rutas para contratos */}
           <Route
             path="/contratos"
             element={

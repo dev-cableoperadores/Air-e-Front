@@ -295,3 +295,51 @@ export const MUNICIPIOS_COLOMBIA = {
   ],
 };
 
+// Constantes para Postes
+export const MATERIALES_POSTE = [
+  { value: 'Madera', label: 'Madera' },
+  { value: 'Concreto', label: 'Concreto' },
+  { value: 'Metalico', label: 'Metálico' },
+  { value: 'Prefabricado', label: 'Prefabricado' },
+  { value: 'Fibra', label: 'Fibra' },
+];
+
+export const TIPO_POSTE = [
+  { value: 'BT', label: 'BT' },
+  { value: 'MT', label: 'MT' },
+  { value: 'MT-BT', label: 'MT-BT' },
+  { value: 'torre_str', label: 'Torre STR' },
+  { value: 'sin_identificar', label: 'Sin Identificar' },
+];
+
+export const DEPARTAMENTOS_POSTES = [
+  { value: 'atlantico', label: 'ATLÁNTICO' },
+  { value: 'magdalena', label: 'MAGDALENA' },
+  { value: 'la_guajira', label: 'LA GUAJIRA' },
+];
+
+export const FUENTE_USOS = [
+  { value: 'Contrato', label: 'Contrato' },
+  { value: 'Legalizacion', label: 'Legalización' },
+  { value: 'Viabilidad', label: 'Viabilidad' },
+];
+
+export const TIPO_COORDENADA = [
+  { value: 'Real', label: 'Real' },
+  { value: 'Ficticio', label: 'Ficticio' },
+];
+
+export const TIPO_ELEMENTO = [
+  { value: 'Cable', label: 'Cable' },
+  { value: 'Caja_empalme', label: 'Caja empalme' },
+  { value: 'Nap', label: 'NAP' },
+  { value: 'Reserva', label: 'Reserva' },
+  { value: 'Cruce_americano', label: 'Cruce americano' },
+  { value: 'Gabinete', label: 'Gabinete' },
+  { value: 'Fuentes', label: 'Fuentes' },
+  { value: 'Antena', label: 'Antena' },
+  { value: 'Antena_bts', label: 'Antena BTS' },
+  { value: 'Bajante', label: 'Bajante' },
+  { value: 'brazo_extensor', label: 'Brazo extensor' },
+];
+
