@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents  } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import postesService from '../../services/postesService'
@@ -16,6 +16,16 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
+function ClickHandler({ setExtraMarker }) {
+  useMapEvents({
+    click(e) {
+      setExtraMarker([e.latlng.lat, e.latlng.lng])
+    },
+  })
+  return null
+}
+
+
 function Postes() {
   const { cableoperadorId } = useParams()
   const navigate = useNavigate()
@@ -24,6 +34,7 @@ function Postes() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [center, setCenter] = useState([10.3932, -75.4898]) // Centro de Colombia (Atlántico)
+  const [extraMarker, setExtraMarker] = useState(null)
 
   useEffect(() => {
     loadPostes()
@@ -89,7 +100,37 @@ function Postes() {
       </div>
     )
   }
+  function AddMarkerForm({ setExtraMarker }) {
+  const [lat, setLat] = useState('')
+  const [lng, setLng] = useState('')
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!isNaN(lat) && !isNaN(lng)) {
+      setExtraMarker([parseFloat(lat), parseFloat(lng)])
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+      <input 
+        type="text" 
+        placeholder="Latitud" 
+        value={lat} 
+        onChange={e => setLat(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <input 
+        type="text" 
+        placeholder="Longitud" 
+        value={lng} 
+        onChange={e => setLng(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <Button type="submit">Agregar marcador</Button>
+    </form>
+  )
+}
   return (
     <div className="w-full h-full">
       <div className="bg-white p-4 shadow rounded-lg mb-4">
@@ -110,20 +151,16 @@ function Postes() {
           )}
         </div>
       </div>
-
+          <AddMarkerForm setExtraMarker={setExtraMarker} />
       <div className="rounded-lg overflow-hidden shadow">
-        <MapContainer
-          center={center}
-          zoom={9}
-          style={{ height: 'calc(100vh - 200px)', width: '100%' }}
-        >
-          {/* Capa visual del mapa (OpenStreetMap) */}
+        <MapContainer center={center} zoom={9} style={{ height: 'calc(100vh - 200px)', width: '100%' }}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {/* Mapeo de los puntos sobre el mapa */}
+          <ClickHandler setExtraMarker={setExtraMarker} />
+
           {postes.map(poste => (
             <Marker
               key={poste.id}
@@ -146,12 +183,25 @@ function Postes() {
                       <strong>Observaciones:</strong> {poste.observaciones} <br />
                     </>
                   )}
-                  <strong>Coordenadas:</strong> {poste.coordenada_x}, {poste.coordenada_y}
+                  <strong>Coordenadas:</strong> {poste.coordenada_y}, {poste.coordenada_x}
                 </div>
               </Popup>
             </Marker>
           ))}
+
+          {extraMarker && (
+            <Marker position={extraMarker}>
+              <Popup className="w-64">
+                <div className="text-sm">
+                  <strong>Marcador personalizado</strong><br />
+                  <strong>Coordenadas:</strong> {extraMarker[1]}, {extraMarker[0]}<br />
+                  <em>Haz clic en un poste existente para ver su información completa</em>
+                </div>
+              </Popup>
+            </Marker>
+          )}
         </MapContainer>
+              
       </div>
     </div>
   )
