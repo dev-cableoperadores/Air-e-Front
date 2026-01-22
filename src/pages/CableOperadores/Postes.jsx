@@ -184,6 +184,13 @@ function Postes() {
                     </>
                   )}
                   <strong>Coordenadas:</strong> {poste.coordenada_y}, {poste.coordenada_x}
+                  {/* Modal para editar poste */}
+                  <div className="mt-2">
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(`/postes/${poste.id}/editar`)}
+                    >Editar Poste</Button>
+                  </div>
                 </div>
               </Popup>
             </Marker>
@@ -194,7 +201,7 @@ function Postes() {
               <Popup className="w-64">
                 <div className="text-sm">
                   <strong>Marcador personalizado</strong><br />
-                  <strong>Coordenadas:</strong> {extraMarker[1]}, {extraMarker[0]}<br />
+                  <strong>Coordenadas:</strong> {extraMarker[0]}, {extraMarker[1]}<br />
                   <em>Haz clic en un poste existente para ver su información completa</em>
                 </div>
               </Popup>
