@@ -186,10 +186,17 @@ function Postes() {
                   <strong>Coordenadas:</strong> {poste.coordenada_y}, {poste.coordenada_x}
                   {/* Modal para editar poste */}
                   <div className="mt-2">
-                    <Button
-                      size="sm"
-                      onClick={() => navigate(`/postes/${poste.id}/editar`)}
-                    >Editar Poste</Button>
+                      {cableoperadorId ? (
+                      <Button
+                        size="sm"
+                        onClick={() => navigate(`/postes/cableoperador/${cableoperadorId}/${poste.id}/editar`)}
+                      >Editar Poste</Button>
+                      ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => navigate(`/postes/${poste.id}/editar`)}
+                      >Editar Poste</Button>
+                      )}
                   </div>
                 </div>
               </Popup>

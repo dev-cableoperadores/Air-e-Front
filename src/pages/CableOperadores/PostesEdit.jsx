@@ -18,7 +18,7 @@ import {
 } from '../../utils/constants'
 
 const PostesEdit = () => {
-  const { id } = useParams()
+  const { id, cableoperadorId } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -49,7 +49,7 @@ const PostesEdit = () => {
   useEffect(() => {
     loadData()
   }, [id])
-
+  let urlid
   const loadData = async () => {
     try {
       setLoading(true)
@@ -69,7 +69,7 @@ const PostesEdit = () => {
 
       // Mapear cableoperador a ID si es un objeto
       const cableoperadorId = posteData.cableoperador?.id || posteData.cableoperador || ''
-
+      urlid = cableoperadorId
       setFormData({
         object_id: posteData.object_id?.toString() || '',
         shape: posteData.shape || '',
@@ -384,14 +384,25 @@ const PostesEdit = () => {
 
         {/* Botones de acción */}
         <div className="flex gap-4 justify-end pt-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate('/postes')}
-            disabled={saving}
-          >
-            Cancelar
-          </Button>
+          {cableoperadorId ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(`/postes/cableoperador/${cableoperadorId}`)}
+              disabled={saving}
+            >
+              Cancelar
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(`/postes`)}
+              disabled={saving}
+            >
+              Cancelar
+            </Button>
+          )}
           <Button
             type="submit"
             disabled={saving}

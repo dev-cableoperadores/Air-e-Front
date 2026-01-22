@@ -107,6 +107,16 @@ function App() {
             }
           />
           <Route
+            path="/postes/cableoperador/:cableoperadorId/:id/editar"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <PostesEdit />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/postes/:id/editar"
             element={
               <ProtectedRoute>
