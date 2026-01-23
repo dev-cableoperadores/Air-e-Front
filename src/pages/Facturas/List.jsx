@@ -109,22 +109,22 @@ const FacturasList = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Facturas</h2>
-        <Button onClick={() => navigate('/facturas/nueva')} variant="primary">
-          Nueva Factura
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Facturas</h2>
+        <Button onClick={() => navigate('/facturas/nueva')} variant="primary" className="w-full sm:w-auto">
+          ➕ Nueva
         </Button>
       </div>
 
       {/* Filtros */}
-      <div className="bg-blue-100 rounded-lg shadow-md p-4 mb-6">
-        <div className="bg-black-100 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <Input
-            label="Buscar por Número de Factura o CableOperador"
+            label="Buscar"
             name="search"
             type="text"
-            placeholder="Número de factura..."
+            placeholder="Nº factura..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -151,94 +151,77 @@ const FacturasList = () => {
       </div>
 
       {/* Tabla de facturas */}
-      <div className="bg-blue-100 rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         {facturas.length === 0 ? (
-          <div className="p-6 text-center text-black-100">
-            No hay facturas registradas
+          <div className="p-8 sm:p-12 text-center">
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">No hay facturas registradas</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b">
+            <table className="w-full text-xs sm:text-sm divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Nº Factura
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Cableoperador
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Fecha Facturación
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden sm:table-cell">
+                    Fecha
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Valor Facturado
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden md:table-cell">
+                    Valor
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Monto Pagado
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden lg:table-cell">
+                    Pagado
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Monto Pendiente
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                    Pendiente
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Estado
                   </th>
-                  {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Aceptada
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    CRC
-                  </th> */}
-                  {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Fecha Confirmación
-                  </th> */}
-                  <th className="px-6 py-3 text-center text-sm font-semibold text-gray-900">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-center font-semibold text-gray-900 dark:text-gray-100">
                     Acciones
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {facturas.map((factura) => (
-                  <tr key={factura.id} className="border-b hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
+                  <tr key={factura.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-900 dark:text-gray-100 truncate">
                       {factura.Num_factura}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 truncate">
                       {typeof factura.cableoperador === 'string'
                         ? factura.cableoperador
                         : (factura.cableoperador?.nombre || factura.cableoperador?.nombre_largo || 'N/A')}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell">
                       {formatMonthYear(factura.Mes_uso)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-900 dark:text-gray-100 hidden md:table-cell">
                       ${formatNumber(factura.Valor_facturado_iva)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-green-600 font-semibold">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-green-600 dark:text-green-400 hidden lg:table-cell">
                       ${formatNumber(factura.monto_pagado)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-red-600 font-semibold">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-red-600 dark:text-red-400 hidden xl:table-cell">
                       ${formatNumber(factura.monto_pendiente)}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getEstadoColor(factura.estado)}`}>
+                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold inline-block ${getEstadoColor(factura.estado)} dark:bg-opacity-20`}>
                         {factura.estado}
                       </span>
                     </td>
-                    {/* <td className="px-6 py-4 text-sm text-gray-700">
-                      {factura.Factura_aceptada ? 'Sí' : 'No'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {factura.Factura_CRC ? 'Sí' : 'No'}
-                    </td> */}
-                    {/* <td className="px-6 py-4 text-sm text-gray-700">
-                      {factura.Fecha_confirmacion ? formatDate(factura.Fecha_confirmacion) : 'N/A'}
-                    </td> */}
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex gap-2 justify-center">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-center">
+                      <div className="flex gap-1 flex-col sm:flex-row justify-center">
                         <Button
                           size="sm"
                           variant="secondary"
                           onClick={() => navigate(`/facturas/${factura.id}`)}
+                          className="text-xs w-full sm:w-auto"
                         >
                           Ver
                         </Button>
@@ -246,10 +229,10 @@ const FacturasList = () => {
                           size="sm"
                           variant="primary"
                           onClick={() => navigate(`/facturas/${factura.id}/editar`)}
+                          className="text-xs w-full sm:w-auto"
                         >
                           Editar
                         </Button>
-                        
                       </div>
                     </td>
                   </tr>
@@ -262,35 +245,43 @@ const FacturasList = () => {
 
       {/* Paginación */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
+        <div className="flex flex-wrap justify-center gap-1 sm:gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button
             variant="outline"
+            size="sm"
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
+            className="text-xs"
           >
             Primera
           </Button>
           <Button
             variant="outline"
+            size="sm"
             onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
             disabled={!pagination.previous}
+            className="text-xs"
           >
             Anterior
           </Button>
-          <span className="px-4 py-2 text-gray-700">
-            Página {currentPage} de {totalPages}
+          <span className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+            {currentPage} de {totalPages}
           </span>
           <Button
             variant="outline"
+            size="sm"
             onClick={() => setCurrentPage(p => p + 1)}
             disabled={!pagination.next}
+            className="text-xs"
           >
             Siguiente
           </Button>
           <Button
             variant="outline"
+            size="sm"
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
+            className="text-xs"
           >
             Última
           </Button>

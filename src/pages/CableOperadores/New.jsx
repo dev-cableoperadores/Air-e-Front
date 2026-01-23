@@ -83,10 +83,10 @@ const CableOperadoresNew = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Nuevo Cableoperador</h2>
-      <form onSubmit={handleSubmit} className="bg-blue-100 rounded-lg shadow-md p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">Nuevo Cableoperador</h2>
+      <form onSubmit={handleSubmit} className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <Input
             label="Nombre"
             name="nombre"

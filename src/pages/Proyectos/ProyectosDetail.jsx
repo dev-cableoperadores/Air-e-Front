@@ -29,30 +29,30 @@ const ProyectosDetail = () => {
   if (loading || !item) return <Loading fullScreen />
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">Proyecto {item.datos_ingreso?.OT_AIRE || item.id || ''}</h2>
-        <div className="flex gap-2">
-          <Button variant="primary" onClick={() => navigate(`/proyectos/${item.datos_ingreso?.OT_AIRE || item.id}/editar`)}>Editar</Button>
-          <Button variant="outline" onClick={() => navigate('/proyectos')}>Volver</Button>
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-2 sm:px-0">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Proyecto {item.datos_ingreso?.OT_AIRE || item.id || ''}</h2>
+        <div className="flex gap-2 w-full sm:w-auto flex-col sm:flex-row">
+          <Button variant="primary" onClick={() => navigate(`/proyectos/${item.datos_ingreso?.OT_AIRE || item.id}/editar`)} className="w-full sm:w-auto text-xs sm:text-sm">Editar</Button>
+          <Button variant="outline" onClick={() => navigate('/proyectos')} className="w-full sm:w-auto text-xs sm:text-sm">Volver</Button>
         </div>
       </div>
 
-      <div className="bg-white rounded shadow p-4 space-y-3">
-        <p><strong>Ingreso (OT_AIRE):</strong> {item.datos_ingreso?.OT_AIRE}</p>
-        <p><strong>Nombre proyecto:</strong> {item.datos_ingreso?.nombre}</p>
-        <p><strong>Inspector responsable:</strong> {item.inspector_responsable?.user.username || item.inspector_responsable}</p>
-        <p><strong>Fecha inspección:</strong> {item.fecha_inspeccion ? formatDate(item.fecha_inspeccion) : ''}</p>
-        <p><strong>Fecha análisis inspección:</strong> {item.fecha_analisis_inspeccion ? formatDate(item.fecha_analisis_inspeccion) : ''}</p>
-        <p><strong>Estado inicial:</strong> {item.estado_inicial === 'gestionar_escritorio' ? 'Gestion desde Escritorio' : 'Gestion en sitio'}</p>
-        <p><strong>Fecha de entrega:</strong> {item.fecha_entrega_pj ? formatDate(item.fecha_entrega_pj) : ''}</p>
-        <p><strong>Fecha de notificacion a PRST:</strong> {item.fecha_notificacion_prst ? formatDate(item.fecha_notificacion_prst) : ''}</p>
-        <p><strong>Estado actual:</strong> {item.estado_actual}</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 mx-2 sm:mx-0">
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Ingreso (OT_AIRE):</strong> <span className="text-gray-600 dark:text-gray-400">{item.datos_ingreso?.OT_AIRE}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Nombre proyecto:</strong> <span className="text-gray-600 dark:text-gray-400">{item.datos_ingreso?.nombre}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Inspector responsable:</strong> <span className="text-gray-600 dark:text-gray-400">{item.inspector_responsable?.user.username || item.inspector_responsable}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Fecha inspección:</strong> <span className="text-gray-600 dark:text-gray-400">{item.fecha_inspeccion ? formatDate(item.fecha_inspeccion) : ''}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Fecha análisis inspección:</strong> <span className="text-gray-600 dark:text-gray-400">{item.fecha_analisis_inspeccion ? formatDate(item.fecha_analisis_inspeccion) : ''}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Estado inicial:</strong> <span className="text-gray-600 dark:text-gray-400">{item.estado_inicial === 'gestionar_escritorio' ? 'Gestion desde Escritorio' : 'Gestion en sitio'}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Fecha de entrega:</strong> <span className="text-gray-600 dark:text-gray-400">{item.fecha_entrega_pj ? formatDate(item.fecha_entrega_pj) : ''}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Fecha de notificacion a PRST:</strong> <span className="text-gray-600 dark:text-gray-400">{item.fecha_notificacion_prst ? formatDate(item.fecha_notificacion_prst) : ''}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Estado actual:</strong> <span className="text-gray-600 dark:text-gray-400">{item.estado_actual}</span></p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mt-4 sm:mt-6">
           {/* Cables */}
-          <div className="bg-white p-4 rounded-lg shadow-md border border-gray-100">
-            <h4 className="font-bold text-lg text-indigo-700 border-b pb-2 mb-3">Cables</h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-3 sm:p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+            <h4 className="font-bold text-sm sm:text-base text-blue-900 dark:text-blue-300 border-b border-blue-300 dark:border-blue-600 pb-2 mb-3">Cables</h4>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {/* 1. Filtramos las claves que empiezan por 'tip' para ignorar 'proyecto'
               2. Iteramos y desestructuramos [k, v]
             */}

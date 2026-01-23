@@ -83,33 +83,33 @@ const ContratosDetail = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-black-800">Detalle Contrato</h2>
-        <div className="flex gap-2">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Detalle Contrato</h2>
+        <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
           <Link to={`/contratos/${id}/editar`}>
-            <Button variant="secondary">Editar contrato</Button>
+            <Button variant="secondary" className="w-full sm:w-auto text-xs sm:text-sm">✏️ Editar</Button>
           </Link>
-          <Button variant="danger" onClick={handleDelete}>
-            Eliminar
+          <Button variant="danger" onClick={handleDelete} className="w-full sm:w-auto text-xs sm:text-sm">
+            🗑️ Eliminar
           </Button>
           <Link to="/contratos">
-            <Button variant="outline">Volver</Button>
+            <Button variant="outline" className="w-full sm:w-auto text-xs sm:text-sm">← Volver</Button>
           </Link>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
-        <div className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">
-          <h3 className="text-2xl font-bold">
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
+        <div className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 space-y-2">
+          <h3>
             Contrato de {contrato.cableoperador?.nombre || 'N/A'}
           </h3>
-          <p className="mt-2 opacity-90">
-            Estado: {contrato.estado_contrato}
+          <p className="text-xs sm:text-sm opacity-90">
+            📋 Estado: {contrato.estado_contrato}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <DetailField label="Cableoperador" value={contrato.cableoperador?.nombre || 'N/A'} />
           <DetailField
             label="Estado del Contrato"
@@ -143,29 +143,29 @@ const ContratosDetail = () => {
         </div>
 
         {/* Campos adicionales */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <DetailField label="Tomador" value={contrato.tomador || 'N/A'} />
           <DetailField label="Aseguradora" value={contrato.aseguradora || 'N/A'} />
           <DetailField label="Fecha Preliquidación" value={formatDate(contrato.fecha_preliquidacion)} />
         </div>
 
         {/* Póliza de Cumplimiento */}
-        <div className="border rounded-lg">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
           <button
             type="button"
             onClick={() => toggleSection('polizaCumplimiento')}
-            className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100"
+            className="w-full flex justify-between items-center p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/30 hover:bg-gray-100 dark:hover:bg-gray-900/50"
           >
-            <h3 className="text-lg font-semibold">Póliza de Cumplimiento</h3>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">Póliza de Cumplimiento</h3>
             <ChevronDown
-              className={`transform transition-transform ${
+              className={`w-5 h-5 transform transition-transform ${
                 openSections.polizaCumplimiento ? 'rotate-180' : ''
               }`}
             />
           </button>
           {openSections.polizaCumplimiento && (
-            <div className="p-4 border-t">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 <DetailField label="Número de Póliza" value={contrato.numero_poliza_cumplimiento || 'N/A'} />
                 <DetailField label="Inicio Vigencia" value={formatDate(contrato.inicio_vigencia_poliza_cumplimiento)} />
                 <DetailField label="Fin Vigencia" value={formatDate(contrato.fin_vigencia_poliza_cumplimiento)} />
@@ -182,22 +182,22 @@ const ContratosDetail = () => {
         </div>
 
         {/* Póliza de RCE */}
-        <div className="border rounded-lg">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
           <button
             type="button"
             onClick={() => toggleSection('polizaRCE')}
-            className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100"
+            className="w-full flex justify-between items-center p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/30 hover:bg-gray-100 dark:hover:bg-gray-900/50"
           >
-            <h3 className="text-lg font-semibold">Póliza de RCE</h3>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">Póliza de RCE</h3>
             <ChevronDown
-              className={`transform transition-transform ${
+              className={`w-5 h-5 transform transition-transform ${
                 openSections.polizaRCE ? 'rotate-180' : ''
               }`}
             />
           </button>
           {openSections.polizaRCE && (
-            <div className="p-4 border-t">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 <DetailField label="Número de Póliza" value={contrato.numero_poliza_rce || 'N/A'} />
                 <DetailField label="Inicio Vigencia" value={formatDate(contrato.inicio_vigencia_poliza_rce)} />
                 <DetailField label="Fin Vigencia" value={formatDate(contrato.fin_vigencia_poliza_rce)} />
@@ -214,25 +214,25 @@ const ContratosDetail = () => {
         </div>
 
         {/* Secciones de Usos */}
-        <h3 className="text-lg font-semibold">Sección de Usos</h3>
+        <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">Sección de Usos</h3>
         <div className="space-y-2">
           {['nap', 'cable', 'caja_empalme', 'reserva'].map((section) => (
-            <div key={section} className="border rounded-lg">
+            <div key={section} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection(section)}
-                className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100"
+                className="w-full flex justify-between items-center p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/30 hover:bg-gray-100 dark:hover:bg-gray-900/50"
               >
-                <h3 className="text-lg font-semibold capitalize">{section.replace('_', ' ')}</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 capitalize">{section.replace('_', ' ')}</h3>
                 <ChevronDown
-                  className={`transform transition-transform ${
+                  className={`w-5 h-5 transform transition-transform ${
                     openSections[section] ? 'rotate-180' : ''
                   }`}
                 />
               </button>
               {openSections[section] && (
-                <div className="p-4 border-t">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                     {[
                       'tipo8',
                       'tipo10',
@@ -244,7 +244,7 @@ const ContratosDetail = () => {
                     ].map((key) => {
                       const getLabel = (inputKey) => {
                         const num = inputKey.replace('tipo', '')
-                        return `Altura ${num} m`
+                        return `${num}m`
                       }
                       const labelText = getLabel(key)
                       return (
@@ -268,8 +268,8 @@ const ContratosDetail = () => {
 
 const DetailField = ({ label, value, className = '' }) => (
   <div className={className}>
-    <p className="text-sm font-semibold text-gray-600 mb-1">{label}</p>
-    <p className="text-base text-gray-900">{value}</p>
+    <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">{label}</p>
+    <p className="text-sm sm:text-base text-gray-900 dark:text-gray-100">{value}</p>
   </div>
 )
 

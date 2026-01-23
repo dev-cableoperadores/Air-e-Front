@@ -53,12 +53,12 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
       (expanded ? false : isCollapsed) ? 'w-16' : 'w-72'
     }`}>
       {/* Logo Header */}
-      <div className={`flex items-center justify-between border-b border-gray-200 dark:border-gray-700 h-16 ${
-        (expanded ? false : isCollapsed) ? 'px-3' : 'px-6'
+      <div className={`flex items-center justify-between border-b border-gray-200 dark:border-gray-700 h-12 sm:h-14 md:h-16 ${
+        (expanded ? false : isCollapsed) ? 'px-2 sm:px-3' : 'px-4 sm:px-6'
       }`}>
         {!(expanded ? false : isCollapsed) && (
-          <div className="flex items-center space-x-3">
-            <div className="bg-black-100 w-10 h-10 overflow-hidden flex items-center justify-center flex-shrink-0 ">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="bg-black-100 w-8 h-8 sm:w-10 sm:h-10 overflow-hidden flex items-center justify-center flex-shrink-0 ">
               <img
                 src="/logo-aire-intervenida.png"
                 alt="AIR-E"
@@ -66,14 +66,14 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
               />
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-base font-bold text-blue-600 dark:text-blue-400 truncate">AIR-E</span>
+              <span className="text-sm sm:text-base font-bold text-blue-600 dark:text-blue-400 truncate">AIR-E</span>
               <span className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-tight">Gestión</span>
             </div>
           </div>
         )}
         
         {(expanded ? false : isCollapsed) && (
-          <div className="w-10 h-10 overflow-hidden flex items-center justify-center ">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 overflow-hidden flex items-center justify-center ">
             <img
               src="/logo-aire-intervenida.png"
               alt="AIR-E"
@@ -98,8 +98,8 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
       </div>
 
       {/* Navigation */}
-      <nav className={`flex-1 py-4 space-y-1 overflow-y-auto ${
-        (expanded ? false : isCollapsed) ? 'px-2' : 'px-4'
+      <nav className={`flex-1 py-3 sm:py-4 space-y-0.5 sm:space-y-1 overflow-y-auto ${
+        (expanded ? false : isCollapsed) ? 'px-1.5 sm:px-2' : 'px-3 sm:px-4'
       }`}>
         {menuItems.map((item) => {
           const Icon = item.icon
@@ -110,8 +110,8 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
               <NavLink
                 to={item.path}
                 onClick={onClose}
-                className={`flex items-center rounded-lg text-sm font-medium transition-all duration-200 relative ${
-                  (expanded ? false : isCollapsed) ? 'px-3 py-3 justify-center' : 'px-3 py-2.5'
+                className={`flex items-center rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 relative ${
+                  (expanded ? false : isCollapsed) ? 'px-2.5 py-2 sm:py-3 justify-center' : 'px-3 py-2 sm:py-2.5'
                 } ${
                   isActive
                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
@@ -148,7 +148,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
 
       {/* Footer */}
       <div className={`border-t border-gray-200 dark:border-gray-700 mt-auto ${
-        (expanded ? false : isCollapsed) ? 'px-2 py-3' : 'px-4 py-4'
+        (expanded ? false : isCollapsed) ? 'px-1.5 sm:px-2 py-2 sm:py-3' : 'px-3 sm:px-4 py-3 sm:py-4'
       }`}>
         {!(expanded ? false : isCollapsed) ? (
           <div className="space-y-2">
@@ -157,7 +157,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                 Versión
               </span>
-              <span className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+              <span className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 sm:py-1 rounded text-xs">
                 v1.0.0
               </span>
             </div>

@@ -98,10 +98,10 @@ const IngresoEdit = () => {
   if (loading || !formData) return <Loading fullScreen />
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl md:text-1xl font-bold text-gray-900 dark:text-gray-100 text-1xl font-bold text-gray-800">Editar Ingreso {id}</h2>
-      <form onSubmit={handleSubmit} className="bg-blue-100 rounded-lg shadow-md p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">Editar Ingreso {id}</h2>
+      <form onSubmit={handleSubmit} className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <Input label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} required />
           <SearchableSelect
             label="Cableoperador"
@@ -119,62 +119,53 @@ const IngresoEdit = () => {
             <Input label="Fecha Confirmación Fin" name="fecha_confirmacion_fin" type="date" value={formData.fecha_confirmacion_fin} onChange={handleChange} />
             <Input label="Fecha Radicación PRST" name="fecha_radicacion_prst" type="date" value={formData.fecha_radicacion_prst} onChange={handleChange} />
             <Input label="Fecha Revisión Documento" name="fecha_revision_doc" type="date" value={formData.fecha_revision_doc} onChange={handleChange} />
-            <div className="flex items-center space-x-3">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" name="rechazado_GD" checked={formData.rechazado_GD} onChange={(e)=>setFormData({...formData, rechazado_GD: e.target.checked})} />
-                <span>Rechazado GD</span>
-              </label>
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" name="cancelado" checked={formData.cancelado} onChange={(e)=>setFormData({...formData, cancelado: e.target.checked})} />
-                <span>Cancelado</span>
-              </label>
-            </div>
-            <div className="flex items-center space-x-3">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" name="incluir_contrato" checked={formData.incluir_contrato} onChange={(e)=>setFormData({...formData, incluir_contrato: e.target.checked})} />
-                <span>Incluir en Contrato</span>
-              </label>
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" name="negado" checked={formData.negado} onChange={(e)=>setFormData({...formData, negado: e.target.checked})} />
-                <span>Negado</span>
-              </label>
-            </div>
+        </div>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <label className="flex items-center gap-2 text-xs sm:text-sm">
+              <input type="checkbox" name="rechazado_GD" checked={formData.rechazado_GD} onChange={(e)=>setFormData({...formData, rechazado_GD: e.target.checked})} className="w-4 h-4" />
+              <span className="text-gray-700 dark:text-gray-300">Rechazado GD</span>
+            </label>
+            <label className="flex items-center gap-2 text-xs sm:text-sm">
+              <input type="checkbox" name="cancelado" checked={formData.cancelado} onChange={(e)=>setFormData({...formData, cancelado: e.target.checked})} className="w-4 h-4" />
+              <span className="text-gray-700 dark:text-gray-300">Cancelado</span>
+            </label>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <label className="flex items-center gap-2 text-xs sm:text-sm">
+              <input type="checkbox" name="incluir_contrato" checked={formData.incluir_contrato} onChange={(e)=>setFormData({...formData, incluir_contrato: e.target.checked})} className="w-4 h-4" />
+              <span className="text-gray-700 dark:text-gray-300">Incluir en Contrato</span>
+            </label>
+            <label className="flex items-center gap-2 text-xs sm:text-sm">
+              <input type="checkbox" name="negado" checked={formData.negado} onChange={(e)=>setFormData({...formData, negado: e.target.checked})} className="w-4 h-4" />
+              <span className="text-gray-700 dark:text-gray-300">Negado</span>
+            </label>
+          </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Altura Inicial Poste (opcional)</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {Object.keys(formData.altura_inicial_poste_input).map((k) => {
-            
-            // 💡 Transformación del Key (k) a Label descriptiva
-            // 'tipo8' -> '8' -> 'Altura 8m'
-            const displayLabel = `Altura ${k.replace('tipo', '')}m`;
-            
-            return (
-              <Input 
-                key={k} 
-                // 🚀 Asignamos la etiqueta descriptiva al 'label'
-                label={displayLabel} 
-                
-                // Mantenemos el nombre original del campo para el manejo de datos
-                name={k} 
-                
-                type="number" 
-                value={formData.altura_inicial_poste_input[k]} 
-                onChange={handleAlturaChange} 
-              />
+        <div className="bg-blue-50 dark:bg-blue-900/10 p-3 sm:p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 mb-3">Altura Inicial Poste (opcional)</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+            {Object.keys(formData.altura_inicial_poste_input).map((k) => {
+              const displayLabel = `Altura ${k.replace('tipo', '')}m`;
+              return (
+                <Input 
+                  key={k} 
+                  label={displayLabel} 
+                  name={k} 
+                  type="number" 
+                  value={formData.altura_inicial_poste_input[k]} 
+                  onChange={handleAlturaChange} 
+                  className="text-xs sm:text-sm"
+                />
               );
             })}
-        </div>
-        </div>
-
-        <div>
-          <Input label="Observaciones" name="observaciones" value={formData.observaciones || ''} onChange={handleChange} />
+          </div>
         </div>
 
-        <div className="flex gap-2">
-          <Button type="submit" variant="primary" disabled={saving}>{saving ? 'Guardando...' : 'Actualizar'}</Button>
-          <Button type="button" variant="outline" onClick={() => navigate('/proyectos/ingreso')}>Cancelar</Button>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <Button type="submit" variant="primary" disabled={saving} className="w-full sm:w-auto text-xs sm:text-sm">{saving ? 'Guardando...' : 'Actualizar'}</Button>
+          <Button type="button" variant="outline" onClick={() => navigate('/proyectos/ingreso')} className="w-full sm:w-auto text-xs sm:text-sm">Cancelar</Button>
         </div>
       </form>
     </div>

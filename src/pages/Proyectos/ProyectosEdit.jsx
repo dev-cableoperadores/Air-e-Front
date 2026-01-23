@@ -86,10 +86,10 @@ const ProyectosEdit = () => {
   if (loading || !formData) return <Loading fullScreen />
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Editar Proyecto</h2>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">Editar Proyecto</h2>
+      <form onSubmit={handleSubmit} className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <SearchableSelect
             label="Ingreso Proyecto (OT_AIRE)"
             name="datos_ingreso_id"
@@ -115,133 +115,101 @@ const ProyectosEdit = () => {
           <Input label="Fecha Notificación PRST" name="fecha_notificacion_prst" type="date" value={formData.fecha_notificacion_prst} onChange={handleChange} />
         </div>
 
-        <div className="space-y-3">
-          <h3 className="font-semibold">Cables</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">Cables</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => {
-              
-              // 💡 Transformación de 'tipo8' a 'Altura 8m'
-              // 1. k.replace('tipo', '') extrae el número (ej: '8')
-              // 2. El template literal construye la cadena 'Altura 8m'
               const alturaLabel = `Altura ${k.replace('tipo', '')}m`; 
-
               return (
                 <Input 
                   key={k} 
-                  // 🚀 Usamos la etiqueta transformada aquí
                   label={alturaLabel} 
-                  
-                  // Mantenemos el nombre original del campo para el manejo de datos
                   name={k} 
-                  
                   type="number" 
                   value={formData.cable[k]} 
                   onChange={(e)=>handleNestedChange('cable', k, e.target.value)} 
+                  className="text-xs sm:text-sm"
                 />
               );
             })}
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="font-semibold">Caja Empalme</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">Caja Empalme</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => {
-              
-              // 💡 Transformación de 'tipo8' a 'Altura 8m'
-              // 1. k.replace('tipo', '') extrae el número (ej: '8')
-              // 2. El template literal construye la cadena 'Altura 8m'
               const alturaLabel = `Altura ${k.replace('tipo', '')}m`; 
-
               return (
                 <Input 
                   key={k} 
-                  // 🚀 Usamos la etiqueta transformada aquí
                   label={alturaLabel} 
-                  
-                  // Mantenemos el nombre original del campo para el manejo de datos
                   name={k} 
-                  
                   type="number" 
                   value={formData.caja_empalme[k]} 
                   onChange={(e)=>handleNestedChange('caja_empalme', k, e.target.value)} 
+                  className="text-xs sm:text-sm"
                 />
               );
             })}
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="font-semibold">Reserva</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">Reserva</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => {
-              
-              // 💡 Transformación de 'tipo8' a 'Altura 8m'
-              // 1. k.replace('tipo', '') extrae el número (ej: '8')
-              // 2. El template literal construye la cadena 'Altura 8m'
               const alturaLabel = `Altura ${k.replace('tipo', '')}m`; 
-
               return (
                 <Input 
                   key={k} 
-                  // 🚀 Usamos la etiqueta transformada aquí
                   label={alturaLabel} 
-                  
-                  // Mantenemos el nombre original del campo para el manejo de datos
                   name={k} 
-                  
                   type="number" 
                   value={formData.reserva[k]} 
                   onChange={(e)=>handleNestedChange('reserva', k, e.target.value)} 
+                  className="text-xs sm:text-sm"
                 />
               );
             })}
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="font-semibold">NAP (Usos)</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">NAP (Usos)</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {['tipo8','tipo10','tipo12','tipo14','tipo15','tipo16','tipo20'].map((k) => {
-              
-              // 💡 Transformación de 'tipo8' a 'Altura 8m'
-              // 1. k.replace('tipo', '') extrae el número (ej: '8')
-              // 2. El template literal construye la cadena 'Altura 8m'
               const alturaLabel = `Altura ${k.replace('tipo', '')}m`; 
-
               return (
                 <Input 
                   key={k} 
-                  // 🚀 Usamos la etiqueta transformada aquí
                   label={alturaLabel} 
-                  
-                  // Mantenemos el nombre original del campo para el manejo de datos
                   name={k} 
-                  
                   type="number" 
                   value={formData.nap[k]} 
                   onChange={(e)=>handleNestedChange('nap', k, e.target.value)} 
+                  className="text-xs sm:text-sm"
                 />
               );
             })}
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="font-semibold">Altura Final Poste</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">Altura Final Poste</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {['tipo8','tipo9','tipo10','tipo11','tipo12','tipo14','tipo16'].map((k) => {
               const alturaLabel = `Altura ${k.replace('tipo', '')}m`;
               return (
-                <Input key={k} label={alturaLabel} name={k} type="number" value={formData.altura_final_poste[k]} onChange={(e)=>handleNestedChange('altura_final_poste', k, e.target.value)} />
+                <Input key={k} label={alturaLabel} name={k} type="number" value={formData.altura_final_poste[k]} onChange={(e)=>handleNestedChange('altura_final_poste', k, e.target.value)} className="text-xs sm:text-sm" />
               )
             })}
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <Button type="submit" variant="primary" disabled={saving}>{saving ? 'Guardando...' : 'Actualizar'}</Button>
-          <Button type="button" variant="outline" onClick={() => navigate('/proyectos')}>Cancelar</Button>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <Button type="submit" variant="primary" disabled={saving} className="w-full sm:w-auto text-xs sm:text-sm">{saving ? 'Guardando...' : 'Actualizar'}</Button>
+          <Button type="button" variant="outline" onClick={() => navigate('/proyectos')} className="w-full sm:w-auto text-xs sm:text-sm">Cancelar</Button>
         </div>
       </form>
     </div>

@@ -56,9 +56,9 @@ const SearchableSelect = ({
   })()
 
   return (
-    <div className="mb-4" ref={containerRef}>
+    <div className="mb-3 sm:mb-4" ref={containerRef}>
       {label && (
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor={name} className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -75,21 +75,21 @@ const SearchableSelect = ({
             setOpen(true)
           }}
           onFocus={() => setOpen(true)}
-          className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+          className={`w-full px-3 sm:px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all dark:bg-gray-800 dark:text-gray-100`}
           readOnly={false}
         />
 
         <input type="hidden" name={name} value={value || ''} />
 
         {open && (
-          <div className="absolute z-40 mt-1 w-full bg-white border rounded-lg max-h-60 overflow-auto shadow-lg">
+          <div className="absolute z-40 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg max-h-60 overflow-auto shadow-lg">
             {filtered.length === 0 ? (
-              <div className="p-3 text-sm text-gray-500">No hay opciones</div>
+              <div className="p-3 text-xs sm:text-sm text-gray-500 dark:text-gray-400">No hay opciones</div>
             ) : (
               filtered.map((opt) => (
                 <div
                   key={opt.value}
-                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${String(opt.value) === String(value) ? 'bg-gray-100' : ''}`}
+                  className={`px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${String(opt.value) === String(value) ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                   onClick={() => handleSelect(opt.value)}
                 >
                   {opt.label}

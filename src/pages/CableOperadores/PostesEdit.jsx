@@ -190,20 +190,20 @@ const PostesEdit = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">
         Editar Poste
       </h2>
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-lg shadow-md p-6 space-y-6"
+        className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0"
       >
         {/* Sección: Información Básica */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
+        <div className="space-y-3 sm:space-y-4">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-blue-200 dark:border-blue-600 pb-2">
             Información Básica
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             <Input
               label="Object ID"
               name="object_id"
@@ -276,11 +276,11 @@ const PostesEdit = () => {
         </div>
 
         {/* Sección: Características del Poste */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
+        <div className="space-y-3 sm:space-y-4">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-blue-200 dark:border-blue-600 pb-2">
             Características del Poste
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             <Select
               label="Material"
               name="material_poste"
@@ -315,11 +315,11 @@ const PostesEdit = () => {
         </div>
 
         {/* Sección: Ubicación y Proyecto */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
+        <div className="space-y-3 sm:space-y-4">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-blue-200 dark:border-blue-600 pb-2">
             Ubicación y Proyecto
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             <Select
               label="Departamento"
               name="departamento"
@@ -368,8 +368,8 @@ const PostesEdit = () => {
         </div>
 
         {/* Sección: Observaciones */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
+        <div className="space-y-3 sm:space-y-4">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-blue-200 dark:border-blue-600 pb-2">
             Observaciones
           </h3>
           <Textarea
@@ -383,13 +383,14 @@ const PostesEdit = () => {
         </div>
 
         {/* Botones de acción */}
-        <div className="flex gap-4 justify-end pt-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end pt-4 sm:pt-6\">
           {cableoperadorId ? (
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate(`/postes/cableoperador/${cableoperadorId}`)}
               disabled={saving}
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
               Cancelar
             </Button>
@@ -399,6 +400,7 @@ const PostesEdit = () => {
               variant="outline"
               onClick={() => navigate(`/postes`)}
               disabled={saving}
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
               Cancelar
             </Button>
@@ -406,8 +408,9 @@ const PostesEdit = () => {
           <Button
             type="submit"
             disabled={saving}
+            className="w-full sm:w-auto text-xs sm:text-sm"
           >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
+            {saving ? 'Guardando...' : '✅ Guardar'}
           </Button>
         </div>
       </form>

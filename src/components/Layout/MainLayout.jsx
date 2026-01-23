@@ -34,8 +34,8 @@ const MainLayout = ({ children }) => {
       }`}>
         <Header onMenuClick={() => setSidebarOpen(true)} />
         
-        <main className="flex-1 px-3 py-3 sm:px-5 md:px-6 md:py-6 overflow-auto touch-pan-x touch-pan-y">
-          <div className="mx-auto w-full transition-all duration-300 max-w-full xl:max-w-7xl">
+        <main className="flex-1 px-2 py-2 sm:px-3 sm:py-3 md:px-5 md:py-5 lg:px-6 lg:py-6 overflow-auto touch-pan-x touch-pan-y">
+          <div className="mx-auto w-full transition-all duration-300 max-w-full lg:max-w-6xl xl:max-w-7xl">
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

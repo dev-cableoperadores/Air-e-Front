@@ -82,56 +82,55 @@ const CableOperadoresList = () => {
   }
 
   return (
-    <div className="space-y-6 max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
             Cableoperadores
           </h1>
-          <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
             Gestiona los cableoperadores del sistema
           </p>
         </div>
         <Link to="/cableoperadores/nuevo">
-          <button className="flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+          <button className="flex items-center justify-center w-full sm:w-auto px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base rounded-lg transition-colors">
             <Plus className="w-4 h-4 mr-2" />
-            Nuevo Cableoperador
+            Nuevo
           </button>
         </Link>
       </div>
 
       {/* Search Bar */}
-      <div className="dark:bg-blue-100 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-gray-200 dark:border-gray-700 p-3 sm:p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
-              placeholder="Buscar por nombre, nombre largo o NIT... (Enter para buscar)"
+              placeholder="Buscar..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleSearch()
               }}
-              className="pl-10 pr-4 py-2.5 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+              className="pl-10 pr-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
             />
             <button
               type="button"
               onClick={handleSearch}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+              className="px-3 sm:px-4 py-2 bg-blue-600 text-white text-sm rounded-lg whitespace-nowrap"
             >
               Buscar
             </button>
             <button
               type="button"
               onClick={() => {
-                // Limpia los estados y vuelve a la página 1.
                 setSearchInput('')
                 setSearchTerm('')
                 setPage(1)
               }}
-              className="px-4 py-2 bg-gray-100 rounded-lg"
+              className="px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm rounded-lg whitespace-nowrap"
             >
               Limpiar
             </button>
@@ -140,94 +139,92 @@ const CableOperadoresList = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
         {filteredCableoperadores.length === 0 ? (
-          <div className="col-span-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
-            <Cable className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400">No se encontraron cableoperadores</p>
+          <div className="col-span-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 sm:p-12 text-center">
+            <Cable className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">No se encontraron cableoperadores</p>
           </div>
         ) : (
           filteredCableoperadores.map((co) => (
             <div 
               key={co.id} 
-              className=" dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
             >
               {/* Card Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white p-4">
-                <h3 className="text-lg font-bold text-center truncate">{co.nombre_largo}</h3>
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white p-3 sm:p-4">
+                <h3 className="text-sm sm:text-base lg:text-lg font-bold text-center truncate">{co.nombre_largo}</h3>
               </div>
               
               {/* Card Body */}
-              <div className="p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Nombre</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">Nombre</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                       {co.nombre || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Municipio</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">Municipio</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                       {co.ciudad || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">NIT</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">NIT</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                       {co.NIT || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Teléfono</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-0.5">Teléfono</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                       {co.telefono ? formatPhone(co.telefono) : 'N/A'}
                     </p>
                   </div>
                 </div>
                 
                 {/* Actions */}
-                <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex gap-1.5 sm:gap-2 pt-2 sm:pt-3 border-t border-gray-200 dark:border-gray-700">
                   <Link to={`/cableoperadores/${co.id}/detalle`} className="flex-1">
-                    <button className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors">
-                      <Eye className="w-4 h-4 mr-1" />
+                    <button className="w-full flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded transition-colors">
+                      <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                       Ver
                     </button>
                   </Link>
                   <Link to={`/cableoperadores/${co.id}/editar`} className="flex-1">
-                    <button className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors">
-                      <Edit className="w-4 h-4 mr-1" />
+                    <button className="w-full flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded transition-colors">
+                      <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                       Editar
                     </button>
                   </Link>
-                  {/* <button
-                    onClick={() => handleDelete(co.id, co.nombre)}
-                    className="flex items-center justify-center px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button> */}
                 </div>
               </div>
             </div>
           ))
         )}
       </div>
-      <div className="mt-4 px-4 py-3 border-t flex items-center justify-between">
-        <div className="text-xl md:text-1xl font-bold text-gray-900 dark:text-black-100 text-1xl font-bold text-gray-800">
-          Mostrando {cableoperadores.length} de {totalCount} cableoperadores
+      
+      {/* Pagination */}
+      <div className="mt-4 px-2 sm:px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 text-center sm:text-left">
+          Mostrando {cableoperadores.length} de {totalCount}
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <button
             onClick={() => { if (page > 1) setPage(page - 1) }}
             disabled={page <= 1}
-            className={`px-3 py-1 rounded ${page <= 1 ? 'opacity-100 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'}`}>
+            className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded transition-colors ${page <= 1 ? 'opacity-50 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'}`}>
             Anterior
           </button>
-          <div className="text-sm dark:text-black-100">Página {page} de {Math.max(1, Math.ceil(totalCount / (pageSize || totalCount || 1)))}</div>
+          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+            Pág. {page} de {Math.max(1, Math.ceil(totalCount / (pageSize || totalCount || 1)))}
+          </div>
           <button
             onClick={() => { if (page < Math.ceil(totalCount / (pageSize || totalCount || 1))) setPage(page + 1) }}
             disabled={page >= Math.ceil(totalCount / (pageSize || totalCount || 1))}
-            className={`px-3 py-1 rounded ${page >= Math.ceil(totalCount / (pageSize || totalCount || 1)) ? 'opacity-100 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'}`}>
+            className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded transition-colors ${page >= Math.ceil(totalCount / (pageSize || totalCount || 1)) ? 'opacity-50 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'}`}>
             Siguiente
           </button>
         </div>

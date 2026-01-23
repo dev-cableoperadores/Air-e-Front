@@ -249,10 +249,10 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Nuevo Contrato</h2>
-      <form onSubmit={handleSubmit} className="bg-blue-100 rounded-lg shadow-md p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">Nuevo Contrato</h2>
+      <form onSubmit={handleSubmit} className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <SearchableSelect
             label="Cableoperador"
             name="cableoperador"
@@ -335,8 +335,8 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
           />
         </div>
         {/*Secciones de la poliza*/}
-        <h3 className="text-lg font-semibold">Campos de la Póliza de Cumplimiento</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">Campos de la Póliza de Cumplimiento</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           {/* Campos de la póliza de cumplimiento */}
           <Input
             label="Número de poliza de cumplimiento"
@@ -426,8 +426,8 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
             onChange={handleChange}
           />
         </div>
-        <h3 className="text-lg font-semibold">Campos de la Póliza de RCE</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">Campos de la Póliza de RCE</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           {/* Campos de la póliza de RCE */}
           <Input
             label="Número de poliza de RCE"
@@ -524,25 +524,25 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
           />
         </div>
         {/* Secciones anidadas: Nap, Cable, Caja Empalme, Reserva */}
-        <h3 className="text-lg font-semibold">Seccion de Usos</h3>
+        <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">Seccion de Usos</h3>
         <div className="space-y-2">
           {['nap', 'cable', 'caja_empalme', 'reserva'].map((section) => (
-            <div key={section} className="border rounded-lg">
+            <div key={section} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection(section)}
-                className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100"
+                className="w-full flex justify-between items-center p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/30 hover:bg-gray-100 dark:hover:bg-gray-900/50"
               >
-                <h3 className="text-lg font-semibold capitalize">{section.replace('_', ' ')}</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 capitalize">{section.replace('_', ' ')}</h3>
                 <ChevronDown
-                  className={`transform transition-transform ${
+                  className={`w-5 h-5 transform transition-transform ${
                     openSections[section] ? 'rotate-180' : ''
                   }`}
                 />
               </button>
               {openSections[section] && (
-                <div className="p-4 border-t">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                         {[
                             'tipo8',
                             'tipo10',
@@ -552,20 +552,14 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
                             'tipo16',
                             'tipo20',
                         ].map((key) => {
-                            // 🚀 Función de transformación: 'tipoX' -> 'Altura X m'
                             const getLabel = (inputKey) => {
-                                // Elimina la parte "tipo" y convierte el resto a número
                                 const altura = inputKey.replace('tipo', '');
-                                
-                                // Construye el string final
-                                return `Altura ${altura} m`;
+                                return `${altura}m`;
                             };
                             const labelText = getLabel(key);
-                            // -----------------------------------------------------
                             return (
                                 <Input
                                     key={key}
-                                    // Usa la nueva etiqueta aquí
                                     label={labelText} 
                                     name={key}
                                     type="number"
@@ -582,7 +576,7 @@ const nuevoEstado = determinarEstado(formData.inicio_vigencia, formData.fin_vige
             </div>
           ))}
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <Button type="submit" variant="primary" disabled={saving}>
             {saving ? 'Guardando...' : 'Crear Contrato'}
           </Button>

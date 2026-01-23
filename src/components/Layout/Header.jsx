@@ -23,22 +23,22 @@ const Header = ({ onMenuClick }) => {
   }
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 h-14 sm:h-16 flex items-center px-3 sm:px-4 lg:px-6 relative z-50 w-full max-w-[100vw] overflow-visible">
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 h-12 sm:h-14 md:h-16 flex items-center px-2 sm:px-3 md:px-4 lg:px-6 relative z-50 w-full max-w-[100vw] overflow-visible">
       <div className="flex items-center justify-between w-full">
         {/* Left section */}
-        <div className="flex items-center space-x-3 lg:space-x-4 flex-1 min-w-0">
+        <div className="flex items-center space-x-1.5 sm:space-x-2 md:space-x-3 lg:space-x-4 flex-1 min-w-0">
           {/* Mobile menu button */}
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="lg:hidden p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Abrir menú"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           {/* Logo for mobile */}
-          <div className="flex items-center space-x-3 lg:hidden">
-            <div className="w-8 h-8 overflow-hidden flex items-center justify-center">
+          <div className="flex items-center space-x-2 lg:hidden">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 overflow-hidden flex items-center justify-center">
               <img
                 src="/logo-aire.png"
                 alt="AIR-E"
@@ -49,14 +49,14 @@ const Header = ({ onMenuClick }) => {
         </div>
 
         {/* Right section */}
-        <div className="relative z-50 flex items-center space-x-2 md:space-x-3 lg:space-x-4 min-w-0 overflow-visible flex-nowrap pointer-events-auto">
+        <div className="relative z-50 flex items-center space-x-1 sm:space-x-2 md:space-x-3 lg:space-x-4 min-w-0 overflow-visible flex-nowrap pointer-events-auto">
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors h-9 w-9 items-center justify-center hidden md:flex"
+            className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden md:flex"
             aria-label={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
           >
-            {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            {theme === 'light' ? <Moon className="w-4 h-4 md:w-5 md:h-5" /> : <Sun className="w-4 h-4 md:w-5 md:h-5" />}
           </button>
 
           {/* Notifications */}
@@ -72,20 +72,20 @@ const Header = ({ onMenuClick }) => {
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 px-1 sm:px-2 lg:px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors h-9 max-w-[55vw] sm:max-w-none overflow-hidden"
+              className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 lg:space-x-3 px-1.5 sm:px-2 md:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors max-w-[45vw] sm:max-w-[50vw] md:max-w-none overflow-hidden"
             >
-              <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0">
                 {user?.username?.charAt(0).toUpperCase() || 'U'}
               </div>
-              <div className="hidden md:block text-left truncate min-w-0">
-                <div className="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight truncate max-w-[50vw] lg:max-w-[18rem] xl:max-w-xs">
+              <div className="hidden sm:block text-left truncate min-w-0">
+                <div className="text-xs sm:text-xs md:text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight truncate max-w-[30vw] md:max-w-[18rem] lg:max-w-xs">
                   {user?.username || 'Usuario'}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 leading-tight uppercase truncate">
+                <div className="text-xs text-gray-500 dark:text-gray-400 leading-tight uppercase truncate hidden md:block">
                   Usuario
                 </div>
               </div>
-              <ChevronDown className="w-3 h-3 text-gray-400 hidden md:block" />
+              <ChevronDown className="w-3 h-3 text-gray-400 hidden sm:block flex-shrink-0" />
             </button>
 
             {/* User dropdown menu */}
@@ -95,15 +95,15 @@ const Header = ({ onMenuClick }) => {
                   className="fixed inset-0 z-40" 
                   onClick={() => setShowUserMenu(false)}
                 />
-                <div className="absolute right-0 mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
                   {/* User info header */}
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
+                  <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0">
                         {user?.username?.charAt(0).toUpperCase() || 'U'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                        <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                           {user?.username || 'Usuario'}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -132,9 +132,9 @@ const Header = ({ onMenuClick }) => {
                   
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-sm text-left transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
+                    className="flex items-center w-full px-3 sm:px-4 py-2 text-xs sm:text-sm text-left transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
                   >
-                    <LogOut className="w-4 h-4 mr-3" />
+                    <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 sm:mr-3 flex-shrink-0" />
                     Cerrar Sesión
                   </button>
                 </div>

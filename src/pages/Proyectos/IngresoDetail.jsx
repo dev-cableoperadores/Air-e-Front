@@ -41,44 +41,40 @@ const IngresoDetail = () => {
   if (!item) return <div>Ingreso no encontrado</div>
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Ingreso {item.OT_AIRE}</h2>
-        <div className="flex gap-2">
-          <Link to={`/proyectos/ingreso/${id}/editar`}><Button variant="secondary">Editar</Button></Link>
-          <Button variant="danger" onClick={handleDelete}>Eliminar</Button>
-          <Link to="/proyectos/ingreso"><Button variant="outline">Volver</Button></Link>
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-2 sm:px-0">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Ingreso {item.OT_AIRE}</h2>
+        <div className="flex gap-2 w-full sm:w-auto flex-col sm:flex-row">
+          <Link to={`/proyectos/ingreso/${id}/editar`} className="w-full sm:w-auto"><Button variant="secondary" className="w-full text-xs sm:text-sm">Editar</Button></Link>
+          <Button variant="danger" onClick={handleDelete} className="w-full sm:w-auto text-xs sm:text-sm">Eliminar</Button>
+          <Link to="/proyectos/ingreso" className="w-full sm:w-auto"><Button variant="outline" className="w-full text-xs sm:text-sm">Volver</Button></Link>
         </div>
       </div>
 
-      <div className="bg-blue-100 rounded p-6 space-y-4">
-        <p><strong>Nombre:</strong> {item.nombre}</p>
-        <p><strong>Cableoperador:</strong> {item.cableoperador?.nombre || 'N/A'}</p>
-        <p><strong>Departamento:</strong> {item.departamento}</p>
-        <p><strong>Estado Ingreso:</strong> {item.estado_ingreso}</p>
-        <p><strong>Fecha inicio:</strong> {formatDate(item.fecha_inicio)}</p>
-        <p><strong>Fecha fin:</strong> {formatDate(item.fecha_fin)}</p>
-        <div>
-          <h3 className="font-semibold">Altura Inicial Poste</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
-          {item.altura_inicial_poste && Object.entries(item.altura_inicial_poste).map(([k,v]) => {
-          // 💡 Paso 1: Generar el texto descriptivo
-          // k.replace('tipo', '') toma 'tipo8' y lo convierte en '8'.
-          // Luego usamos un template literal (comillas inversas `) para construir el string.
-          const textoDescriptivo = `Altura ${k.replace('tipo', '')}m`;
-            return (
-              <div key={k} className="bg-gray-50 p-2 rounded">
-                {/* 🚀 Usamos la variable generada aquí */}
-                <p className="text-xs text-gray-500">{textoDescriptivo}</p>
-                <p className="font-semibold">{v}</p>
-              </div>
-            );
-          })}
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 mx-2 sm:mx-0">
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Nombre:</strong> <span className="text-gray-600 dark:text-gray-400">{item.nombre}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Cableoperador:</strong> <span className="text-gray-600 dark:text-gray-400">{item.cableoperador?.nombre || 'N/A'}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Departamento:</strong> <span className="text-gray-600 dark:text-gray-400">{item.departamento}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Estado Ingreso:</strong> <span className="text-gray-600 dark:text-gray-400">{item.estado_ingreso}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Fecha inicio:</strong> <span className="text-gray-600 dark:text-gray-400">{formatDate(item.fecha_inicio)}</span></p>
+        <p className="text-xs sm:text-sm"><strong className="font-semibold text-gray-700 dark:text-gray-300">Fecha fin:</strong> <span className="text-gray-600 dark:text-gray-400">{formatDate(item.fecha_fin)}</span></p>
+        <div className="pt-2 sm:pt-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 mb-3">Altura Inicial Poste</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+            {item.altura_inicial_poste && Object.entries(item.altura_inicial_poste).map(([k,v]) => {
+              const textoDescriptivo = `Altura ${k.replace('tipo', '')}m`;
+              return (
+                <div key={k} className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded border border-blue-200 dark:border-blue-700">
+                  <p className="text-xs sm:text-xs text-gray-600 dark:text-gray-400">{textoDescriptivo}</p>
+                  <p className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">{v}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        </div>
-        <div>
-          <h3 className="font-semibold">Observaciones</h3>
-          <p className="whitespace-pre-wrap">{item.observaciones || '-'}</p>
+        <div className="pt-2 sm:pt-3">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 mb-2">Observaciones</h3>
+          <p className="text-xs sm:text-sm whitespace-pre-wrap text-gray-600 dark:text-gray-400">{item.observaciones || '-'}</p>
         </div>
       </div>
     </div>

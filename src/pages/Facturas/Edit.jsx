@@ -123,10 +123,10 @@ const FacturasEdit = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Editar Factura</h2>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">Editar Factura</h2>
+      <form onSubmit={handleSubmit} className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <SearchableSelect
             label="Cableoperador"
             name="cableoperador"
@@ -212,36 +212,36 @@ const FacturasEdit = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+          <div className="flex items-center gap-2 sm:gap-3">
             <input
               type="checkbox"
               id="Factura_aceptada"
               name="Factura_aceptada"
               checked={formData.Factura_aceptada}
               onChange={(e) => setFormData({ ...formData, Factura_aceptada: e.target.checked })}
-              className="mr-2"
+              className="w-4 h-4 rounded"
             />
-            <label htmlFor="Factura_aceptada" className="text-sm font-medium text-gray-700">Factura Aceptada</label>
+            <label htmlFor="Factura_aceptada" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Factura Aceptada</label>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2 sm:gap-3">
             <input
               type="checkbox"
               id="Factura_CRC"
               name="Factura_CRC"
               checked={formData.Factura_CRC}
               onChange={(e) => setFormData({ ...formData, Factura_CRC: e.target.checked })}
-              className="mr-2"
+              className="w-4 h-4 rounded"
             />
-            <label htmlFor="Factura_CRC" className="text-sm font-medium text-gray-700">Factura CRC</label>
+            <label htmlFor="Factura_CRC" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Factura CRC</label>
           </div>
         </div>
 
-        <div className="flex gap-4">
-          <Button type="submit" variant="primary" disabled={saving}>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <Button type="submit" variant="primary" disabled={saving} className="w-full sm:w-auto text-xs sm:text-sm">
             {saving ? 'Guardando...' : 'Actualizar Factura'}
           </Button>
-          <Button type="button" variant="outline" onClick={() => navigate('/facturas')}>
+          <Button type="button" variant="outline" onClick={() => navigate('/facturas')} className="w-full sm:w-auto text-xs sm:text-sm">
             Cancelar
           </Button>
         </div>

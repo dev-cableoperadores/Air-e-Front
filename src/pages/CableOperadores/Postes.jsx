@@ -85,7 +85,7 @@ function Postes() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     )
@@ -93,8 +93,8 @@ function Postes() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded text-center text-sm sm:text-base">
           {error}
         </div>
       </div>
@@ -112,48 +112,48 @@ function Postes() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 p-2 sm:p-0">
       <input 
         type="text" 
         placeholder="Latitud" 
         value={lat} 
         onChange={e => setLat(e.target.value)}
-        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input 
         type="text" 
         placeholder="Longitud" 
         value={lng} 
         onChange={e => setLng(e.target.value)}
-        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <Button type="submit">Agregar marcador</Button>
+      <Button type="submit" className="w-full sm:w-auto text-xs sm:text-sm">Añadir marcador</Button>
     </form>
   )
 }
   return (
-    <div className="w-full h-full">
-      <div className="bg-white p-4 shadow rounded-lg mb-4">
-        <div className="flex items-center justify-between">
+    <div className="w-full h-full space-y-3 sm:space-y-4 p-2 sm:p-0">
+      <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 shadow rounded-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Mapa de Postes</h1>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">Mapa de Postes</h1>
             {cableoperador && (
-              <p className="text-gray-600">
-                Cableoperador: <strong>{cableoperador.nombre_largo}</strong>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                📍 <strong>{cableoperador.nombre_largo}</strong>
               </p>
             )}
-            <p className="text-gray-600">Total de postes: {postes.length}</p>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Total: {postes.length} postes</p>
           </div>
           {cableoperadorId && (
             <Link to={`/cableoperadores/${cableoperadorId}/detalle`}>
-              <Button variant="outline">Volver</Button>
+              <Button variant="outline" className="w-full sm:w-auto text-xs sm:text-sm">← Volver</Button>
             </Link>
           )}
         </div>
       </div>
-          <AddMarkerForm setExtraMarker={setExtraMarker} />
+      <AddMarkerForm setExtraMarker={setExtraMarker} />
       <div className="rounded-lg overflow-hidden shadow">
-        <MapContainer center={center} zoom={9} style={{ height: 'calc(100vh - 200px)', width: '100%' }}>
+        <MapContainer center={center} zoom={9} style={{ height: 'calc(100vh - 250px)', width: '100%' }}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -167,7 +167,7 @@ function Postes() {
               position={[parseFloat(poste.coordenada_y), parseFloat(poste.coordenada_x)]}
             >
               <Popup className="w-64">
-                <div className="text-sm">
+                <div className="text-xs sm:text-sm space-y-1">
                   <strong>Tipo coordenada:</strong> {poste.tipo_coordenada} <br />
                   <strong>Código:</strong> {poste.codigo_poste} <br />
                   <strong>Material:</strong> {poste.material_poste || 'N/A'} <br />
@@ -185,17 +185,18 @@ function Postes() {
                   )}
                   <strong>Coordenadas:</strong> {poste.coordenada_y}, {poste.coordenada_x}
                   {/* Modal para editar poste */}
-                  <div className="mt-2">
+                  <div className="mt-2 flex flex-col sm:flex-row gap-1\">
                       {cableoperadorId ? (
                       <Button
                         size="sm"
                         onClick={() => navigate(`/postes/cableoperador/${cableoperadorId}/${poste.id}/editar`)}
-                      >Editar Poste</Button>
-                      ) : (
+                        className="text-xs w-full sm:w-auto"
+                      >✏️ Editar</Button>) : (
                       <Button
                         size="sm"
                         onClick={() => navigate(`/postes/${poste.id}/editar`)}
-                      >Editar Poste</Button>
+                        className="text-xs w-full sm:w-auto"
+                      >✏️ Editar</Button>
                       )}
                   </div>
                 </div>

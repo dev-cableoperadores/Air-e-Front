@@ -121,46 +121,49 @@ const ContratosList = () => {
   }
 
   const totalPages = Math.max(1, Math.ceil(totalCount / (pageSize || totalCount || 1)))
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">Contratos</h1>
-        <Link to="/contratos/nuevo">
-          <Button variant="primary">➕ Nuevo Contrato</Button>
+    <div className="space-y-3 sm:space-y-4 md:space-y-6 max-w-full overflow-x-hidden px-2 sm:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4">
+        <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Contratos</h1>
+        <Link to="/contratos/nuevo" className="w-full sm:w-auto">
+          <Button variant="primary" className="w-full sm:w-auto text-xs sm:text-sm">➕ Nuevo</Button>
         </Link>
       </div>
 
       {/* Barra de búsqueda */}
-      <div className="mb-6 flex gap-2">
-        <input
-          type="text"
-          placeholder="Buscar por cableoperador..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch()
-            }
-          }}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
-        <button
-          onClick={handleSearch}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-        >
-          Buscar
-        </button>
-        <button
-          onClick={handleClearSearch}
-          className="px-4 py-2 bg-gray-100 rounded-lg text-gray-800"
-        >
-          Limpiar
-        </button>
+      <div className="flex flex-col gap-2 sm:gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <input
+            type="text"
+            placeholder="Buscar por cableoperador..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch()
+              }
+            }}
+            className="flex-1 px-2 sm:px-3 md:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
+          />
+          <div className="flex gap-2 sm:gap-3">
+            <button
+              onClick={handleSearch}
+              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm rounded-lg font-medium transition-colors"
+            >
+              Buscar
+            </button>
+            <button
+              onClick={handleClearSearch}
+              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-xs sm:text-sm rounded-lg font-medium transition-colors hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Filtros */}
-      <div className="bg-blue-100 mb-6 flex gap-4">
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-2 sm:p-3 md:p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
         <Select
           label="Estado"
           value={filterEstado}
@@ -187,88 +190,77 @@ const ContratosList = () => {
       </div>
 
       {/* Tabla de contratos */}
-      <div className="bg-blue-100 shadow rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         {contratos.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No se encontraron contratos</p>
+          <div className="text-center py-6 sm:py-8 md:py-12 px-4">
+            <p className="text-xs sm:text-sm md:text-base text-gray-500 dark:text-gray-400">No se encontraron contratos</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-xs sm:text-sm">
+              <thead className="bg-blue-50 dark:bg-blue-900/30 border-b border-blue-300 dark:border-blue-600">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Cableoperador
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Estado
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden sm:table-cell">
                     Valor
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden md:table-cell">
                     Vigencia
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Inicio de Vigencia
+                  <th className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden lg:table-cell">
+                    Inicio
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-center font-semibold text-gray-900 dark:text-gray-100">
                     Acciones
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {contratos.map((contrato) => (
-                  <tr key={contrato.id}>
-                    <td className="px-6 py-4 **max-w-xs** **overflow-hidden** **text-ellipsis**">
-                        {/* Nota: Hemos quitado whitespace-nowrap para que se aplique el truncado. 
-                          Si lo dejas, el texto se fuerza a una sola línea y se trunca. */}
+                  <tr key={contrato.id} className="hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 sm:py-3">
+                      <p className="text-gray-900 dark:text-gray-100 font-medium truncate text-xs sm:text-sm">
                         {contrato.cableoperador?.nombre_largo || 'N/A'}
+                      </p>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 sm:py-3">
                       <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
                           contrato.estado_contrato === 'Vigente'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
                         }`}
                       >
                         {contrato.estado_contrato}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 hidden sm:table-cell text-gray-900 dark:text-gray-100 text-xs sm:text-sm">
                       {formatCurrency(contrato.valor_contrato)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 hidden md:table-cell text-gray-900 dark:text-gray-100 text-xs sm:text-sm">
                       {contrato.duracion_anos} años
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 hidden lg:table-cell text-gray-900 dark:text-gray-100 text-xs sm:text-sm">
                       {formatDate(contrato.inicio_vigencia)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Link
-                        to={`/contratos/${contrato.id}/detalle`}
-                        className="text-blue-600 hover:text-blue-900 mr-3"
-                      >
-                        <Button variant="primary" size="sm">
-                          Ver
-                        </Button>
-                      </Link>
-                      <Link
-                        to={`/contratos/${contrato.id}/editar`}
-                        className="text-yellow-600 hover:text-yellow-900 mr-3"
-                      >
-                       <Button variant="secondary" size="sm">
-                          Editar
-                        </Button>
-                      </Link>
-                      {/* <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDelete(contrato.id)}
-                      >
-                        Eliminar
-                      </Button> */}
+                    <td className="px-2 sm:px-3 md:px-4 py-2 sm:py-3">
+                      <div className="flex gap-1 justify-center">
+                        <Link to={`/contratos/${contrato.id}/detalle`}>
+                          <Button variant="primary" size="sm" className="text-xs">
+                            Ver
+                          </Button>
+                        </Link>
+                        <Link to={`/contratos/${contrato.id}/editar`}>
+                          <Button variant="secondary" size="sm" className="text-xs">
+                            Editar
+                          </Button>
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -279,44 +271,45 @@ const ContratosList = () => {
       </div>
 
       {/* Paginación */}
-      <div className="mt-6 flex justify-between items-center">
-        <p className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">
-          Mostrando {contratos.length} de {totalCount} contratos
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 border-t border-gray-200 dark:border-gray-700 pt-3 sm:pt-4">
+        <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100 font-medium text-center sm:text-left">
+          Mostrando {contratos.length} de {totalCount}
         </p>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1 sm:gap-2 items-center justify-center">
           <button
             onClick={() => {
               if (page > 1) setPage(page - 1)
             }}
             disabled={page <= 1}
-            className={`px-3 py-1 rounded ${
+            className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded font-medium transition-colors ${
               page <= 1
                 ? 'opacity-50 cursor-not-allowed'
-                : 'bg-gray-100 hover:bg-gray-200'
+                : 'bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400'
             }`}
           >
-            Anterior
+            ← Anterior
           </button>
-          <span className="text-2xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 text-2xl font-bold text-gray-800">
-            Página {page} de {totalPages}
+          <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 px-2">
+            {page} / {totalPages}
           </span>
           <button
             onClick={() => {
               if (page < totalPages) setPage(page + 1)
             }}
             disabled={page >= totalPages}
-            className={`px-3 py-1 rounded ${
+            className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded font-medium transition-colors ${
               page >= totalPages
                 ? 'opacity-50 cursor-not-allowed'
-                : 'bg-gray-100 hover:bg-gray-200'
+                : 'bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400'
             }`}
           >
-            Siguiente
+            Siguiente →
           </button>
         </div>
       </div>
     </div>
   )
+
 }
 
 export default ContratosList

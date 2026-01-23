@@ -291,34 +291,33 @@ const FacturasDetail = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Detalle Factura</h2>
-        <div className="flex gap-2">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Detalle Factura</h2>
+        <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
           <Link to={`/facturas/${id}/editar`}>
-            <Button variant="secondary">Editar</Button>
+            <Button variant="secondary" className="w-full sm:w-auto text-xs sm:text-sm">✏️ Editar</Button>
           </Link>
-          <Button variant="danger" onClick={handleDelete}>
-            Eliminar
+          <Button variant="danger" onClick={handleDelete} className="w-full sm:w-auto text-xs sm:text-sm">
+            🗑️ Eliminar
           </Button>
           <Link to="/facturas">
-            <Button variant="outline">Volver</Button>
+            <Button variant="outline" className="w-full sm:w-auto text-xs sm:text-sm">← Volver</Button>
           </Link>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+      <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
         {/* Encabezado */}
-        <div className="bg-secondary text-white rounded-lg p-4 mb-6">
-          <h3 className="text-2xl font-bold text-center"> {factura.cableoperador?.nombre_largo || 'N/A'}</h3>
-          <p className="text-center mt-2 opacity-90 text-black font-semibold">
-            Factura N° {factura.Num_factura}
-          
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-center">{factura.cableoperador?.nombre_largo || 'N/A'}</h3>
+          <p className="text-center mt-2 text-xs sm:text-sm md:text-base opacity-90">
+            📄 Factura N° {factura.Num_factura}
           </p>
         </div>
 
         {/* Información de la factura */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <DetailField label="Mes de Uso" value={formatMonthYearString(factura.Mes_uso)} />
           <DetailField label="Fecha Facturación" value={formatDate(factura.Fecha_facturacion)} />
           <DetailField label="Fecha Vencimiento" value={formatDate(factura.Fecha_vencimiento)} />
@@ -335,67 +334,68 @@ const FacturasDetail = () => {
         </div>
 
         {/* Resumen de pagos */}
-        <div className="border-t pt-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Resumen de Pagos</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-600">Monto Pagado</p>
-              <p className="text-2xl font-bold text-blue-600">${formatNumber(factura.monto_pagado)}</p>
+        <div className="border-t border-blue-200 dark:border-blue-600 pt-4 sm:pt-6">
+          <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100 mb-4">Resumen de Pagos</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+            <div className="bg-blue-100 dark:bg-blue-900/30 p-3 sm:p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Monto Pagado</p>
+              <p className="text-lg sm:text-2xl font-bold text-blue-600 dark:text-blue-400">${formatNumber(factura.monto_pagado)}</p>
             </div>
-            <div className="bg-red-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-600">Monto Pendiente</p>
-              <p className="text-2xl font-bold text-red-600">${formatNumber(factura.monto_pendiente)}</p>
+            <div className="bg-red-100 dark:bg-red-900/30 p-3 sm:p-4 rounded-lg border border-red-200 dark:border-red-700">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Monto Pendiente</p>
+              <p className="text-lg sm:text-2xl font-bold text-red-600 dark:text-red-400">${formatNumber(factura.monto_pendiente)}</p>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-600">Valor Facturado</p>
-              <p className="text-2xl font-bold text-green-600">${formatNumber(factura.Valor_facturado_iva)}</p>
+            <div className="bg-green-100 dark:bg-green-900/30 p-3 sm:p-4 rounded-lg border border-green-200 dark:border-green-700">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Valor Facturado</p>
+              <p className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">${formatNumber(factura.Valor_facturado_iva)}</p>
             </div>
           </div>
         </div>
 
         {/* Registros de pagos - Diseño de tarjetas */}
-        <div className="border-t pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-gray-800">Registros de Pago ({factura.pagos?.length || 0})</h3>
+        <div className="border-t border-blue-200 dark:border-blue-600 pt-4 sm:pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
+            <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100">Registros de Pago ({factura.pagos?.length || 0})</h3>
             <Button
               variant="primary"
               onClick={() => setShowPagoModal(true)}
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
-              + Registrar Pago
+              ✅ Registrar Pago
             </Button>
           </div>
 
           {factura.pagos && factura.pagos.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {factura.pagos.map((pago) => (
-                <div key={pago.id} className="bg-gray-200 rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-start mb-4">
+                <div key={pago.id} className="bg-gray-50 dark:bg-gray-900/30 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:bg-gray-900/50 transition-all">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
                     <div>
-                      <p className="font-semibold text-black-600">Fecha Pago</p>
-                      <p className="text-sm text-gray-900">{formatDate(pago.fecha_pago)}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Fecha Pago</p>
+                      <p className="text-sm sm:text-base text-gray-900 dark:text-gray-100">{formatDate(pago.fecha_pago)}</p>
                     </div>
-                    <div className="text-left">
-                      <p className="font-semibold text-black-600">Monto</p>
-                      <p className="text-2xl font-bold text-green-600">${formatNumber(pago.monto_pagado)}</p>
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Monto</p>
+                      <p className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">${formatNumber(pago.monto_pagado)}</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-4">
                     <div>
-                      <p className="font-semibold text-gray-600">Período Pago</p>
-                      <p className="text-sm font-medium">{formatMonthYearString(pago.periodo_pago)}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Período Pago</p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100">{formatMonthYearString(pago.periodo_pago)}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-600">Fecha Indicador Recaudo</p>
-                      <p className="text-sm">{pago.fecha_indicador_recaudo ? formatMonthYearString(pago.fecha_indicador_recaudo) : '-'}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Indicador</p>
+                      <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100">{pago.fecha_indicador_recaudo ? formatMonthYearString(pago.fecha_indicador_recaudo) : '-'}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-600">Fecha Aplicación</p>
-                      <p className="text-sm">{pago.fecha_aplicacion ? formatDate(pago.fecha_aplicacion) : '-'}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Aplicación</p>
+                      <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100">{pago.fecha_aplicacion ? formatDate(pago.fecha_aplicacion) : '-'}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-600">Fecha Confirmación</p>
-                      <p className="text-sm">{pago.fecha_confirmacion ? formatDate(pago.fecha_confirmacion) : '-'}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Confirmación</p>
+                      <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100">{pago.fecha_confirmacion ? formatDate(pago.fecha_confirmacion) : '-'}</p>
                     </div>
                   </div>
 

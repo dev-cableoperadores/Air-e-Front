@@ -8,7 +8,7 @@ const Button = ({
   className = '',
   ...props 
 }) => {
-  const baseStyles = 'font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
+  const baseStyles = 'font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-95'
   
   const variants = {
     primary: 'bg-primary text-white hover:bg-primary-hover focus:ring-primary',
@@ -19,9 +19,9 @@ const Button = ({
   }
   
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm',
+    md: 'px-3 sm:px-4 py-2 text-sm sm:text-base',
+    lg: 'px-4 sm:px-6 py-2.5 sm:py-3 text-base sm:text-lg',
   }
   
   const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : ''

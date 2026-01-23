@@ -94,42 +94,38 @@ const Dashboard = () => {
   ]
 
   return (
-    <div className="space-y-6 max-w-full overflow-x-hidden px-3 sm:px-0">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 flex-col sm:flex-row sm:items-start min-w-0">
-        <div className="w-full sm:w-auto min-w-0">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Dashboard
-          </h1>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
-            Bienvenido al sistema de gestión de AIR-E
-          </p>
-        </div>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Dashboard
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+          Bienvenido al sistema de gestión de AIR-E
+        </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
         {statsCards.map((stat) => {
           const IconComponent = stat.icon
           return (
             <Link
               key={stat.title}
               to={stat.link}
-              className="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 md:p-5 hover:shadow-md transition-shadow"
+              className="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-2 sm:p-3 md:p-5 hover:shadow-md transition-shadow"
             >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between min-w-0 gap-2 sm:gap-4">
-                <div className="flex-1 min-w-0 pr-1 sm:pr-2 md:pr-4 lg:pr-6">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 truncate min-h-[20px]">
-                    {stat.title}
+              <div className="flex flex-col gap-2">
+                <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 line-clamp-2">
+                  {stat.title}
+                </p>
+                <div className="flex items-end justify-between">
+                  <p className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 leading-none">
+                    {stat.value}
                   </p>
-                  <div className="flex items-baseline gap-x-2 pr-1 flex-wrap sm:flex-nowrap align-baseline max-w-full">
-                    <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap tabular-nums leading-none">
-                      {stat.value}
-                    </p>
+                  <div className={`p-2 sm:p-3 rounded-lg ${stat.color} flex-shrink-0`}>
+                    <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                   </div>
-                </div>
-                <div className={`p-3 md:p-4 rounded-lg ${stat.color} flex-shrink-0 ml-0 sm:ml-3 mt-2 sm:mt-0 self-end sm:self-auto`}>
-                  <IconComponent className="w-6 h-6 md:w-7 md:h-7 text-white" />
                 </div>
               </div>
             </Link>
@@ -138,27 +134,27 @@ const Dashboard = () => {
       </div>
 
       {/* Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
         {/* Quick Actions */}
-        <div className="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 md:p-5">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <div className="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 sm:p-4 md:p-5">
+          <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
               Acciones Rápidas
             </h3>
-            <TrendingUp className="w-5 h-5 text-gray-400" />
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
           </div>
 
-          <div className="grid grid-cols-1 gap-3 md:gap-4">
+          <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4">
             <Link to="/cableoperadores/nuevo">
-              <button className="w-full p-3 md:p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors group text-left">
-                <div className="flex items-center">
-                  <Cable className="w-6 h-6 text-gray-400 group-hover:text-blue-500 mr-3" />
-                  <div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 block">
+              <button className="w-full p-2 sm:p-3 md:p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors group text-left">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Cable className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-400 group-hover:text-blue-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 block">
                       Nuevo Cableoperador
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Registrar nuevo cableoperador
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block">
+                      Registrar nuevo
                     </span>
                   </div>
                 </div>
@@ -166,15 +162,15 @@ const Dashboard = () => {
             </Link>
 
             <Link to="/contratos/nuevo">
-              <button className="w-full p-3 md:p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors group text-left">
-                <div className="flex items-center">
-                  <FileText className="w-6 h-6 text-gray-400 group-hover:text-green-500 mr-3" />
-                  <div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-green-600 dark:group-hover:text-green-400 block">
+              <button className="w-full p-2 sm:p-3 md:p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors group text-left">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-400 group-hover:text-green-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-green-600 dark:group-hover:text-green-400 block">
                       Nuevo Contrato
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Crear nuevo contrato
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block">
+                      Crear nuevo
                     </span>
                   </div>
                 </div>
@@ -184,23 +180,23 @@ const Dashboard = () => {
         </div>
 
         {/* Welcome Card */}
-        <div className="w-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-700 p-3 md:p-5">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <div className="w-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-5">
+          <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
               Bienvenido
             </h3>
-            <Activity className="w-5 h-5 text-blue-500" />
+            <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
           </div>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
+          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">
             Sistema de gestión de cableoperadores y contratos de AIR-E
           </p>
           <div className="space-y-2">
-            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+            <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-green-500 flex-shrink-0" />
               <span>Sistema operativo</span>
             </div>
-            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+            <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-green-500 flex-shrink-0" />
               <span>Datos actualizados</span>
             </div>
           </div>
