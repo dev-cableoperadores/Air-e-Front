@@ -82,5 +82,33 @@ const authService = {
   },
 }
 
-export default authService
+// Función helper para obtener el token de acceso
+export const getToken = () => {
+  return localStorage.getItem('access_token')
+}
 
+// Función helper para obtener el refresh token
+export const getRefreshToken = () => {
+  return localStorage.getItem('refresh_token')
+}
+
+// Función helper para guardar tokens
+export const setTokens = (accessToken, refreshToken) => {
+  localStorage.setItem('access_token', accessToken)
+  if (refreshToken) {
+    localStorage.setItem('refresh_token', refreshToken)
+  }
+}
+
+// Función helper para limpiar tokens
+export const clearTokens = () => {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+}
+
+// Función helper para verificar si hay sesión activa
+export const isAuthenticated = () => {
+  return !!getToken()
+}
+
+export default authService
