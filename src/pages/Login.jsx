@@ -30,23 +30,33 @@ const Login = () => {
     
     try {
       const result = await login(username, password)
-      
+      const user = await checkAuth()
       if (result.success) {
         toast.success('¡Bienvenido a AIR-E!', {
           position: "bottom-right",
           duration: 3000,
         })
-        navigate('/')
-      } else {
-        toast.error(result.error || 'Error al iniciar sesión')
-      }
-    } catch (error) {
-      toast.error('Error al iniciar sesión')
-    } finally {
-      setIsLoggingIn(false)
-    }
-  }
+        
+         // 2. Usamos el usuario que devolvió la función login
+       const user = result.user;
 
+       // 3. Lógica de redirección basada en roles
+       if (user.is_inspector && !user.is_staff) {
+         navigate('/inspector');
+       } else {
+         navigate('/');
+       }
+      
+     } else {
+       toast.error(result.error || 'Error al iniciar sesión');
+    }
+  } catch (error) {
+    console.error("Error en login:", error);
+    toast.error('Error al iniciar sesión');
+  } finally {
+    setIsLoggingIn(false);
+  }
+};
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center">

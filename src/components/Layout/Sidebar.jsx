@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Home, Cable, FileText, ChevronLeft, ChevronRight, Receipt, Layers } from 'lucide-react'
+import { Home, Cable, FileText, ChevronLeft, ChevronRight, Receipt, Layers, ClipboardCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
@@ -10,7 +10,8 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
   const isCollapsed = typeof collapsed !== 'undefined' ? collapsed : internalCollapsed
   const location = useLocation()
 
-  const menuItems = [
+  let menuItems = [];
+  const Items = [
     { path: '/', label: 'Inicio', icon: Home },
     { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
     { path: '/contratos', label: 'Contratos', icon: FileText },
@@ -18,7 +19,26 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
     { path: '/facturas', label: 'Facturas', icon: Receipt },
   ]
+  const InspectorItems = [
+    { path: '/inspector', label: 'Inspector', icon: ClipboardCheck },
+  ]
+  const AdminItems = [
+    { path: '/', label: 'Inicio', icon: Home },
+    { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
+    { path: '/contratos', label: 'Contratos', icon: FileText },
+    { path: '/proyectos', label: 'Proyectos', icon: Layers },
+    { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
+    { path: '/facturas', label: 'Facturas', icon: Receipt },
+    { path: '/inspector', label: 'Inspector', icon: ClipboardCheck },
+  ]
 
+  if (user && user.is_staff) {
+    menuItems = AdminItems
+  } else if (user && user.is_inspector) {
+    menuItems = InspectorItems
+  } else {
+    menuItems = Items
+  }
   const isActiveRoute = (path) => {
     if (path === '/') return location.pathname === '/'
     return location.pathname === path || location.pathname.startsWith(path + '/')

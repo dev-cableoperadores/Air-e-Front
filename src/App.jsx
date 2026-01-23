@@ -28,7 +28,7 @@ import ProyectosNew from './pages/Proyectos/ProyectosNew'
 import ProyectosDetail from './pages/Proyectos/ProyectosDetail'
 import ProyectosEdit from './pages/Proyectos/ProyectosEdit'
 import MainLayout from './components/Layout/MainLayout'
-
+import InspeccionesList from './pages/Inspeciones/List'
 function App() {
   return (
     <AuthProvider>
@@ -297,6 +297,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+            <Route
+              path="/inspector"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <InspeccionesList />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster 

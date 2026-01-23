@@ -25,6 +25,7 @@ const authService = {
       username,
       password,
     })
+    console.log('Login response:', response)
     return response.data
   },
 
