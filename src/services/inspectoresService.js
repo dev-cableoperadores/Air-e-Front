@@ -13,6 +13,23 @@ const inspectoresService = {
     const response = await api.get(`/api/inspectores/${id}/`)
     return response.data
   },
+  // Crear nuevo inspector
+  create: async (data) => {
+    const response = await api.post('/api/inspectores/', data);
+    return response.data;
+  },
+
+  // Actualizar inspector
+  update: async (id, data) => {
+    const response = await api.put(`/api/inspectores/${id}/`, data);
+    return response.data;
+  },
+
+  // Eliminar inspector
+  delete: async (id) => {
+    const response = await api.delete(`/api/inspectores/${id}/`);
+    return response.data;
+  },
 }
 
 export default inspectoresService

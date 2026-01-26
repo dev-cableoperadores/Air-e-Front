@@ -28,7 +28,11 @@ import ProyectosNew from './pages/Proyectos/ProyectosNew'
 import ProyectosDetail from './pages/Proyectos/ProyectosDetail'
 import ProyectosEdit from './pages/Proyectos/ProyectosEdit'
 import MainLayout from './components/Layout/MainLayout'
-import InspeccionesList from './pages/Inspeciones/UploadKmz'
+import InspeccionesList from './pages/Inspecciones/UploadKmz'
+import AsignacionProyectos from './pages/Inspecciones/AsignacionProyectos';
+import InventarioForm from './pages/Inspecciones/InventarioForm';
+import PrstsForm from './pages/Inspecciones/PrstsForm';
+
 function App() {
   return (
     <AuthProvider>
@@ -298,11 +302,41 @@ function App() {
             }
           />
             <Route
-              path="/inspector"
+              path="/inspecciones"
               element={
                 <ProtectedRoute>
                   <MainLayout>
                     <InspeccionesList />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspecciones/asignacion"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <AsignacionProyectos />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspecciones/inventario/:proyectoId"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <InventarioForm />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspecciones/prsts/:inventarioId"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <PrstsForm />
                   </MainLayout>
                 </ProtectedRoute>
               }

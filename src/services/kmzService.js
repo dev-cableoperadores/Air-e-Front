@@ -37,3 +37,30 @@ export const fetchProyectos = async (token) => {
     console.log('=== fetchProyectos END ===');
   }
 };
+
+// Listado de kmz importados que aun no han sido asociados a inspecciones
+export const fetchKmzImports = async (token) => {
+  try {
+    console.log('=== fetchKmzImports START ===');
+    console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
+
+    if (!token || typeof token !== 'string') {
+      throw new Error('Token inválido: ' + typeof token);
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+
+    const response = await api.get('/api/inspectores/kmz-imports-novinculados/');
+
+    console.log('Proyectos obtenidos:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error en fetchKmzImports:', error);
+    throw error;
+  } finally {
+    console.log('=== fetchKmzImports END ===');
+  }
+};
