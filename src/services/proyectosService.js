@@ -43,7 +43,7 @@ const proyectosService = {
     return response.data
   },
   getProyectoById: async (id) => {
-    const response = await api.get(`/api/proyectos/${id}/`)
+    const response = await api.get(`/api/proyectos/single/${id}/`)// modificar
     return response.data
   },
   createProyecto: async (data) => {

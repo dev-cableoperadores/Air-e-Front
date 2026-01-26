@@ -28,7 +28,7 @@ import ProyectosNew from './pages/Proyectos/ProyectosNew'
 import ProyectosDetail from './pages/Proyectos/ProyectosDetail'
 import ProyectosEdit from './pages/Proyectos/ProyectosEdit'
 import MainLayout from './components/Layout/MainLayout'
-import InspeccionesList from './pages/Inspeciones/List'
+import InspeccionesList from './pages/Inspeciones/UploadKmz'
 function App() {
   return (
     <AuthProvider>

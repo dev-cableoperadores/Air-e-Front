@@ -1,0 +1,95 @@
+// pages/inspecciones/List.jsx
+import { MapContainer, TileLayer } from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
+import { fetchProyectos } from '../../services/kmzService';
+import { convertDjangoToFeatures } from '../../utils/kmlParser';
+import MapChangeView from '../../components/MapChangeView';
+import MapFeatures from '../../components/MapFeatures';
+import KMZUpload from '../../components/KMZUpload';
+import FeatureStats from '../../components/FeatureStats';
+import './UploadKmz.css';
+
+function InspeccionesList() {
+  const [kmzFeatures, setKmzFeatures] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        console.log('\n========== Proyectos useEffect START ==========');
+        const token = getToken();
+        console.log('getToken() retornó:', token ? `${token.substring(0, 30)}...` : 'null/undefined');
+
+        if (!token) {
+          console.warn('❌ No hay token disponible');
+          throw new Error('No hay token de autenticación');
+        }
+
+        console.log('✅ Token encontrado, llamando fetchProyectos...');
+        const proyectos = await fetchProyectos(token);
+        console.log('✅ Proyectos obtenidos correctamente');
+
+        const features = convertDjangoToFeatures(proyectos);
+        setKmzFeatures(features);
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+        setError('Error al cargar datos iniciales: ' + error.message);
+      } finally {
+        setLoading(false);
+        console.log('========== Proyectos useEffect END ==========\n');
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const handleUploadSuccess = (newFeatures) => {
+    setKmzFeatures(prevFeatures => [...prevFeatures, ...newFeatures]);
+  };
+
+  if (loading) {
+    return (
+      <div className="proyectos-container">
+        <div className="loading-message">
+          <p>Cargando proyectos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="proyectos-container">
+      <h1>Gestión de Proyectos KMZ</h1>
+
+      <KMZUpload onUploadSuccess={handleUploadSuccess} />
+
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
+
+      <FeatureStats features={kmzFeatures} />
+
+      <div className="map-section">
+        <h2>Visualización de Proyectos en el Mapa</h2>
+        <MapContainer
+          center={[-17.7833, -63.1821]}
+          zoom={13}
+          style={{ height: '600px', width: '100%' }}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <MapChangeView features={kmzFeatures} />
+          <MapFeatures features={kmzFeatures} />
+        </MapContainer>
+      </div>
+    </div>
+  );
+}
+
+export default InspeccionesList;
