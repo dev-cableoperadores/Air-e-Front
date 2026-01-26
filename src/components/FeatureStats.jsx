@@ -14,16 +14,16 @@ function FeatureStats({ features }) {
     <div className="feature-stats">
       <div className="stat-item">
         <span className="stat-count">{pointCount}</span>
-        <span className="stat-label">Puntos</span>
+        <span className="stat-label"> Postes</span>
       </div>
-      <div className="stat-item">
+      {/* <div className="stat-item">
         <span className="stat-count">{lineCount}</span>
         <span className="stat-label">Líneas</span>
       </div>
       <div className="stat-item">
         <span className="stat-count">{polygonCount}</span>
         <span className="stat-label">Polígonos</span>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -2,19 +2,19 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { useState, useEffect } from 'react';
 import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
-import { fetchProyectos } from '../../services/kmzService';
+import { fetchKmzImportsNoInspeccionados } from '../../services/kmzService';
 import { convertDjangoToFeatures } from '../../utils/kmlParser';
 import MapChangeView from '../../components/MapChangeView';
 import MapFeatures from '../../components/MapFeatures';
 import KMZUpload from '../../components/KMZUpload';
 import FeatureStats from '../../components/FeatureStats';
 import './UploadKmz.css';
-
+import { useAuth } from '../../context/AuthContext';
 function InspeccionesList() {
   const [kmzFeatures, setKmzFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { user } = useAuth();
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -28,7 +28,7 @@ function InspeccionesList() {
         }
 
         console.log('✅ Token encontrado, llamando fetchProyectos...');
-        const proyectos = await fetchProyectos(token);
+        const proyectos = await fetchKmzImportsNoInspeccionados(token);
         console.log('✅ Proyectos obtenidos correctamente');
 
         const features = convertDjangoToFeatures(proyectos);
@@ -61,9 +61,13 @@ function InspeccionesList() {
 
   return (
     <div className="proyectos-container">
-      <h1>Gestión de Proyectos KMZ</h1>
-
+      {user && user.is_inspector && !user.is_staff ? (
+        <h1>Inspecciones</h1>
+      ) : (
       <KMZUpload onUploadSuccess={handleUploadSuccess} />
+      )}
+
+
 
       {error && (
         <div className="error-message">

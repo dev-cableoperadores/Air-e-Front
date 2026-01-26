@@ -1,5 +1,5 @@
 // components/KMZUpload.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import JSZip from 'jszip';
 import { getToken } from '../services/authService'; // Ajustado a tu ruta real
 import { uploadKMZData } from '../services/kmzService';
@@ -71,7 +71,16 @@ function KMZUpload({ onUploadSuccess }) {
       setUploading(false);
     }
   };
+  // Dentro de tu componente, añade este useEffect
+useEffect(() => {
+  if (uploadStatus) {
+    const timer = setTimeout(() => {
+      setUploadStatus(null); // O setUploadStatus('') según como lo inicialices
+    }, 4000); // 4 segundos de duración
 
+    return () => clearTimeout(timer); // Limpieza si el componente se desmonta
+  }
+}, [uploadStatus]);
   return (
     <div className="kmz-upload-section">
       <h2>Cargar Archivo KMZ</h2>
@@ -83,8 +92,25 @@ function KMZUpload({ onUploadSuccess }) {
         className="file-input"
       />
       {uploadStatus && (
-        <div className={`upload-status ${uploadStatus.includes('✓') ? 'success' : uploadStatus.includes('✗') ? 'error' : 'info'}`}>
-          {uploadStatus}
+        <div className="fixed top-5 right-5 z-50 animate-fade-in-down"> 
+          <div className={`
+            px-6 py-3 rounded-lg shadow-2xl border-l-4 flex items-center space-x-2
+            ${uploadStatus.includes('✓') 
+              ? 'bg-green-100 border-green-500 text-green-800' 
+              : uploadStatus.includes('✗') 
+                ? 'bg-red-100 border-red-500 text-red-800' 
+                : 'bg-blue-100 border-blue-500 text-blue-800'}
+          `}>
+            <span className="font-medium">{uploadStatus}</span>
+            
+            {/* Botón opcional para cerrar manualmente */}
+            <button 
+              onClick={() => setUploadStatus(null)}
+              className="ml-4 text-lg font-bold opacity-50 hover:opacity-100"
+            >
+              ×
+            </button>
+          </div>
         </div>
       )}
     </div>

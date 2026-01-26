@@ -8,6 +8,8 @@ import { getToken } from '../../services/authService';
 import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../../context/AuthContext'
+import { handleMarcarInspeccionado } from '../../services/kmzService';
 
 function AsignacionProyectos() {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ function AsignacionProyectos() {
   const [kmzImports, setKmzImports] = useState([]);
   const [inspectores, setInspectores] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     nombre: '',
     kmzimport_id: '',
@@ -26,7 +28,16 @@ function AsignacionProyectos() {
   useEffect(() => {
     loadData();
   }, []);
-
+  // Agrega esta función arriba de tu return
+const onFinalizarInspeccion = async (id) => {
+  try {
+    await handleMarcarInspeccionado(id);
+    // IMPORTANTE: Refrescar los datos locales para que el botón cambie a ✅
+    loadData(); 
+  } catch (error) {
+    // El error ya lo maneja el service con toast, pero aquí detenemos la ejecución
+  }
+};
   const loadData = async () => {
     try {
       setLoading(true);
@@ -99,6 +110,7 @@ function AsignacionProyectos() {
 
   return (
     <div className="w-full space-y-4 p-4">
+      {user.is_staff == true && (
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
         <div className="flex items-center justify-between">
           <div>
@@ -114,9 +126,10 @@ function AsignacionProyectos() {
           </Button>
         </div>
       </div>
+      )}
 
       {/* Formulario de creación */}
-      {showForm && (
+      {showForm && user.is_staff == true && (
         <div className="bg-white dark:bg-gray-800 p-6 shadow rounded-lg">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
             Crear Nuevo Proyecto
@@ -242,6 +255,19 @@ function AsignacionProyectos() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    {user.is_staff == true && (
+                    <Button
+                      size="sm"
+                      variant={proyecto.inspeccionado ? "success" : "outline"}
+                      className={proyecto.inspeccionado 
+                        ? "bg-green-100 text-green-700 border-green-200 cursor-default" 
+                        : "text-blue-600 border-blue-600 hover:bg-blue-50"}
+                      onClick={() => !proyecto.inspeccionado && onFinalizarInspeccion(proyecto.id)}
+                      disabled={proyecto.inspeccionado}
+                    >
+                      {proyecto.inspeccionado ? '✅ Inspeccionado' : '🔎 Finalizar'}
+                    </Button>
+                    )}
                     <Button
                       size="sm"
                       variant="outline"
@@ -249,6 +275,7 @@ function AsignacionProyectos() {
                     >
                       📝 Inventario
                     </Button>
+                    {user.is_staff == true && (
                     <Button
                       size="sm"
                       variant="outline"
@@ -257,6 +284,7 @@ function AsignacionProyectos() {
                     >
                       🗑️
                     </Button>
+                    )}
                   </td>
                 </tr>
               ))}

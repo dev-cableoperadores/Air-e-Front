@@ -12,47 +12,49 @@ const Login = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   const { login, isAuthenticated, loading, checkAuth } = useAuth()
   const navigate = useNavigate()
-
+  const { user } = useAuth()
   // Redirect if already authenticated
-  if (isAuthenticated && !loading) {
-    return <Navigate to="/" replace />
+// Al inicio del componente Login
+if (isAuthenticated && !loading && user) {
+  if (user.is_inspector && !user.is_staff) {
+    return <Navigate to="/inspecciones" replace />;
+  }
+  return <Navigate to="/" replace />;
+}
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!username || !password) {
+    toast.error('Por favor ingresa usuario y contraseña');
+    return;
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!username || !password) {
-      toast.error('Por favor ingresa usuario y contraseña')
-      return
-    }
-    
-    setIsLoggingIn(true)
-    
-    try {
-      const result = await login(username, password)
-      const user = await checkAuth()
-      if (result.success) {
-        toast.success('¡Bienvenido a AIR-E!', {
-          position: "bottom-right",
-          duration: 3000,
-        })
-        
-         // 2. Usamos el usuario que devolvió la función login
-       const user = result.user;
+  setIsLoggingIn(true);
 
-       // 3. Lógica de redirección basada en roles
-       if (user.is_inspector && !user.is_staff) {
-         navigate('/inspector');
-       } else {
-         navigate('/');
-       }
-      
-     } else {
-       toast.error(result.error || 'Error al iniciar sesión');
+  try {
+    const result = await login(username, password);
+    console.log("Resultado del login:", result);
+
+    if (result.success) {
+      // Prioridad: Si es inspector y no es staff, va a /inspecciones
+      if (result.user.is_inspector && !result.user.is_staff) {
+        navigate('/inspecciones');
+      } else {
+        // Para cualquier otro caso de éxito (Admin/Staff)
+        navigate('/');
+      }
+
+      toast.success('¡Bienvenido a AIR-E!', {
+        position: "bottom-right",
+        duration: 3000,
+      });
+    } else {
+      toast.error(result.error || 'Error al iniciar sesión');
     }
-  } catch (error) {
+  } catch (error) { // <--- ESTO FALTABA
     console.error("Error en login:", error);
-    toast.error('Error al iniciar sesión');
+    toast.error('Error de conexión con el servidor');
   } finally {
     setIsLoggingIn(false);
   }

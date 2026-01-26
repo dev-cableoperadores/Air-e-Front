@@ -10,7 +10,7 @@ const inventarioService = {
 
   // Obtener inventario por proyecto
   getByProyecto: async (proyectoId) => {
-    const response = await api.get(`/api/proyectos/inventario/?proyecto=${proyectoId}`);
+    const response = await api.get(`/api/proyectos/inventario/?search=${proyectoId}`);
     return response.data;
   },
 
