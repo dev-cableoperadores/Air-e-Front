@@ -4,13 +4,13 @@ import api from '../utils/api';
 const prstsService = {
   // Obtener todos los PRSTs
   getAll: async () => {
-    const response = await api.get('/api/inspectores/prsts-inspeccionados/');
+    const response = await api.get('/api/proyectos/prsts-inspeccionados/');
     return response.data;
   },
 
   // Obtener PRSTs por inventario
   getByInventario: async (inventarioId) => {
-    const response = await api.get(`/api/inspectores/prsts-inspeccionados/?inventario=${inventarioId}`);
+    const response = await api.get(`/api/proyectos/prsts-inspeccionados/?inventario=${inventarioId}`);
     return response.data;
   },
 

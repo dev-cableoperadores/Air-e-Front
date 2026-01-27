@@ -10,6 +10,9 @@ import KMZUpload from '../../components/KMZUpload';
 import FeatureStats from '../../components/FeatureStats';
 import './UploadKmz.css';
 import { useAuth } from '../../context/AuthContext';
+import Button from '../../components/UI/Button'
+import { Link } from 'react-router-dom';
+
 function InspeccionesList() {
   const [kmzFeatures, setKmzFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,10 +63,14 @@ function InspeccionesList() {
   }
 
   return (
-    <div className="proyectos-container">
+    <div className="proyectos-container text-center px-4 py-6 text-gray-800">
       {user && user.is_inspector && !user.is_staff ? (
         <h1>Inspecciones</h1>
       ) : (
+        <h1>Proyectos KMZ para Inspección</h1>
+      )}
+      <Link to="/inspecciones/asignacion"><Button>Ver Inspecciones</Button></Link>
+      {user && user.is_staff && (
       <KMZUpload onUploadSuccess={handleUploadSuccess} />
       )}
 

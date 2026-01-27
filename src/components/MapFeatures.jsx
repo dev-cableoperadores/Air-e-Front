@@ -1,11 +1,21 @@
 // components/MapFeatures.jsx
-import { Marker, Popup, Polyline, Polygon } from 'react-leaflet';
+import { Marker, Popup, Polyline, Polygon, Tooltip } from 'react-leaflet';
 import { useMapEvents } from 'react-leaflet';
-
+import { useState, useEffect } from 'react';
 /**
  * Renderiza las features del KMZ en el mapa con soporte para clicks
  */
 function MapFeatures({ features, onPosteClick, clickEnabled = false }) {
+const [currentZoom, setCurrentZoom] = useState(13);
+
+  // 2. Configuramos los eventos del mapa
+  const map = useMapEvents({
+    zoomend: () => {
+      const newZoom = map.getZoom();
+      console.log("Zoom actual:", newZoom); // Para que verifiques en consola
+      setCurrentZoom(newZoom);
+    },
+  });
   return (
     <>
       {features.map((feature, index) => {
@@ -29,6 +39,15 @@ function MapFeatures({ features, onPosteClick, clickEnabled = false }) {
                 }
               }}
             >
+              {currentZoom > 15 &&(
+              <Tooltip 
+              permanent
+              direction="top" 
+              offset={[-15,-10]} 
+              opacity={0.6}
+            >
+              {feature.name || `Poste ${index + 1}`}
+            </Tooltip>)}
               <Popup>
                 <div>
                   <strong>{feature.proyecto || 'Proyecto'}</strong><br />

@@ -28,7 +28,7 @@ const asignacionService = {
 
   // Eliminar proyecto
   delete: async (id) => {
-    const response = await api.delete(`/api/inspectores/asignacion/${id}/`);
+    const response = await api.delete(`/api/proyectos/asignacion/${id}/`);
     return response.data;
   },
 };

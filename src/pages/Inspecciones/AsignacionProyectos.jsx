@@ -249,7 +249,7 @@ const onFinalizarInspeccion = async (id) => {
                           key={brigada.id}
                           className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs"
                         >
-                          {brigada.nombre || `#${brigada.id}`}
+                          {brigada.user.username || `#${brigada.id}`}
                         </span>
                       ))}
                     </div>
