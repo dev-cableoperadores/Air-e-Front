@@ -7,7 +7,7 @@ import cableoperadoresService from '../../services/cableoperadoresService';
 import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
 import { toast } from 'react-hot-toast';
-
+import PhotoUploader from '../../components/PhotoUploader';
 function PrstsForm() {
   const { inventarioId } = useParams();
   const navigate = useNavigate();
@@ -216,26 +216,21 @@ function PrstsForm() {
               ))}
             </div>
 
-            {/* URLs de fotos */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                URLs de Fotos
-              </label>
-              <input
-                type="url"
-                placeholder="Foto 1"
-                value={formData.rf1}
-                onChange={(e) => setFormData({ ...formData, rf1: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="url"
-                placeholder="Foto 2"
-                value={formData.rf2}
-                onChange={(e) => setFormData({ ...formData, rf2: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            {/* Subida de fotos */}
+            <PhotoUploader
+              proyectoNombre={inventario?.proyecto?.nombre}
+              inventarioId={inventarioId}
+              tipo="prst"
+              maxPhotos={2}
+              label="Fotos del PRST"
+              onUploadSuccess={(urls) => {
+                setFormData(prev => ({
+                  ...prev,
+                  rf1: urls[0] || '',
+                  rf2: urls[1] || ''
+                }));
+              }}
+            />
 
             {/* Observaciones */}
             <div>

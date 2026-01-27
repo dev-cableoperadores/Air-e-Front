@@ -12,7 +12,7 @@ import MapFeatures from '../../components/MapFeatures';
 import MapChangeView from '../../components/MapChangeView';
 import { convertDjangoToFeatures } from '../../utils/kmlParser';
 import L from 'leaflet';
-
+import PhotoUploader from '../../components/PhotoUploader';
 // Corregir el ícono de leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -479,33 +479,22 @@ function InventarioForm() {
               />
             </div>
 
-            {/* URLs de fotos */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                URLs de Fotos
-              </label>
-              <input
-                type="url"
-                placeholder="Foto 1"
-                value={formData.rf1}
-                onChange={(e) => setFormData({ ...formData, rf1: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="url"
-                placeholder="Foto 2"
-                value={formData.rf2}
-                onChange={(e) => setFormData({ ...formData, rf2: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="url"
-                placeholder="Foto 3"
-                value={formData.rf3}
-                onChange={(e) => setFormData({ ...formData, rf3: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+             {/* Subida de fotos */}
+            <PhotoUploader
+              proyectoNombre={proyecto?.nombre}
+              inventarioId={proyectoId || 'nuevo'}
+              tipo="inventario"
+              maxPhotos={3}
+              label="Fotos del Poste"
+              onUploadSuccess={(urls) => {
+                setFormData(prev => ({
+                  ...prev,
+                  rf1: urls[0] || '',
+                  rf2: urls[1] || '',
+                  rf3: urls[2] || ''
+                }));
+              }}
+            />
 
             <div className="flex gap-2">
               <Button type="submit" className="flex-1">
