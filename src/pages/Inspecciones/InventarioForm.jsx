@@ -273,11 +273,14 @@ function InventarioForm() {
           <MapContainer
             center={[-17.7833, -63.1821]}
             zoom={15}
+            maxZoom={22}
             style={{ height: '100%', width: '100%' }}
           >
             <TileLayer
               attribution='&copy; OpenStreetMap contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom={22}      // Límite lógico
+              maxNativeZoom={18}
             />
             
             {/* Centra el mapa en los postes del proyecto */}

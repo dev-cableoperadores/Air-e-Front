@@ -89,11 +89,15 @@ function InspeccionesList() {
         <MapContainer
           center={[-17.7833, -63.1821]}
           zoom={13}
+          maxZoom={22}
           style={{ height: '600px', width: '100%' }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxZoom={22}      // Límite lógico
+            maxNativeZoom={18}
+            
           />
           <MapChangeView features={kmzFeatures} />
           <MapFeatures features={kmzFeatures} />
