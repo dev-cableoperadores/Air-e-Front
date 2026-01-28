@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import prstsService from '../../services/prstsService';
 import inventarioService from '../../services/inventarioService';
 import cableoperadoresService from '../../services/cableoperadoresService';
+import SearchableSelect from '../../components/UI/SearchableSelect';
 import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
 import { toast } from 'react-hot-toast';
@@ -50,7 +51,7 @@ function PrstsForm() {
       setInventario(inventarioData);
 
       // Cargar cableoperadores
-      const cableOpsData = await cableoperadoresService.getAll();
+      const cableOpsData = await cableoperadoresService.getAllAllPages();
       setCableoperadores(Array.isArray(cableOpsData) ? cableOpsData : cableOpsData.results || []);
 
       // Cargar PRSTs del inventario
@@ -126,7 +127,18 @@ function PrstsForm() {
       </div>
     );
   }
+  const cableOptions = cableoperadores.map(cable => ({
+    label: cable.nombre_largo || cable.nombre || `Cableoperador #${cable.id}`,
+    value: cable.id
+  }));
 
+  // Helper para manejar el cambio del SearchableSelect
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
+    setFormData({ ...formData, cableoperador_id: value });
+  };
+
+  if (loading) return <Loading />;
   return (
     <div className="w-full space-y-4 p-4">
       {/* Header */}
@@ -167,22 +179,15 @@ function PrstsForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Cable operador */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Cable Operador *
-              </label>
-              <select
-                required
+              <SearchableSelect
+                label="Cable Operador"
+                name="cableoperador_id"
                 value={formData.cableoperador_id}
-                onChange={(e) => setFormData({ ...formData, cableoperador_id: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Seleccione un cableoperador</option>
-                {cableoperadores.map((cable) => (
-                  <option key={cable.id} value={cable.id}>
-                    {cable.nombre_largo || cable.nombre || `Cableoperador #${cable.id}`}
-                  </option>
-                ))}
-              </select>
+                onChange={handleSelectChange}
+                options={cableOptions}
+                required={true}
+                placeholder="Buscar cableoperador..."
+              />
             </div>
 
             {/* Contadores de elementos */}

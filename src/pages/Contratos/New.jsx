@@ -78,7 +78,7 @@ const ContratosNew = () => {
   const loadCableoperadores = async () => {
     try {
       // Traer solo la primera página para el select (más eficiente)
-      const data = await cableoperadoresService.getAllFull()
+      const data = await cableoperadoresService.getAllAllPages()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {

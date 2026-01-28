@@ -82,14 +82,14 @@ const SearchableSelect = ({
         <input type="hidden" name={name} value={value || ''} />
 
         {open && (
-          <div className="absolute z-40 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg max-h-60 overflow-auto shadow-lg">
+          <div className="absolute z-40 mt-1 w-full text-black dark:bg-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg max-h-60 overflow-auto shadow-lg">
             {filtered.length === 0 ? (
               <div className="p-3 text-xs sm:text-sm text-gray-500 dark:text-gray-400">No hay opciones</div>
             ) : (
               filtered.map((opt) => (
                 <div
                   key={opt.value}
-                  className={`px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${String(opt.value) === String(value) ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                  className={`px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${String(opt.value) === String(value) ? 'bg-gray-100 dark:bg-gray-700 dark:text-white' : ''}`}
                   onClick={() => handleSelect(opt.value)}
                 >
                   {opt.label}
