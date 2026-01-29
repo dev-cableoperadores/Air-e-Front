@@ -238,9 +238,7 @@ function InventarioForm() {
             <Button onClick={() => navigate('/inspecciones/asignacion')} variant="outline">
               ← Volver
             </Button>
-            <Button onClick={() => setShowForm(!showForm)}>
-              {showForm ? '✕ Cancelar' : '+ Nuevo Registro'}
-            </Button>
+            
           </div>
         </div>
       </div>
@@ -251,27 +249,12 @@ function InventarioForm() {
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Mapa del Proyecto
           </h2>
-          {showForm && (
-            <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
-                🎯 <strong>Modo de selección activo:</strong>
-              </p>
-              <ul className="text-xs text-blue-700 dark:text-blue-400 mt-1 ml-4 list-disc">
-                <li>Haz clic en un <strong>poste existente</strong> (marcador azul) para usar su ubicación</li>
-                <li>O haz clic en <strong>cualquier punto del mapa</strong> para establecer una nueva ubicación</li>
-              </ul>
-            </div>
-          )}
-          {!showForm && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              📍 Visualiza los postes existentes del proyecto
-            </p>
-          )}
+          
         </div>
         
         <div style={{ height: '500px', width: '100%' }} className="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
           <MapContainer
-            center={[-17.7833, -63.1821]}
+            center={[10.9878, -74.7889]}
             zoom={15}
             maxZoom={22}
             style={{ height: '100%', width: '100%' }}
@@ -313,7 +296,28 @@ function InventarioForm() {
             )}
           </MapContainer>
         </div>
-
+        <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
+        {showForm && (
+            <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+              <p className="text-sm text-blue-800 dark:text-blue-300">
+                🎯 <strong>Modo de selección activo:</strong>
+              </p>
+              <ul className="text-xs text-blue-700 dark:text-blue-400 mt-1 ml-4 list-disc">
+                <li>Haz clic en un <strong>poste existente</strong> (marcador azul) para usar su ubicación</li>
+                <li>O haz clic en <strong>cualquier punto del mapa</strong> para establecer una nueva ubicación</li>
+              </ul>
+            </div>
+          )}
+          {!showForm && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              📍 Visualiza los postes existentes del proyecto
+            </p>
+          )}
+          <br />
+        <Button onClick={() => setShowForm(!showForm)}>
+              {showForm ? '✕ Cancelar' : '+ Nuevo Registro'}
+        </Button>
+        </div>
         {/* Mostrar coordenadas seleccionadas */}
         {selectedPosition && showForm && (
           <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">

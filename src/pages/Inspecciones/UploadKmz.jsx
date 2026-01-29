@@ -87,7 +87,7 @@ function InspeccionesList() {
       <div className="map-section">
         <h2>Visualización de Proyectos en el Mapa</h2>
         <MapContainer
-          center={[-17.7833, -63.1821]}
+          center={[10.9878, -74.7889]}
           zoom={13}
           maxZoom={22}
           style={{ height: '600px', width: '100%' }}
