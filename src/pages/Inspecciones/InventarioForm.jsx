@@ -105,20 +105,31 @@ function InventarioForm() {
     toast.success(`Coordenadas seleccionadas: ${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.coordenada) return toast.error('Seleccione coordenadas en el mapa');
+    
+    if (!formData.coordenada) {
+      toast.error('Debe seleccionar coordenadas en el mapa');
+      return;
+    }
 
     try {
       const newInventario = await inventarioService.create(formData);
       toast.success('Inventario creado exitosamente');
-      if (window.confirm('¿Desea agregar PRSTs?')) {
-        navigate(`/inspecciones/prsts/${newInventario.id}`);
-      } else {
+      
+      // Si cantidad_prst es 0, no navegar a PRSTs
+      const cantidadPrst = parseInt(formData.cantidad_prst) || 0;
+      
+      if (cantidadPrst === 0) {
+        toast.info('No hay PRSTs para registrar en este poste');
         resetForm();
         loadData();
+      } else {
+        // Navegar a PRSTs en modo bucle
+        navigate(`/inspecciones/prsts/${newInventario.id}?cantidad=${cantidadPrst}&proyecto=${proyectoId}&modo=bucle`);
       }
     } catch (error) {
+      console.error('Error creating inventario:', error);
       toast.error('Error al crear inventario');
     }
   };
@@ -159,6 +170,18 @@ function InventarioForm() {
       toast.success(`Poste "${posteName}" seleccionado`);
     }
   };
+  const handleDelete = async (id) => {
+    if (!window.confirm('¿Estás seguro de eliminar este inventario?')) return;
+    
+    try {
+      await inventarioService.delete(id);
+      toast.success('Inventario eliminado');
+      loadData();
+    } catch (error) {
+      console.error('Error deleting inventario:', error);
+      toast.error('Error al eliminar inventario');
+    }
+  };
   if (loading) return <div className="flex justify-center min-h-screen"><Loading /></div>;
 
   return (
@@ -166,7 +189,7 @@ function InventarioForm() {
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold dark:text-white">Inventario General</h1>
+          <h1 className="text-2xl font-bold dark:text-white text-black">Inventario General</h1>
           <p className="text-sm text-gray-500">Proyecto: <strong>{proyecto?.nombre}</strong></p>
         </div>
         <Button onClick={() => navigate('/inspecciones/asignacion')} variant="outline">← Volver</Button>
