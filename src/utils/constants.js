@@ -343,3 +343,36 @@ export const TIPO_ELEMENTO = [
   { value: 'brazo_extensor', label: 'Brazo extensor' },
 ];
 
+export const ELEMENTOS_EXISTENTES = [
+  { value: 'Cortacircuitos/Seccionador', label: 'Cortacircuitos/Seccionador' },
+  { value: 'Transformador de distribución', label: 'Transformador de distribución' },
+  { value: 'Interruptor de Potencia', label: 'Interruptor de Potencia'},
+  { value: 'Reconectador', label: 'Reconectador' },
+];
+
+export const CHOICE_TIPO_POSTE = [
+  { value: 'BT', label: 'BT'},
+  { value: 'MT', label: 'MT'},
+  { value: 'MT-BT', label: 'MT-BT'},
+  { value: 'Torre STR', label: 'Torre STR'},
+  { value: 'Sin identificar', label: 'Sin identificar'},
+];
+
+export const MATERIALES = [
+  { value: 'Concreto', label: 'Concreto'},
+  { value: 'Madera', label: 'Madera'},
+  { value: 'Metalico', label: 'Metalico'},
+  { value: 'Fibra', label: 'Fibra'},
+];
+
+export const ALTURAS = [
+  { value: 8, label: '8'},
+  { value: 9, label: '9'},
+  { value: 10, label: '10'},
+  { value: 11, label: '11'},
+  { value: 12, label: '12'},
+  { value: 14, label: '14'},
+  { value: 16, label: '16'},
+  { value: 18, label: '18'},
+  { value: 25, label: '25'},
+];
