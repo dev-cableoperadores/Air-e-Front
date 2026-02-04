@@ -164,12 +164,17 @@ function InventarioForm() {
       const newInventario = await inventarioService.create(formData);
       toast.success('Inventario creado exitosamente');
       
-      // Preguntar si desea agregar PRSTs
-      if (window.confirm('¿Desea agregar PRSTs para este poste?')) {
+      const cantidadPrst = parseInt(formData.cantidad_prst) || 0;
+
+      if (cantidadPrst > 0) {
         navigate(`/inspecciones/prsts/${newInventario.id}`);
       } else {
-        resetForm();
-        loadData();
+        if (window.confirm('¿Desea agregar PRSTs para este poste?')) {
+          navigate(`/inspecciones/prsts/${newInventario.id}`);
+        } else {
+          resetForm();
+          loadData();
+        }
       }
     } catch (error) {
       console.error('Error creating inventario:', error);
