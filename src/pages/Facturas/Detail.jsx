@@ -22,8 +22,9 @@ const FacturasDetail = () => {
     fecha_aplicacion: '',
     fecha_confirmacion: '',
     fecha_indicador_recaudo: '',
-    factura_interes: false,
-    interes_gravado_iva: false,
+    fecha_pago_indicador_recaudo: '',
+    factura_interes: true,
+    interes_gravado_iva: true,
     observaciones: '',
   })
   const [savingPago, setSavingPago] = useState(false)
@@ -71,9 +72,20 @@ const FacturasDetail = () => {
   }
 
   const handlePagoChange = (e) => {
-    const { name, value } = e.target
-    setPagoForm({ ...pagoForm, [name]: value })
+  const { name, value } = e.target;
+  
+  // 1. Creamos la copia del estado actual con el nuevo valor
+  let newPagoForm = { ...pagoForm, [name]: value };
+
+  // 2. Si el usuario cambia la "fecha_pago", actualizamos el "periodo_pago"
+  if (name === 'fecha_pago' && value) {
+    // value viene como "YYYY-MM-DD", tomamos solo los primeros 7 caracteres "YYYY-MM"
+    newPagoForm.periodo_pago = value.substring(0, 7);
   }
+
+  // 3. Actualizamos el estado una sola vez
+  setPagoForm(newPagoForm);
+};
 
   const handleEditPago = (pago) => {
     setEditingPago(pago)
@@ -84,6 +96,7 @@ const FacturasDetail = () => {
       fecha_aplicacion: pago.fecha_aplicacion || '',
       fecha_confirmacion: pago.fecha_confirmacion || '',
       fecha_indicador_recaudo: convertDateToMonth(pago.fecha_indicador_recaudo),
+      fecha_pago_indicador_recaudo: pago.fecha_pago_indicador_recaudo || '',
       factura_interes: pago.factura_interes || false,
       interes_gravado_iva: pago.interes_gravado_iva || false,
       observaciones: pago.observaciones || '',
@@ -111,6 +124,7 @@ const FacturasDetail = () => {
         ...(pagoForm.fecha_aplicacion && { fecha_aplicacion: pagoForm.fecha_aplicacion }),
         ...(pagoForm.fecha_confirmacion && { fecha_confirmacion: pagoForm.fecha_confirmacion }),
         ...(pagoForm.fecha_indicador_recaudo && { fecha_indicador_recaudo: convertMonthToDate(pagoForm.fecha_indicador_recaudo) }),
+        ...(pagoForm.fecha_pago_indicador_recaudo && { fecha_pago_indicador_recaudo: pagoForm.fecha_pago_indicador_recaudo }),
         factura_interes: pagoForm.factura_interes,
         interes_gravado_iva: pagoForm.interes_gravado_iva,
       }
@@ -133,6 +147,7 @@ const FacturasDetail = () => {
         fecha_aplicacion: '',
         fecha_confirmacion: '',
         fecha_indicador_recaudo: '',
+        fecha_pago_indicador_recaudo: '',
         factura_interes: false,
         interes_gravado_iva: false,
         observaciones: '',
@@ -361,7 +376,7 @@ const FacturasDetail = () => {
               onClick={() => setShowPagoModal(true)}
               className="w-full sm:w-auto text-xs sm:text-sm"
             >
-              ✅ Registrar Pago
+              + Registrar Pago
             </Button>
           </div>
 
@@ -397,6 +412,10 @@ const FacturasDetail = () => {
                       <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Confirmación</p>
                       <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100">{pago.fecha_confirmacion ? formatDate(pago.fecha_confirmacion) : '-'}</p>
                     </div>
+                  </div>
+                  <div className="mb-3 sm:mb-4">
+                    <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400">Fecha Pago Indicador</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100">{pago.fecha_pago_indicador_recaudo ? formatDate(pago.fecha_pago_indicador_recaudo) : '-'}</p>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -508,6 +527,15 @@ const FacturasDetail = () => {
         <form onSubmit={handleAddPago} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
+              label="Monto Pagado"
+              name="monto_pagado"
+              type="number"
+              step="0.01"
+              value={pagoForm.monto_pagado}
+              onChange={handlePagoChange}
+              required
+            />
+            <Input
               label="Fecha Pago"
               name="fecha_pago"
               type="date"
@@ -523,6 +551,13 @@ const FacturasDetail = () => {
                 onChange={handlePagoChange}
                 required
               />
+              <Input
+                label="Fecha Aplicación"
+                name="fecha_aplicacion"
+                type="date"
+                value={pagoForm.fecha_aplicacion}
+                onChange={handlePagoChange}
+              />
             <Input
               label="Fecha Indicador Recaudo"
               name="fecha_indicador_recaudo"
@@ -531,10 +566,10 @@ const FacturasDetail = () => {
               onChange={handlePagoChange}
             />
             <Input
-              label="Fecha Aplicación"
-              name="fecha_aplicacion"
+              label="Fecha Pago Indicador Recaudo"
+              name="fecha_pago_indicador_recaudo"
               type="date"
-              value={pagoForm.fecha_aplicacion}
+              value={pagoForm.fecha_pago_indicador_recaudo}
               onChange={handlePagoChange}
             />
             <Input
@@ -543,15 +578,6 @@ const FacturasDetail = () => {
               type="date"
               value={pagoForm.fecha_confirmacion}
               onChange={handlePagoChange}
-            />
-            <Input
-              label="Monto Pagado"
-              name="monto_pagado"
-              type="number"
-              step="0.01"
-              value={pagoForm.monto_pagado}
-              onChange={handlePagoChange}
-              required
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

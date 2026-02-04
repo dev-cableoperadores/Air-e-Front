@@ -50,10 +50,14 @@ const FacturasNew = () => {
     const newFormData = { ...formData, [name]: value }
     
     // Si cambia Mes_uso, calcular automáticamente Periodo_vencimiento
-    if (name === 'Mes_uso' && value) {
+    if (name === 'Fecha_vencimiento' && value) {
       newFormData.Periodo_vencimiento = addOneMonth(value)
     }
-    
+    if (name === 'Valor_facturado_iva' && value) {
+    // IMPORTANTE: Usamos "value" directamente o "newFormData.Valor_facturado_iva"
+    // Además convertimos a Number para evitar errores matemáticos
+    newFormData.Valor_iva_millones = Math.round(Number(value) / 1000000);
+    }
     setFormData(newFormData)
   }
 
@@ -171,6 +175,7 @@ const FacturasNew = () => {
             step="0.01"
             value={formData.Valor_iva_millones}
             onChange={handleChange}
+            disabled
           />
           <Select
             label="Estado"

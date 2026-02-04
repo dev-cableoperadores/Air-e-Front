@@ -183,7 +183,7 @@ const FacturasList = () => {
                     Valor adeudado
                   </th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
-                    Vencimiento
+                    Fecha vencimiento
                   </th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Estado
