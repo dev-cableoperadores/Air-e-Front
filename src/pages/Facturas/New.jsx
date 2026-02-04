@@ -35,7 +35,7 @@ const FacturasNew = () => {
 
   const loadCableoperadores = async () => {
     try {
-      const data = await cableoperadoresService.getAllFull()
+      const data = await cableoperadoresService.getAllAllPages()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {
@@ -109,7 +109,7 @@ const FacturasNew = () => {
             onChange={handleChange}
             options={cableoperadores.map((c) => ({
               value: c.id.toString(),
-              label: `${c.nombre_largo || c.nombre} - ${c.id || 'Sin referencia'} - ${c.estado || 'Sin referencia'}`,
+              label: `${c.nombre_largo || c.nombre}`,
             }))}
             required
           />
