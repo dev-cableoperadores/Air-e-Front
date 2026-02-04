@@ -164,16 +164,16 @@ const FacturasList = () => {
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Cableoperador
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Responsable
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Mes de Uso
                   </th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden sm:table-cell">
                     Fecha facturación
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden md:table-cell">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
                     Nº Factura
                   </th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden lg:table-cell">
@@ -182,10 +182,10 @@ const FacturasList = () => {
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Valor adeudado
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Fecha vencimiento
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Estado
                   </th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-center font-semibold text-gray-900 dark:text-gray-100">
@@ -211,7 +211,7 @@ const FacturasList = () => {
                     <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
                       {formatDate(factura.Fecha_facturacion)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-900 dark:text-gray-100 hidden md:table-cell">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-900 dark:text-gray-100">
                       {factura.Num_factura}
                     </td>
                     <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-green-600 dark:text-green-400 hidden lg:table-cell">
@@ -223,7 +223,7 @@ const FacturasList = () => {
                     <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
                       {formatDate(factura.Fecha_vencimiento)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 hidden xl:table-cell">
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold inline-block ${getEstadoColor(factura.estado)} dark:bg-opacity-20`}>
                         {factura.estado}
                       </span>

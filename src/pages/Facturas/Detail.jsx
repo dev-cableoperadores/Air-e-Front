@@ -16,7 +16,7 @@ const FacturasDetail = () => {
   const [factura, setFactura] = useState(null)
   const [showPagoModal, setShowPagoModal] = useState(false)
   const [pagoForm, setPagoForm] = useState({
-    fecha_pago: new Date().toISOString().split('T')[0],
+    fecha_pago: '',
     periodo_pago: '',
     monto_pagado: '',
     fecha_aplicacion: '',
