@@ -15,6 +15,7 @@ const FacturasList = () => {
   const [filtros, setFiltros] = useState({
     search: '',
     estado: '',
+    esta_vencida: '',
   })
   const [searchQuery, setSearchQuery] = useState('')
   const [pagination, setPagination] = useState({
@@ -54,6 +55,7 @@ const FacturasList = () => {
       const params = {}
       if (filtros.search) params.search = filtros.search
       if (filtros.estado) params.estado = filtros.estado
+      if (filtros.esta_vencida !== '') params.esta_vencida = filtros.esta_vencida
       params.desplazamiento = (currentPage - 1) * itemsPerPage
       params.tamaño = itemsPerPage
 
@@ -97,7 +99,20 @@ const FacturasList = () => {
   }
 
   const totalPages = Math.ceil(pagination.count / itemsPerPage)
-
+  const estavencida = (esta_vencida) => {
+    if(esta_vencida == true){
+      return 'Vencida'
+    } else {
+      return 'Vigente'
+    }
+  }
+  const getEstaVencida = (esta_vencida) => {
+    const colors = {
+      true: 'text-red-600 bg-red-50',
+      false: 'text-green-600 bg-green-50',
+    }
+    return colors[esta_vencida] || 'text-gray-600 bg-gray-50'
+  }
   const getEstadoColor = (estado) => {
     const colors = {
       'Pendiente': 'text-yellow-600 bg-yellow-50',
@@ -147,6 +162,21 @@ const FacturasList = () => {
               { value: 'Anulada', label: 'Anulada' },
             ]}
           />
+          {/* NUEVO FILTRO DE VENCIMIENTO */}
+          <Select
+            label="Vencimiento"
+            name="esta_vencida"
+            value={filtros.esta_vencida}
+            onChange={(e) => {
+              setFiltros({ ...filtros, esta_vencida: e.target.value })
+              setCurrentPage(1)
+            }}
+            options={[
+              { value: '', label: 'Todos' },
+              { value: 'true', label: 'Vencidas' },
+              { value: 'false', label: 'Al día (Vigentes)' },
+            ]}
+          />
         </div>
       </div>
 
@@ -158,35 +188,38 @@ const FacturasList = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-xs sm:text-sm divide-y divide-gray-200 dark:divide-gray-700">
+            <table className="w-full table-auto text-[10px] md:text-xs divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
               <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                  <th className="px-1 py-2 text-left font-bold text-gray-900 dark:text-gray-100 w-64 min-w-[200px]">
                     Cableoperador
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                  <th className="px-3 px-1 sm:px-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell w-20">
                     Responsable
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                  <th className="px-3 sm:px-4 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell w-20">
                     Mes de Uso
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden sm:table-cell">
+                  <th className="px-3 px-1 sm:px-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden sm:table-cell">
                     Fecha facturación
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                  <th className="px-3 px-1 sm:px-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 w-20">
                     Nº Factura
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden lg:table-cell">
+                  <th className="px-3 sm:px-4 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden lg:table-cell">
                     valor pagado
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                  <th className="px-3 sm:px-4 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Valor adeudado
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                  <th className="px-3 sm:px-4 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Fecha vencimiento
                   </th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                  <th className="px-3 sm:px-4 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
                     Estado
+                  </th>
+                  <th className="px-3 sm:px-4 sm:py-3 text-left font-semibold text-gray-900 dark:text-gray-100 hidden xl:table-cell">
+                    Estado Vencimiento
                   </th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-center font-semibold text-gray-900 dark:text-gray-100">
                     Acciones
@@ -196,39 +229,44 @@ const FacturasList = () => {
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {facturas.map((factura) => (
                   <tr key={factura.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300">
-                      {typeof factura.cableoperador === 'string'
-                        ? factura.cableoperador
-                        : (factura.cableoperador?.nombre_largo || 'N/A')}
-                    </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
+                  <td className="px-2 py-2 text-gray-700 dark:text-gray-300 font-medium break-words">
+                    {typeof factura.cableoperador === 'string'
+                      ? factura.cableoperador
+                      : (factura.cableoperador?.nombre_largo || 'N/A')}
+                  </td>
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
                       {factura.cableoperador?.ejecutiva?.first_name}<br />
                       {factura.cableoperador?.ejecutiva?.last_name}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
+                    <td className="px-3 sm:px-4 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
                       {formatMonthYearString(factura.Mes_uso)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
                       {formatDate(factura.Fecha_facturacion)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-gray-900 dark:text-gray-100">
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 font-semibold text-gray-900 dark:text-gray-100">
                       {factura.Num_factura}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-green-600 dark:text-green-400 hidden lg:table-cell">
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 font-semibold text-green-600 dark:text-green-400 hidden lg:table-cell">
                       ${formatNumber(factura.monto_pagado)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-semibold text-red-600 dark:text-red-400 hidden xl:table-cell">
+                    <td className="px-3 sm:px-4 sm:py-3 font-semibold text-red-600 dark:text-red-400 hidden xl:table-cell ">
                       ${formatNumber(factura.monto_pendiente)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
+                    <td className="px-3 sm:px-4 sm:py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell truncate">
                       {formatDate(factura.Fecha_vencimiento)}
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 hidden xl:table-cell">
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 hidden xl:table-cell">
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold inline-block ${getEstadoColor(factura.estado)} dark:bg-opacity-20`}>
                         {factura.estado}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-center">
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 hidden xl:table-cell">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold inline-block ${getEstaVencida(factura.esta_vencida)} dark:bg-opacity-20`}>
+                        {estavencida(factura.esta_vencida)}
+                      </span>
+                    </td>
+                    <td className="px-3 px-1 sm:px-2 sm:py-3 text-center">
                       <div className="flex gap-1 flex-col sm:flex-row justify-center">
                         <Button
                           size="sm"
