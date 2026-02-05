@@ -35,7 +35,7 @@ const FacturasNew = () => {
 
   const loadCableoperadores = async () => {
     try {
-      const data = await cableoperadoresService.getAllFull()
+      const data = await cableoperadoresService.getAllAllPages()
       const items = Array.isArray(data?.results) ? data.results : (data || [])
       setCableoperadores(items)
     } catch (error) {
@@ -50,10 +50,14 @@ const FacturasNew = () => {
     const newFormData = { ...formData, [name]: value }
     
     // Si cambia Mes_uso, calcular automáticamente Periodo_vencimiento
-    if (name === 'Mes_uso' && value) {
+    if (name === 'Fecha_vencimiento' && value) {
       newFormData.Periodo_vencimiento = addOneMonth(value)
     }
-    
+    if (name === 'Valor_facturado_iva' && value) {
+    // IMPORTANTE: Usamos "value" directamente o "newFormData.Valor_facturado_iva"
+    // Además convertimos a Number para evitar errores matemáticos
+    newFormData.Valor_iva_millones = Math.round(Number(value) / 1000000);
+    }
     setFormData(newFormData)
   }
 
@@ -109,7 +113,7 @@ const FacturasNew = () => {
             onChange={handleChange}
             options={cableoperadores.map((c) => ({
               value: c.id.toString(),
-              label: `${c.nombre_largo || c.nombre} - ${c.id || 'Sin referencia'} - ${c.estado || 'Sin referencia'}`,
+              label: `${c.nombre_largo || c.nombre}`,
             }))}
             required
           />
@@ -171,6 +175,7 @@ const FacturasNew = () => {
             step="0.01"
             value={formData.Valor_iva_millones}
             onChange={handleChange}
+            disabled
           />
           <Select
             label="Estado"

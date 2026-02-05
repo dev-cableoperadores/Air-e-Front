@@ -1,6 +1,6 @@
 // pages/inspecciones/PrstsForm.jsx
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import prstsService from '../../services/prstsService';
 import inventarioService from '../../services/inventarioService';
 import cableoperadoresService from '../../services/cableoperadoresService';
@@ -9,14 +9,21 @@ import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
 import { toast } from 'react-hot-toast';
 import PhotoUploader from '../../components/PhotoUploader';
+
 function PrstsForm() {
   const { inventarioId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [inventario, setInventario] = useState(null);
   const [cableoperadores, setCableoperadores] = useState([]);
   const [prsts, setPrsts] = useState([]);
   const [showForm, setShowForm] = useState(false);
+
+  // Modo bucle: parámetros de URL
+  const modoBucle = searchParams.get('modo') === 'bucle';
+  const cantidadEsperada = parseInt(searchParams.get('cantidad')) || 0;
+  const proyectoId = searchParams.get('proyecto');
 
   const [formData, setFormData] = useState({
     inventario_id: inventarioId,
@@ -41,6 +48,13 @@ function PrstsForm() {
   useEffect(() => {
     loadData();
   }, [inventarioId]);
+
+  useEffect(() => {
+    // Si estamos en modo bucle, mostrar el formulario automáticamente
+    if (modoBucle && prsts.length < cantidadEsperada) {
+      setShowForm(true);
+    }
+  }, [modoBucle, cantidadEsperada, prsts.length]);
 
   const loadData = async () => {
     try {
@@ -70,13 +84,54 @@ function PrstsForm() {
 
     try {
       await prstsService.create(formData);
-      toast.success('PRST registrado exitosamente');
-      resetForm();
-      loadData();
+      toast.success(`PRST ${prsts.length + 1} de ${cantidadEsperada} registrado`);
+      
+      // Recargar datos
+      await loadData();
+      
+      // Limpiar formulario pero mantenerlo abierto en modo bucle
+      if (modoBucle) {
+        const prstsActualizados = prsts.length + 1;
+        
+        if (prstsActualizados < cantidadEsperada) {
+          // Aún faltan PRSTs, limpiar y seguir
+          resetFormKeepOpen();
+          toast.info(`Registra el siguiente PRST (${prstsActualizados + 1}/${cantidadEsperada})`);
+        } else {
+          // Ya completó todos los PRSTs
+          toast.success('✓ Todos los PRSTs registrados');
+          resetForm();
+        }
+      } else {
+        resetForm();
+      }
     } catch (error) {
       console.error('Error creating PRST:', error);
       toast.error('Error al registrar PRST');
     }
+  };
+
+  const resetFormKeepOpen = () => {
+    setFormData({
+      inventario_id: inventarioId,
+      cableoperador_id: '',
+      cable: 0,
+      caja_empalme: 0,
+      reserva: 0,
+      nap: 0,
+      stp: 0,
+      bajante: 0,
+      amplificador: 0,
+      fuentes: 0,
+      receptor_optico: 0,
+      antena: 0,
+      gabinete: 0,
+      otro: 0,
+      rf1: '',
+      rf2: '',
+      observaciones: ''
+    });
+    // Mantener showForm en true para continuar en bucle
   };
 
   const resetForm = () => {
@@ -102,6 +157,18 @@ function PrstsForm() {
     setShowForm(false);
   };
 
+  const handleFinalizarYVolver = () => {
+    if (modoBucle && prsts.length < cantidadEsperada) {
+      const faltantes = cantidadEsperada - prsts.length;
+      if (!window.confirm(`Faltan ${faltantes} PRST(s) por registrar. ¿Deseas finalizar de todos modos?`)) {
+        return;
+      }
+    }
+    
+    toast.success('Registro de PRSTs finalizado');
+    navigate(`/inspecciones/inventario/${proyectoId || inventario?.proyecto?.id || inventario?.proyecto_id}`);
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este PRST?')) return;
 
@@ -116,8 +183,25 @@ function PrstsForm() {
   };
 
   const handleNumberChange = (field, value) => {
-    const numValue = parseInt(value) || 0;
-    setFormData({ ...formData, [field]: numValue });
+    // Si el valor está vacío, permitir que quede vacío temporalmente
+    if (value === '') {
+      setFormData({ ...formData, [field]: '' });
+      return;
+    }
+    
+    // Convertir a número, si no es válido, usar 0
+    const numValue = parseInt(value);
+    setFormData({ ...formData, [field]: isNaN(numValue) ? 0 : numValue });
+  };
+
+  const cableOptions = cableoperadores.map(cable => ({
+    label: cable.nombre_largo || cable.nombre || `Cableoperador #${cable.id}`,
+    value: cable.id
+  }));
+
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
+    setFormData({ ...formData, cableoperador_id: value });
   };
 
   if (loading) {
@@ -127,21 +211,10 @@ function PrstsForm() {
       </div>
     );
   }
-  const cableOptions = cableoperadores.map(cable => ({
-    label: cable.nombre_largo || cable.nombre || `Cableoperador #${cable.id}`,
-    value: cable.id
-  }));
 
-  // Helper para manejar el cambio del SearchableSelect
-  const handleSelectChange = (e) => {
-    const { value } = e.target;
-    setFormData({ ...formData, cableoperador_id: value });
-  };
-
-  if (loading) return <Loading />;
   return (
     <div className="w-full space-y-4 p-4">
-      {/* Header */}
+      {/* Header con progreso en modo bucle */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
         <div className="flex items-center justify-between">
           <div>
@@ -152,20 +225,49 @@ function PrstsForm() {
               Poste N°: <strong>{inventario?.numero_poste_en_plano}</strong> | 
               Proyecto: <strong>{inventario?.proyecto?.nombre}</strong>
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500">
-              Total PRSTs registrados: {prsts.length}
-            </p>
+            {modoBucle && (
+              <div className="mt-2">
+                <div className="flex items-center space-x-2">
+                  <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                    <div 
+                      className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                      style={{ width: `${(prsts.length / cantidadEsperada) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {prsts.length}/{cantidadEsperada}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {prsts.length < cantidadEsperada 
+                    ? `Faltan ${cantidadEsperada - prsts.length} PRST(s) por registrar`
+                    : '✓ Todos los PRSTs completados'
+                  }
+                </p>
+              </div>
+            )}
           </div>
           <div className="flex gap-2">
-            <Button 
-              onClick={() => navigate(`/inspecciones/inventario/${inventario?.proyecto?.id || inventario?.proyecto_id}`)} 
-              variant="outline"
-            >
-              ← Volver
-            </Button>
-            <Button onClick={() => setShowForm(!showForm)}>
-              {showForm ? '✕ Cancelar' : '+ Nuevo PRST'}
-            </Button>
+            {modoBucle ? (
+              <Button 
+                onClick={handleFinalizarYVolver}
+                variant="primary"
+              >
+                {prsts.length >= cantidadEsperada ? '✓ Finalizar' : 'Finalizar y Volver'}
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  onClick={() => navigate(`/inspecciones/inventario/${inventario?.proyecto?.id || inventario?.proyecto_id}`)} 
+                  variant="outline"
+                >
+                  ← Volver
+                </Button>
+                <Button onClick={() => setShowForm(!showForm)}>
+                  {showForm ? '✕ Cancelar' : '+ Nuevo PRST'}
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -173,9 +275,20 @@ function PrstsForm() {
       {/* Formulario */}
       {showForm && (
         <div className="bg-white dark:bg-gray-800 p-6 shadow rounded-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Registrar PRST
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              {modoBucle 
+                ? `Registrar PRST ${prsts.length + 1} de ${cantidadEsperada}`
+                : 'Registrar PRST'
+              }
+            </h2>
+            {modoBucle && (
+              <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-full">
+                Modo Continuo
+              </span>
+            )}
+          </div>
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Cable operador */}
             <div>
@@ -215,6 +328,12 @@ function PrstsForm() {
                     min="0"
                     value={formData[field]}
                     onChange={(e) => handleNumberChange(field, e.target.value)}
+                    onBlur={(e) => {
+                      // Al perder el foco, si está vacío, establecer en 0
+                      if (e.target.value === '') {
+                        handleNumberChange(field, '0');
+                      }
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -252,16 +371,21 @@ function PrstsForm() {
 
             <div className="flex gap-2">
               <Button type="submit" className="flex-1">
-                Guardar PRST
+                {modoBucle && prsts.length + 1 < cantidadEsperada
+                  ? `Guardar y Continuar (${prsts.length + 1}/${cantidadEsperada})`
+                  : 'Guardar PRST'
+                }
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={resetForm}
-                className="flex-1"
-              >
-                Cancelar
-              </Button>
+              {!modoBucle && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={resetForm}
+                  className="flex-1"
+                >
+                  Cancelar
+                </Button>
+              )}
             </div>
           </form>
         </div>
@@ -269,16 +393,23 @@ function PrstsForm() {
 
       {/* Lista de PRSTs */}
       <div className="grid grid-cols-1 gap-4">
-        {prsts.map((prst) => (
+        {prsts.map((prst, index) => (
           <div
             key={prst.id}
             className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg"
           >
             <div className="flex justify-between items-start mb-3">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  {prst.cableoperador?.nombre_largo || prst.cableoperador?.nombre || 'Cable Operador'}
-                </h3>
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {prst.cableoperador?.nombre_largo || prst.cableoperador?.nombre || 'Cable Operador'}
+                  </h3>
+                  {modoBucle && (
+                    <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs rounded">
+                      #{index + 1}
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Inventario ID: {prst.inventario?.id}
                 </p>
