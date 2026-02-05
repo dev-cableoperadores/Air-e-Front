@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import asignacionService from '../../services/asignacionService';
-import { fetchKmzImports } from '../../services/kmzService';
+import { fetchKmzImports, fetchProyectos } from '../../services/kmzService';
 import inspectoresService from '../../services/inspectoresService';
 import { getToken } from '../../services/authService';
 import Loading from '../../components/UI/Loading';
@@ -10,12 +10,14 @@ import Button from '../../components/UI/Button';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext'
 import { handleMarcarInspeccionado } from '../../services/kmzService';
+import api from '../../utils/api'
 
 function AsignacionProyectos() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [proyectos, setProyectos] = useState([]);
   const [kmzImports, setKmzImports] = useState([]);
+  const [kmzImportsExcel, setkmzImportsExcel] = useState([]);
   const [inspectores, setInspectores] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
@@ -50,7 +52,9 @@ const onFinalizarInspeccion = async (id) => {
       // Cargar KMZ imports disponibles
       const kmzData = await fetchKmzImports(token);
       setKmzImports(Array.isArray(kmzData) ? kmzData : kmzData.results || []);
-
+      // Cargar para descarga de excel  
+      const kmzExcel = await fetchProyectos(token);
+      setkmzImportsExcel(Array.isArray(kmzExcel) ? kmzExcel : kmzExcel.results || [])
       // Cargar inspectores/brigadas
       const inspectoresData = await inspectoresService.getAll();
       setInspectores(Array.isArray(inspectoresData) ? inspectoresData : inspectoresData.results || []);
@@ -107,6 +111,43 @@ const onFinalizarInspeccion = async (id) => {
       </div>
     );
   }
+    const handleExportarExcel = async (kmzId, filename) => {
+    try {
+      toast.loading('Generando archivo Excel...', { id: 'export' });
+
+      // Hacer petición al endpoint de exportación
+      const response = await api.get(`/api/coordenadas/exportar-gps/${kmzId}/`, {
+        responseType: 'blob' // Importante para archivos
+      });
+
+      // Crear URL del blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Nombre del archivo
+      const fileName = `${filename.replace('.kmz', '')}_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`;
+      link.setAttribute('download', fileName);
+      
+      // Trigger descarga
+      document.body.appendChild(link);
+      link.click();
+      
+      // Limpiar
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Excel descargado exitosamente', { id: 'export' });
+    } catch (error) {
+      console.error('Error exportando Excel:', error);
+      
+      if (error.response?.status === 404) {
+        toast.error('No hay datos para exportar en este KMZ', { id: 'export' });
+      } else {
+        toast.error('Error al generar el archivo Excel', { id: 'export' });
+      }
+    }
+  };
 
   return (
     <div className="w-full space-y-4 p-4">
@@ -276,7 +317,7 @@ const onFinalizarInspeccion = async (id) => {
                       📝 Inventario
                     </Button>
                     {user.is_staff == true && (
-                    <Button
+                      <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleDelete(proyecto.id)}
@@ -292,6 +333,18 @@ const onFinalizarInspeccion = async (id) => {
           </table>
         </div>
       </div>
+      {kmzImportsExcel.map((kmzImportExcel) => (
+        <div key={kmzImportExcel.id} className="text-gray-700 dark:text-gray-300 mb-1">
+           {kmzImportExcel.filename}
+          <Button
+           variant= 'secondary'
+            onClick ={() => handleExportarExcel(kmzImportExcel.id, kmzImportExcel.filename)}
+          >
+            
+          .xlsx
+          </Button>
+        </div>
+      ))}
     </div>
   );
 }
