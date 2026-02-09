@@ -1,7 +1,7 @@
 // pages/inspecciones/InventarioForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import inventarioService from '../../services/inventarioService';
 import inspectoresService from '../../services/inspectoresService';
 import asignacionService from '../../services/asignacionService';
@@ -16,7 +16,11 @@ import MapChangeView from '../../components/MapChangeView';
 import { convertDjangoToFeatures } from '../../utils/kmlParser';
 import L from 'leaflet';
 import PhotoUploader from '../../components/PhotoUploader';
-import { ALTURAS, MATERIALES, CHOICE_TIPO_POSTE, ELEMENTOS_EXISTENTES } from '../../utils/constants'
+import { ALTURAS, MATERIALES, CHOICE_TIPO_POSTE, ELEMENTOS_EXISTENTES } from '../../utils/constants';
+import LocationMarker from '../../components/LocationMarker';
+import { useTracking } from '../../hooks/useTracking';
+import { useAuth } from '../../context/AuthContext';
+import MonitorRealtime from '../../components/MonitorRealtime';
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -42,6 +46,29 @@ function MapClickHandler({ onLocationSelect, enabled }) {
   return null;
 }
 
+function LocateControl() {
+  const map = useMap();
+  
+  const handleLocate = () => {
+    map.locate({ setView: true, maxZoom: 17 });
+  };
+
+  return (
+    <div className="leaflet-top leaflet-right" style={{ marginTop: '80px', marginRight: '10px' }}>
+      <div className="leaflet-control leaflet-bar">
+        <button
+          type="button"
+          onClick={handleLocate}
+          className="bg-white hover:bg-gray-100 text-gray-700 p-2 shadow-md flex items-center justify-center transition-colors"
+          style={{ width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+          title="Mi ubicación"
+        >
+          <span style={{ fontSize: '20px' }}>🎯</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 function InventarioForm() {
   const { proyectoId } = useParams();
   const navigate = useNavigate();
@@ -52,7 +79,8 @@ function InventarioForm() {
   const [showForm, setShowForm] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [projectFeatures, setProjectFeatures] = useState([]);
-
+  const [editingId, setEditingId] = useState(null);
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     proyecto_id: proyectoId,
     brigada_responsable_id: '',
@@ -67,7 +95,7 @@ function InventarioForm() {
     rf1: '', rf2: '', rf3: ''
   });
   useEffect(() => { loadData(); }, [proyectoId]);
-
+  useTracking(user); 
   useEffect(() => {
     if (selectedPosition) {
       setFormData(prev => ({
@@ -102,7 +130,7 @@ function InventarioForm() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    toast.success(`Coordenadas seleccionadas: ${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
+    // toast.success(`Coordenadas seleccionadas: ${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
   };
 
 const handleSubmit = async (e) => {
@@ -114,25 +142,75 @@ const handleSubmit = async (e) => {
     }
 
     try {
-      const newInventario = await inventarioService.create(formData);
-      toast.success('Inventario creado exitosamente');
-      
-      // Si cantidad_prst es 0, no navegar a PRSTs
-      const cantidadPrst = parseInt(formData.cantidad_prst) || 0;
-      
-      if (cantidadPrst === 0) {
-        toast.info('No hay PRSTs para registrar en este poste');
+      if (editingId) {
+        // Modo edición
+        await inventarioService.update(editingId, formData);
+        toast.success('Inventario actualizado exitosamente');
         resetForm();
         loadData();
       } else {
-        // Navegar a PRSTs en modo bucle
-        navigate(`/inspecciones/prsts/${newInventario.id}?cantidad=${cantidadPrst}&proyecto=${proyectoId}&modo=bucle`);
+        // Modo creación
+        const newInventario = await inventarioService.create(formData);
+        toast.success('Inventario creado exitosamente');
+        
+        const cantidadPrst = parseInt(formData.cantidad_prst) || 0;
+        
+        if (cantidadPrst === 0) {
+          toast.info('No hay PRSTs para registrar en este poste');
+          resetForm();
+          loadData();
+        } else {
+          navigate(`/inspecciones/prsts/${newInventario.id}?cantidad=${cantidadPrst}&proyecto=${proyectoId}&modo=bucle`);
+        }
       }
     } catch (error) {
-      console.error('Error creating inventario:', error);
-      toast.error('Error al crear inventario');
+      console.error('Error saving inventario:', error);
+      toast.error(editingId ? 'Error al actualizar inventario' : 'Error al crear inventario');
     }
   };
+
+  const handleEdit = (item) => {
+  // 1. Convertir la coordenada string "lat, lng" a array [lat, lng] para el mapa
+  let latLng = null;
+  if (item.coordenada) {
+    const parts = item.coordenada.split(',').map(n => parseFloat(n.trim()));
+    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      latLng = parts;
+    }
+  }
+
+  // 2. Establecer el ID de edición
+  setEditingId(item.id);
+
+  // 3. Rellenar el formulario
+  // Nota: Asegúrate de manejar si brigada_responsable viene como objeto o ID desde el backend
+  setFormData({
+    proyecto_id: proyectoId,
+    brigada_responsable_id: typeof item.brigada_responsable === 'object' 
+        ? item.brigada_responsable.id 
+        : item.brigada_responsable, // Ajusta según tu respuesta de API
+    numero_poste_en_plano: item.numero_poste_en_plano,
+    coordenada: item.coordenada,
+    elementos_existentes: item.elementos_existentes,
+    tipo_poste: item.tipo_poste,
+    material: item.material,
+    altura: item.altura,
+    cantidad_prst: item.cantidad_prst,
+    observaciones: item.observaciones || '',
+    rf1: item.rf1 || '',
+    rf2: item.rf2 || '',
+    rf3: item.rf3 || ''
+  });
+
+  // 4. Actualizar el mapa y mostrar formulario
+  setSelectedPosition(latLng);
+  setShowForm(true);
+
+  // 5. Scroll suave hacia arriba para ver el formulario
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  toast.loading(`Editando poste ${item.numero_poste_en_plano}...`, { duration: 1000 });
+};
 
   const resetForm = () => {
     setFormData({
@@ -141,6 +219,7 @@ const handleSubmit = async (e) => {
       altura: '', cantidad_prst: '', observaciones: '', rf1: '', rf2: '', rf3: ''
     });
     setSelectedPosition(null);
+    setEditingId(null);
     setShowForm(false);
   };
   const handleMapClick = (position) => {
@@ -198,11 +277,14 @@ const handleSubmit = async (e) => {
       {/* Mapa */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
         <div style={{ height: '400px' }} className="rounded-lg overflow-hidden border">
-          <MapContainer center={[10.9878, -74.7889]} zoom={15} maxZoom={22} style={{ height: '100%' }}>
+          <MapContainer center={[10.9878, -74.7889]} zoom={15} maxZoom={22} style={{ height: '100%' }} preferCanvas={true}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               maxZoom={22}      // Límite lógico
               maxNativeZoom={18} />
             <MapChangeView features={projectFeatures} />
+            <LocationMarker />
+            <LocateControl />
+            {user?.is_staff && <MonitorRealtime />}
             <MapFeatures 
               features={projectFeatures} 
               onPosteClick={handlePosteClick} 
@@ -304,6 +386,7 @@ const handleSubmit = async (e) => {
               proyectoNombre={proyecto?.nombre}
               inventarioId={proyectoId || 'nuevo'}
               tipo="inventario"
+              initialPhotos={[formData.rf1, formData.rf2, formData.rf3].filter(Boolean)}
               onUploadSuccess={(urls) => {
                 setFormData(prev => ({ ...prev, rf1: urls[0] || '', rf2: urls[1] || '', rf3: urls[2] || '' }));
               }}
@@ -376,6 +459,14 @@ const handleSubmit = async (e) => {
                       className="text-red-600"
                     >
                       🗑️
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEdit(inv)}
+                      className="text-blue-600"
+                    >
+                      ✏️ Editar
                     </Button>
                   </td>
                 </tr>

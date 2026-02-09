@@ -19,6 +19,7 @@ function PrstsForm() {
   const [cableoperadores, setCableoperadores] = useState([]);
   const [prsts, setPrsts] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null); // Para modo edición
 
   // Modo bucle: parámetros de URL
   const modoBucle = searchParams.get('modo') === 'bucle';
@@ -83,31 +84,36 @@ function PrstsForm() {
     e.preventDefault();
 
     try {
-      await prstsService.create(formData);
-      toast.success(`PRST ${prsts.length + 1} de ${cantidadEsperada} registrado`);
-      
-      // Recargar datos
-      await loadData();
-      
-      // Limpiar formulario pero mantenerlo abierto en modo bucle
-      if (modoBucle) {
-        const prstsActualizados = prsts.length + 1;
+      if (editingId) {
+        // Modo edición
+        await prstsService.update(editingId, formData);
+        toast.success('PRST actualizado exitosamente');
+        resetForm();
+        loadData();
+      } else {
+        // Modo creación
+        await prstsService.create(formData);
+        toast.success(`PRST ${prsts.length + 1} de ${cantidadEsperada} registrado`);
         
-        if (prstsActualizados < cantidadEsperada) {
-          // Aún faltan PRSTs, limpiar y seguir
-          resetFormKeepOpen();
-          toast.info(`Registra el siguiente PRST (${prstsActualizados + 1}/${cantidadEsperada})`);
+        await loadData();
+        
+        if (modoBucle) {
+          const prstsActualizados = prsts.length + 1;
+          
+          if (prstsActualizados < cantidadEsperada) {
+            resetFormKeepOpen();
+            toast.info(`Registra el siguiente PRST (${prstsActualizados + 1}/${cantidadEsperada})`);
+          } else {
+            toast.success('✓ Todos los PRSTs registrados');
+            resetForm();
+          }
         } else {
-          // Ya completó todos los PRSTs
-          toast.success('✓ Todos los PRSTs registrados');
           resetForm();
         }
-      } else {
-        resetForm();
       }
     } catch (error) {
-      console.error('Error creating PRST:', error);
-      toast.error('Error al registrar PRST');
+      console.error('Error saving PRST:', error);
+      toast.error(editingId ? 'Error al actualizar PRST' : 'Error al registrar PRST');
     }
   };
 
@@ -155,6 +161,40 @@ function PrstsForm() {
       observaciones: ''
     });
     setShowForm(false);
+    setEditingId(null); // Limpiar modo edición
+  };
+
+  // Nueva función para cargar datos de edición
+  const handleEdit = async (prst) => {
+    try {
+      setEditingId(prst.id);
+      
+      setFormData({
+        inventario_id: inventarioId,
+        cableoperador_id: prst.cableoperador?.id || '',
+        cable: prst.cable || 0,
+        caja_empalme: prst.caja_empalme || 0,
+        reserva: prst.reserva || 0,
+        nap: prst.nap || 0,
+        stp: prst.stp || 0,
+        bajante: prst.bajante || 0,
+        amplificador: prst.amplificador || 0,
+        fuentes: prst.fuentes || 0,
+        receptor_optico: prst.receptor_optico || 0,
+        antena: prst.antena || 0,
+        gabinete: prst.gabinete || 0,
+        otro: prst.otro || 0,
+        rf1: prst.rf1 || '',
+        rf2: prst.rf2 || '',
+        observaciones: prst.observaciones || ''
+      });
+      
+      setShowForm(true);
+      toast('Editando PRST');
+    } catch (error) {
+      console.error('Error loading PRST for edit:', error);
+      toast.error('Error al cargar PRST');
+    }
   };
 
   const handleFinalizarYVolver = () => {
@@ -277,12 +317,14 @@ function PrstsForm() {
         <div className="bg-white dark:bg-gray-800 p-6 shadow rounded-lg">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {modoBucle 
-                ? `Registrar PRST ${prsts.length + 1} de ${cantidadEsperada}`
-                : 'Registrar PRST'
+              {editingId 
+                ? 'Editar PRST'
+                : modoBucle 
+                  ? `Registrar PRST ${prsts.length + 1} de ${cantidadEsperada}`
+                  : 'Registrar PRST'
               }
             </h2>
-            {modoBucle && (
+            {modoBucle && !editingId && (
               <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-full">
                 Modo Continuo
               </span>
@@ -371,9 +413,11 @@ function PrstsForm() {
 
             <div className="flex gap-2">
               <Button type="submit" className="flex-1">
-                {modoBucle && prsts.length + 1 < cantidadEsperada
-                  ? `Guardar y Continuar (${prsts.length + 1}/${cantidadEsperada})`
-                  : 'Guardar PRST'
+                {editingId 
+                  ? 'Actualizar PRST'
+                  : modoBucle && prsts.length + 1 < cantidadEsperada
+                    ? `Guardar y Continuar (${prsts.length + 1}/${cantidadEsperada})`
+                    : 'Guardar PRST'
                 }
               </Button>
               {!modoBucle && (
@@ -414,14 +458,24 @@ function PrstsForm() {
                   Inventario ID: {prst.inventario?.id}
                 </p>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDelete(prst.id)}
-                className="text-red-600"
-              >
-                🗑️ Eliminar
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleEdit(prst)}
+                  className="text-blue-600"
+                >
+                  ✏️ Editar
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleDelete(prst.id)}
+                  className="text-red-600"
+                >
+                  🗑️ Eliminar
+                </Button>
+              </div>
             </div>
 
             {/* Elementos en grid */}
