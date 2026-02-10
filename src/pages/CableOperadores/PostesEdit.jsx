@@ -169,7 +169,7 @@ const PostesEdit = () => {
         elementos_existentes: formData.elementos_existentes || null,
       }
 
-      console.log('Datos enviados:', dataToSend)
+      //console.log('Datos enviados:', dataToSend)
       await postesService.update(id, dataToSend)
       toast.success('Poste actualizado exitosamente')
       navigate('/postes')

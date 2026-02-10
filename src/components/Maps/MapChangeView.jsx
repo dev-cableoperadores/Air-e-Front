@@ -12,7 +12,7 @@ function MapChangeView({ features }) {
   useEffect(() => {
     if (features.length > 0) {
       const first = features[0];
-      console.log("Centrando mapa en la primera feature:", first);
+      //console.log("Centrando mapa en la primera feature:", first);
       const coords = Array.isArray(first.coordinates)
         ? [first.coordinates[0].lat, first.coordinates[0].lon]
         : [first.coordinates.lat, first.coordinates.lon];

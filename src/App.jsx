@@ -32,6 +32,7 @@ import InspeccionesList from './pages/Inspecciones/UploadKmz'
 import AsignacionProyectos from './pages/Inspecciones/AsignacionProyectos';
 import InventarioForm from './pages/Inspecciones/InventarioForm';
 import PrstsForm from './pages/Inspecciones/PrstsForm';
+import AdminDashboard from './pages/Inspecciones/AdminDashborad';
 
 function App() {
   return (
@@ -341,6 +342,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+            path="/monitoreo"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <AdminDashboard />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster 

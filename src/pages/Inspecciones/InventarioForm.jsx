@@ -1,6 +1,7 @@
 // pages/inspecciones/InventarioForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import inventarioService from '../../services/inventarioService';
 import inspectoresService from '../../services/inspectoresService';
@@ -10,17 +11,17 @@ import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input'; // Importado
 import Select from '../../components/UI/Select'; // Importado
 import Textarea from '../../components/UI/Textarea'; // Importado
-import { toast } from 'react-hot-toast';
-import MapFeatures from '../../components/MapFeatures';
-import MapChangeView from '../../components/MapChangeView';
-import { convertDjangoToFeatures } from '../../utils/kmlParser';
-import L from 'leaflet';
+import MapFeatures from '../../components/Maps/MapFeatures';
+import MapChangeView from '../../components/Maps/MapChangeView';
+import MonitorRealtime from '../../components/Maps/MonitorRealtime';
 import PhotoUploader from '../../components/PhotoUploader';
+import LocationMarker from '../../components/Maps/LocationMarker';
+import LocateControl from '../../components/Maps/LocateControl';
+import { convertDjangoToFeatures } from '../../utils/kmlParser';
 import { ALTURAS, MATERIALES, CHOICE_TIPO_POSTE, ELEMENTOS_EXISTENTES } from '../../utils/constants';
-import LocationMarker from '../../components/LocationMarker';
 import { useTracking } from '../../hooks/useTracking';
 import { useAuth } from '../../context/AuthContext';
-import MonitorRealtime from '../../components/MonitorRealtime';
+import L from 'leaflet';
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -46,29 +47,7 @@ function MapClickHandler({ onLocationSelect, enabled }) {
   return null;
 }
 
-function LocateControl() {
-  const map = useMap();
-  
-  const handleLocate = () => {
-    map.locate({ setView: true, maxZoom: 17 });
-  };
 
-  return (
-    <div className="leaflet-top leaflet-right" style={{ marginTop: '80px', marginRight: '10px' }}>
-      <div className="leaflet-control leaflet-bar">
-        <button
-          type="button"
-          onClick={handleLocate}
-          className="bg-white hover:bg-gray-100 text-gray-700 p-2 shadow-md flex items-center justify-center transition-colors"
-          style={{ width: '40px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          title="Mi ubicación"
-        >
-          <span style={{ fontSize: '20px' }}>🎯</span>
-        </button>
-      </div>
-    </div>
-  );
-}
 function InventarioForm() {
   const { proyectoId } = useParams();
   const navigate = useNavigate();
@@ -427,7 +406,7 @@ const handleSubmit = async (e) => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {console.log('Inventarios:', inventarios)}
+              {/* {console.log('Inventarios:', inventarios)} */}
               {inventarios.map((inv) => (
                 <tr key={inv.id}>
                   <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">

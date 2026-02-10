@@ -12,7 +12,7 @@ const [currentZoom, setCurrentZoom] = useState(13);
   const map = useMapEvents({
     zoomend: () => {
       const newZoom = map.getZoom();
-      console.log("Zoom actual:", newZoom); // Para que verifiques en consola
+      //console.log("Zoom actual:", newZoom); // Para que verifiques en consola
       setCurrentZoom(newZoom);
     },
   });

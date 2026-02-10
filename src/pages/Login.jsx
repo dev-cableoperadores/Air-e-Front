@@ -34,7 +34,7 @@ const handleSubmit = async (e) => {
 
   try {
     const result = await login(username, password);
-    console.log("Resultado del login:", result);
+    //console.log("Resultado del login:", result);
 
     if (result.success) {
       // Prioridad: Si es inspector y no es staff, va a /inspecciones

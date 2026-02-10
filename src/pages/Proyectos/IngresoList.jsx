@@ -25,7 +25,7 @@ const IngresoList = () => {
       const data = resp?.results || []
       setItems(data)
       setTotalCount(resp?.count || data.length)
-      console.log(resp)
+      //console.log(resp)
     } catch (error) {
       console.error(error)
       toast.error('Error al cargar ingresos de proyecto')

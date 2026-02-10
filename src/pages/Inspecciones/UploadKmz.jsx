@@ -4,14 +4,15 @@ import { useState, useEffect } from 'react';
 import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
 import { fetchKmzImportsNoInspeccionados } from '../../services/kmzService';
 import { convertDjangoToFeatures } from '../../utils/kmlParser';
-import MapChangeView from '../../components/MapChangeView';
-import MapFeatures from '../../components/MapFeatures';
-import KMZUpload from '../../components/KMZUpload';
-import FeatureStats from '../../components/FeatureStats';
+import MapChangeView from '../../components/Maps/MapChangeView';
+import MapFeatures from '../../components/Maps/MapFeatures';
+import KMZUpload from '../../components/Maps/KMZUpload';
+import FeatureStats from '../../components/Maps/FeatureStats';
 import './UploadKmz.css';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button'
 import { Link } from 'react-router-dom';
+import MonitorRealtime from '../../components/Maps/MonitorRealtime';
 
 function InspeccionesList() {
   const [kmzFeatures, setKmzFeatures] = useState([]);
@@ -21,18 +22,18 @@ function InspeccionesList() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log('\n========== Proyectos useEffect START ==========');
+        //console.log('\n========== Proyectos useEffect START ==========');
         const token = getToken();
-        console.log('getToken() retornó:', token ? `${token.substring(0, 30)}...` : 'null/undefined');
+        //console.log('getToken() retornó:', token ? `${token.substring(0, 30)}...` : 'null/undefined');
 
         if (!token) {
-          console.warn('❌ No hay token disponible');
+          //console.warn('❌ No hay token disponible');
           throw new Error('No hay token de autenticación');
         }
 
-        console.log('✅ Token encontrado, llamando fetchProyectos...');
+        //console.log('✅ Token encontrado, llamando fetchProyectos...');
         const proyectos = await fetchKmzImportsNoInspeccionados(token);
-        console.log('✅ Proyectos obtenidos correctamente');
+        //console.log('✅ Proyectos obtenidos correctamente');
 
         const features = convertDjangoToFeatures(proyectos);
         setKmzFeatures(features);
@@ -41,7 +42,7 @@ function InspeccionesList() {
         setError('Error al cargar datos iniciales: ' + error.message);
       } finally {
         setLoading(false);
-        console.log('========== Proyectos useEffect END ==========\n');
+        //console.log('========== Proyectos useEffect END ==========\n');
       }
     };
 
@@ -87,6 +88,7 @@ function InspeccionesList() {
       <div className="map-section">
         <h2>Visualización de Proyectos en el Mapa</h2>
         <MapContainer
+          preferCanvas={true}
           center={[10.9878, -74.7889]}
           zoom={13}
           maxZoom={22}
@@ -99,6 +101,7 @@ function InspeccionesList() {
             maxNativeZoom={18}
             
           />
+          {user?.is_staff && <MonitorRealtime />}
           <MapChangeView features={kmzFeatures} />
           <MapFeatures features={kmzFeatures} />
         </MapContainer>

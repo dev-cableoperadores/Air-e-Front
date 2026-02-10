@@ -1,9 +1,9 @@
 // components/KMZUpload.jsx
 import { useState, useEffect } from 'react';
 import JSZip from 'jszip';
-import { getToken } from '../services/authService'; // Ajustado a tu ruta real
-import { uploadKMZData } from '../services/kmzService';
-import { parseKML, convertDjangoToFeatures } from '../utils/kmlParser';
+import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
+import { uploadKMZData } from '../../services/kmzService';
+import { parseKML, convertDjangoToFeatures } from '../../utils/kmlParser';
 
 function KMZUpload({ onUploadSuccess }) {
   const [uploading, setUploading] = useState(false);
@@ -58,7 +58,7 @@ function KMZUpload({ onUploadSuccess }) {
       const savedFeatures = convertDjangoToFeatures(response);
 
       setUploadStatus(`✓ ${savedFeatures.length} elementos guardados exitosamente en Django`);
-      console.log('Django response:', response);
+      //console.log('Django response:', response);
 
       // Notificar al componente padre
       if (onUploadSuccess) {

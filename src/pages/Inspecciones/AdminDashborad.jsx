@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
-import MonitorRealtime from '../components/MonitorRealtime';
+import MonitorRealtime from '../../components/Maps/MonitorRealtime';
 
 function AdminDashboard() {
   return (
@@ -14,3 +14,4 @@ function AdminDashboard() {
     </div>
   );
 }
+export default AdminDashboard;

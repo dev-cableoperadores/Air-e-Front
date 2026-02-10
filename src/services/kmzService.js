@@ -14,8 +14,8 @@ export const uploadKMZData = async (geoData, token) => {
  */
 export const fetchProyectos = async (token) => {
   try {
-    console.log('=== fetchProyectos START ===');
-    console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
+    //console.log('=== fetchProyectos START ===');
+    //console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
 
     if (!token || typeof token !== 'string') {
       throw new Error('Token inválido: ' + typeof token);
@@ -28,21 +28,21 @@ export const fetchProyectos = async (token) => {
 
     const response = await api.get('/api/inspectores/kmz-imports/');
 
-    console.log('Proyectos obtenidos:', response.data);
+    //console.log('Proyectos obtenidos:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error en fetchProyectos:', error);
     throw error;
   } finally {
-    console.log('=== fetchProyectos END ===');
+    //console.log('=== fetchProyectos END ===');
   }
 };
 
 // Listado de kmz importados que aun no han sido asociados a inspecciones
 export const fetchKmzImports = async (token) => {
   try {
-    console.log('=== fetchKmzImports START ===');
-    console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
+    //console.log('=== fetchKmzImports START ===');
+    //console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
 
     if (!token || typeof token !== 'string') {
       throw new Error('Token inválido: ' + typeof token);
@@ -55,19 +55,19 @@ export const fetchKmzImports = async (token) => {
 
     const response = await api.get('/api/inspectores/kmz-imports-novinculados/');
 
-    console.log('Proyectos obtenidos:', response.data);
+    //console.log('Proyectos obtenidos:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error en fetchKmzImports:', error);
     throw error;
   } finally {
-    console.log('=== fetchKmzImports END ===');
+    //console.log('=== fetchKmzImports END ===');
   }
 };
 export const fetchKmzImportsNoInspeccionados = async (token) => {
   try {
-    console.log('=== fetchKmzImports START ===');
-    console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
+    //console.log('=== fetchKmzImports START ===');
+    //console.log('Token recibido:', token ? `${token.substring(0, 30)}...` : 'UNDEFINED');
 
     if (!token || typeof token !== 'string') {
       throw new Error('Token inválido: ' + typeof token);
@@ -80,13 +80,13 @@ export const fetchKmzImportsNoInspeccionados = async (token) => {
 
     const response = await api.get('/api/inspectores/kmz-imports-noinspeccionados/');
 
-    console.log('Proyectos obtenidos:', response.data);
+    //console.log('Proyectos obtenidos:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error en fetchKmzImports:', error);
     throw error;
   } finally {
-    console.log('=== fetchKmzImports END ===');
+    //console.log('=== fetchKmzImports END ===');
   }
 };
 export const handleMarcarInspeccionado = async (id) => {

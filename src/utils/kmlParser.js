@@ -54,7 +54,7 @@ export const parseKML = (kmlString) => {
     if (styleUrlTag) {
       const styleId = styleUrlTag.textContent.trim();
       iconUrl = styles[styleId] || '';
-      console.log(`Procesando Placemark: ${name}, Icono: ${iconUrl}`);
+      //console.log(`Procesando Placemark: ${name}, Icono: ${iconUrl}`);
     }
     // 3. Lógica para detectar si es POSTE basándonos en el ícono
     const isPosteIcon = iconUrl.includes('placemark_circle') || 
@@ -129,7 +129,7 @@ export const convertDjangoToFeatures = (djangoData) => {
     ? djangoData.results 
     : (Array.isArray(djangoData) ? djangoData : [djangoData]);
 
-  console.log("Procesando proyectos para el mapa:", imports.length);
+  //console.log("Procesando proyectos para el mapa:", imports.length);
 
   imports.forEach(importData => {
     if (importData.features && Array.isArray(importData.features)) {
@@ -166,6 +166,6 @@ export const convertDjangoToFeatures = (djangoData) => {
     }
   });
 
-  console.log("Total de geometrías procesadas:", features);
+  //console.log("Total de geometrías procesadas:", features);
   return features;
 };

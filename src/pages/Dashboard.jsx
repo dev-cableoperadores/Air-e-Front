@@ -24,7 +24,7 @@ const Dashboard = () => {
     try {
       setLoading(true)
       const data = await dashboardService.getStats()
-      console.log('Dashboard stats data:', data)
+      //console.log('Dashboard stats data:', data)
       setStats(data)
     } catch (error) {
       //console.error('Error al cargar estadísticas:', error)

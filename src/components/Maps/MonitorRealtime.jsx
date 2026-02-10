@@ -1,7 +1,7 @@
 // components/MonitorRealtime.jsx
 import { useEffect, useState } from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import L from 'leaflet';
 
 // Icono personalizado para diferenciar inspectores
@@ -40,13 +40,13 @@ const channel = supabase
   .on('postgres_changes', 
     { event: '*', schema: 'public', table: 'tracking_inspectores' }, 
     (payload) => {
-      console.log("Cambio detectado:", payload);
+      //console.log("Cambio detectado:", payload);
       // ... tu lógica de setInspectores
     }
   )
   .subscribe((status) => {
     // Esto te dirá exactamente qué está pasando
-    console.log("Estado de la conexión Realtime:", status);
+    //console.log("Estado de la conexión Realtime:", status);
     if (status === 'CLOSED') console.error("Error: El servidor cerró la conexión");
     if (status === 'CHANNEL_ERROR') console.error("Error: No se pudo conectar al canal");
   });
