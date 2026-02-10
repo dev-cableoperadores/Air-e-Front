@@ -1,24 +1,28 @@
 // pages/inspecciones/List.jsx
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { useState, useEffect } from 'react';
-import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
+import { Link } from 'react-router-dom';
 import { fetchKmzImportsNoInspeccionados } from '../../services/kmzService';
+import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
 import { convertDjangoToFeatures } from '../../utils/kmlParser';
 import MapChangeView from '../../components/Maps/MapChangeView';
 import MapFeatures from '../../components/Maps/MapFeatures';
 import KMZUpload from '../../components/Maps/KMZUpload';
 import FeatureStats from '../../components/Maps/FeatureStats';
+import MonitorRealtime from '../../components/Maps/MonitorRealtime';
+import LocationMarker from '../../components/Maps/LocationMarker';
+import LocateControl from '../../components/Maps/LocateControl';
 import './UploadKmz.css';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button'
-import { Link } from 'react-router-dom';
-import MonitorRealtime from '../../components/Maps/MonitorRealtime';
+import { useTracking } from '../../hooks/useTracking';
 
 function InspeccionesList() {
   const [kmzFeatures, setKmzFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  useTracking(user); 
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -94,6 +98,8 @@ function InspeccionesList() {
           maxZoom={22}
           style={{ height: '600px', width: '100%' }}
         >
+          <LocateControl />
+          <LocationMarker />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -101,6 +107,7 @@ function InspeccionesList() {
             maxNativeZoom={18}
             
           />
+          
           {user?.is_staff && <MonitorRealtime />}
           <MapChangeView features={kmzFeatures} />
           <MapFeatures features={kmzFeatures} />
