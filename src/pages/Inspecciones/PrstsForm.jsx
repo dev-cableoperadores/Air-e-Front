@@ -235,7 +235,7 @@ function PrstsForm() {
   };
 
   const cableOptions = cableoperadores.map(cable => ({
-    label: cable.nombre_largo || cable.nombre || `Cableoperador #${cable.id}`,
+    label: cable.nombre || `Cableoperador #${cable.id}`,
     value: cable.id
   }));
 
@@ -446,7 +446,7 @@ function PrstsForm() {
               <div>
                 <div className="flex items-center space-x-2">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    {prst.cableoperador?.nombre_largo || prst.cableoperador?.nombre || 'Cable Operador'}
+                    {prst.cableoperador?.nombre || 'Cable Operador'}
                   </h3>
                   {modoBucle && (
                     <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs rounded">
