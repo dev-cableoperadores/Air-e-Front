@@ -28,30 +28,27 @@ function AsignacionProyectos() {
   useEffect(() => {
     loadData();
   }, []);
-  // Agrega esta función arriba de tu return
-const onFinalizarInspeccion = async (id) => {
-  try {
-    await handleMarcarInspeccionado(id);
-    // IMPORTANTE: Refrescar los datos locales para que el botón cambie a ✅
-    loadData(); 
-  } catch (error) {
-    // El error ya lo maneja el service con toast, pero aquí detenemos la ejecución
-  }
-};
+
+  const onFinalizarInspeccion = async (id) => {
+    try {
+      await handleMarcarInspeccionado(id);
+      loadData(); 
+    } catch (error) {
+      // Error handled by service
+    }
+  };
+
   const loadData = async () => {
     try {
       setLoading(true);
       const token = getToken();
 
-      // Cargar proyectos existentes
       const proyectosData = await asignacionService.getAll();
       setProyectos(Array.isArray(proyectosData) ? proyectosData : proyectosData.results || []);
 
-      // Cargar KMZ imports disponibles
       const kmzData = await fetchKmzImports(token);
       setKmzImports(Array.isArray(kmzData) ? kmzData : kmzData.results || []);
 
-      // Cargar inspectores/brigadas
       const inspectoresData = await inspectoresService.getAll();
       setInspectores(Array.isArray(inspectoresData) ? inspectoresData : inspectoresData.results || []);
     } catch (error) {
@@ -64,7 +61,6 @@ const onFinalizarInspeccion = async (id) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
       await asignacionService.create(formData);
       toast.success('Proyecto asignado exitosamente');
@@ -79,7 +75,6 @@ const onFinalizarInspeccion = async (id) => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este proyecto?')) return;
-    
     try {
       await asignacionService.delete(id);
       toast.success('Proyecto eliminado');
@@ -95,7 +90,6 @@ const onFinalizarInspeccion = async (id) => {
       const brigadas = prev.brigadas_asignadas_ids.includes(brigadaId)
         ? prev.brigadas_asignadas_ids.filter(id => id !== brigadaId)
         : [...prev.brigadas_asignadas_ids, brigadaId];
-      
       return { ...prev, brigadas_asignadas_ids: brigadas };
     });
   };
@@ -112,7 +106,8 @@ const onFinalizarInspeccion = async (id) => {
     <div className="w-full space-y-4 p-4">
       {user.is_staff == true && (
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
-        <div className="flex items-center justify-between">
+        {/* Header Responsivo: Flex Column en móvil, Row en escritorio */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Asignación de Proyectos
@@ -121,7 +116,7 @@ const onFinalizarInspeccion = async (id) => {
               Total: {proyectos.length} proyectos
             </p>
           </div>
-          <Button onClick={() => setShowForm(!showForm)}>
+          <Button onClick={() => setShowForm(!showForm)} className="w-full md:w-auto">
             {showForm ? '✕ Cancelar' : '+ Nuevo Proyecto'}
           </Button>
         </div>
@@ -135,7 +130,6 @@ const onFinalizarInspeccion = async (id) => {
             Crear Nuevo Proyecto
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Nombre del proyecto */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Nombre del Proyecto *
@@ -150,7 +144,6 @@ const onFinalizarInspeccion = async (id) => {
               />
             </div>
 
-            {/* Seleccionar KMZ Import */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Archivo KMZ Asociado *
@@ -170,7 +163,6 @@ const onFinalizarInspeccion = async (id) => {
               </select>
             </div>
 
-            {/* Seleccionar Brigadas */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Brigadas Asignadas
@@ -191,20 +183,19 @@ const onFinalizarInspeccion = async (id) => {
                       {inspector.user.username || `Inspector #${inspector.id}`}
                     </span>
                   </label>
-                    
                 ))}
               </div>
             </div>
 
-            <div className="flex gap-2">
-              <Button type="submit" className="flex-1">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button type="submit" className="w-full sm:flex-1">
                 Crear Proyecto
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setShowForm(false)}
-                className="flex-1"
+                className="w-full sm:flex-1"
               >
                 Cancelar
               </Button>
@@ -213,8 +204,10 @@ const onFinalizarInspeccion = async (id) => {
         </div>
       )}
 
-      {/* Lista de proyectos */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      {/* VISTA DE ESCRITORIO: TABLA 
+          (hidden on mobile, block on md and up)
+      */}
+      <div className="hidden md:block bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-900">
@@ -292,6 +285,98 @@ const onFinalizarInspeccion = async (id) => {
           </table>
         </div>
       </div>
+
+      {/* VISTA MÓVIL: TARJETAS (CARDS)
+          (block on mobile, hidden on md and up)
+      */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {proyectos.map((proyecto) => (
+          <div key={proyecto.id} className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg space-y-3">
+            {/* Cabecera de la Tarjeta */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                  {proyecto.nombre}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                   📂 KMZ: {proyecto.kmzimport?.filename || 'N/A'}
+                </p>
+              </div>
+              {proyecto.inspeccionado && (
+                <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">
+                  ✅ Listo
+                </span>
+              )}
+            </div>
+
+            {/* Lista de Brigadas */}
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Brigadas:</p>
+              <div className="flex flex-wrap gap-1">
+                {proyecto.brigadas_asignadas?.length > 0 ? (
+                  proyecto.brigadas_asignadas.map((brigada) => (
+                    <span
+                      key={brigada.id}
+                      className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs"
+                    >
+                      {brigada.user.username}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs text-gray-400 italic">Sin asignar</span>
+                )}
+              </div>
+            </div>
+
+            <hr className="dark:border-gray-700" />
+
+            {/* Botones de Acción Móvil */}
+            <div className="grid grid-cols-2 gap-2 pt-2">
+               {/* Botón Inventario (Ocupa todo el ancho si no es staff) */}
+               <div className={user.is_staff ? "col-span-1" : "col-span-2"}>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-center"
+                    onClick={() => navigate(`/inspecciones/inventario/${proyecto.id}`)}
+                  >
+                    📝 Inventario
+                  </Button>
+               </div>
+
+               {user.is_staff == true && (
+                 <>
+                  <Button
+                    variant={proyecto.inspeccionado ? "success" : "outline"}
+                    className={`w-full justify-center ${proyecto.inspeccionado 
+                      ? "bg-green-100 text-green-700 border-green-200" 
+                      : "text-blue-600 border-blue-600"}`}
+                    onClick={() => !proyecto.inspeccionado && onFinalizarInspeccion(proyecto.id)}
+                    disabled={proyecto.inspeccionado}
+                  >
+                    {proyecto.inspeccionado ? 'Listo' : '🔎 Finalizar'}
+                  </Button>
+
+                  <div className="col-span-2 mt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleDelete(proyecto.id)}
+                      className="w-full justify-center text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      🗑️ Eliminar Proyecto
+                    </Button>
+                  </div>
+                 </>
+               )}
+            </div>
+          </div>
+        ))}
+        {proyectos.length === 0 && (
+          <div className="text-center p-8 text-gray-500">
+            No hay proyectos asignados.
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

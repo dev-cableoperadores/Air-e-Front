@@ -8,9 +8,9 @@ import inspectoresService from '../../services/inspectoresService';
 import asignacionService from '../../services/asignacionService';
 import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
-import Input from '../../components/UI/Input'; // Importado
-import Select from '../../components/UI/Select'; // Importado
-import Textarea from '../../components/UI/Textarea'; // Importado
+import Input from '../../components/UI/Input';
+import Select from '../../components/UI/Select';
+import Textarea from '../../components/UI/Textarea';
 import MapFeatures from '../../components/Maps/MapFeatures';
 import MapChangeView from '../../components/Maps/MapChangeView';
 import MonitorRealtime from '../../components/Maps/MonitorRealtime';
@@ -22,6 +22,7 @@ import { ALTURAS, MATERIALES, CHOICE_TIPO_POSTE, ELEMENTOS_EXISTENTES } from '..
 import { useTracking } from '../../hooks/useTracking';
 import { useAuth } from '../../context/AuthContext';
 import L from 'leaflet';
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -46,7 +47,6 @@ function MapClickHandler({ onLocationSelect, enabled }) {
   });
   return null;
 }
-
 
 function InventarioForm() {
   const { proyectoId } = useParams();
@@ -73,8 +73,10 @@ function InventarioForm() {
     observaciones: '',
     rf1: '', rf2: '', rf3: ''
   });
+
   useEffect(() => { loadData(); }, [proyectoId]);
-  useTracking(user); 
+  useTracking(user);
+  
   useEffect(() => {
     if (selectedPosition) {
       setFormData(prev => ({
@@ -109,10 +111,9 @@ function InventarioForm() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // toast.success(`Coordenadas seleccionadas: ${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!formData.coordenada) {
@@ -122,13 +123,11 @@ const handleSubmit = async (e) => {
 
     try {
       if (editingId) {
-        // Modo edición
         await inventarioService.update(editingId, formData);
         toast.success('Inventario actualizado exitosamente');
         resetForm();
         loadData();
       } else {
-        // Modo creación
         const newInventario = await inventarioService.create(formData);
         toast.success('Inventario creado exitosamente');
         
@@ -149,47 +148,39 @@ const handleSubmit = async (e) => {
   };
 
   const handleEdit = (item) => {
-  // 1. Convertir la coordenada string "lat, lng" a array [lat, lng] para el mapa
-  let latLng = null;
-  if (item.coordenada) {
-    const parts = item.coordenada.split(',').map(n => parseFloat(n.trim()));
-    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      latLng = parts;
+    let latLng = null;
+    if (item.coordenada) {
+      const parts = item.coordenada.split(',').map(n => parseFloat(n.trim()));
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        latLng = parts;
+      }
     }
-  }
 
-  // 2. Establecer el ID de edición
-  setEditingId(item.id);
+    setEditingId(item.id);
 
-  // 3. Rellenar el formulario
-  // Nota: Asegúrate de manejar si brigada_responsable viene como objeto o ID desde el backend
-  setFormData({
-    proyecto_id: proyectoId,
-    brigada_responsable_id: typeof item.brigada_responsable === 'object' 
+    setFormData({
+      proyecto_id: proyectoId,
+      brigada_responsable_id: typeof item.brigada_responsable === 'object' 
         ? item.brigada_responsable.id 
-        : item.brigada_responsable, // Ajusta según tu respuesta de API
-    numero_poste_en_plano: item.numero_poste_en_plano,
-    coordenada: item.coordenada,
-    elementos_existentes: item.elementos_existentes,
-    tipo_poste: item.tipo_poste,
-    material: item.material,
-    altura: item.altura,
-    cantidad_prst: item.cantidad_prst,
-    observaciones: item.observaciones || '',
-    rf1: item.rf1 || '',
-    rf2: item.rf2 || '',
-    rf3: item.rf3 || ''
-  });
+        : item.brigada_responsable,
+      numero_poste_en_plano: item.numero_poste_en_plano,
+      coordenada: item.coordenada,
+      elementos_existentes: item.elementos_existentes,
+      tipo_poste: item.tipo_poste,
+      material: item.material,
+      altura: item.altura,
+      cantidad_prst: item.cantidad_prst,
+      observaciones: item.observaciones || '',
+      rf1: item.rf1 || '',
+      rf2: item.rf2 || '',
+      rf3: item.rf3 || ''
+    });
 
-  // 4. Actualizar el mapa y mostrar formulario
-  setSelectedPosition(latLng);
-  setShowForm(true);
-
-  // 5. Scroll suave hacia arriba para ver el formulario
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  
-  toast.loading(`Editando poste ${item.numero_poste_en_plano}...`, { duration: 1000 });
-};
+    setSelectedPosition(latLng);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.loading(`Editando poste ${item.numero_poste_en_plano}...`, { duration: 1000 });
+  };
 
   const resetForm = () => {
     setFormData({
@@ -201,21 +192,17 @@ const handleSubmit = async (e) => {
     setEditingId(null);
     setShowForm(false);
   };
+
   const handleMapClick = (position) => {
     if (!showForm) return;
     setSelectedPosition(position);
-    
-    // Notificación de coordenadas
     toast.success(`Coordenadas seleccionadas: ${position[0].toFixed(6)}, ${position[1].toFixed(6)}`);
-    
-    // Limpia el número si el punto NO viene de un poste existente
     setFormData(prev => ({
       ...prev,
       numero_poste_en_plano: '',
     }));
   };
 
-  // 2. Define esta función para clics sobre postes del KMZ (MapFeatures)
   const handlePosteClick = (position, posteName) => {
     if (showForm) {
       setSelectedPosition(position);
@@ -223,14 +210,12 @@ const handleSubmit = async (e) => {
         ...prev,
         numero_poste_en_plano: posteName || '',
       }));
-      
-      // Notificación de poste seleccionado
       toast.success(`Poste "${posteName}" seleccionado`);
     }
   };
+
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este inventario?')) return;
-    
     try {
       await inventarioService.delete(id);
       toast.success('Inventario eliminado');
@@ -240,26 +225,27 @@ const handleSubmit = async (e) => {
       toast.error('Error al eliminar inventario');
     }
   };
+
   if (loading) return <div className="flex justify-center min-h-screen"><Loading /></div>;
 
   return (
     <div className="w-full space-y-4 p-4">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg flex justify-between items-center">
+      {/* Header Responsivo */}
+      <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold dark:text-white text-black">Inventario General</h1>
           <p className="text-sm text-gray-500">Proyecto: <strong>{proyecto?.nombre}</strong></p>
         </div>
-        <Button onClick={() => navigate('/inspecciones/asignacion')} variant="outline">← Volver</Button>
+        <Button onClick={() => navigate('/inspecciones/asignacion')} variant="outline" className="w-full md:w-auto">
+          ← Volver
+        </Button>
       </div>
 
       {/* Mapa */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
         <div style={{ height: '400px' }} className="rounded-lg overflow-hidden border">
           <MapContainer center={[10.9878, -74.7889]} zoom={15} maxZoom={22} style={{ height: '100%' }} preferCanvas={true}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxZoom={22}      // Límite lógico
-              maxNativeZoom={18} />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" maxZoom={22} maxNativeZoom={18} />
             <MapChangeView features={projectFeatures} />
             <LocationMarker />
             <LocateControl />
@@ -276,12 +262,12 @@ const handleSubmit = async (e) => {
             {selectedPosition && showForm && <Marker position={selectedPosition} icon={selectedPosteIcon} />}
           </MapContainer>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="mt-4">
+        <Button onClick={() => setShowForm(!showForm)} className="mt-4 w-full md:w-auto">
           {showForm ? '✕ Cancelar' : '+ Nuevo Registro'}
         </Button>
       </div>
 
-      {/* Formulario Refactorizado con Etiquetas Personalizadas */}
+      {/* Formulario */}
       {showForm && (
         <div className="bg-white dark:bg-gray-800 p-6 shadow rounded-lg">
           <h2 className="text-xl font-bold mb-6 dark:text-white">Registrar Poste</h2>
@@ -371,16 +357,16 @@ const handleSubmit = async (e) => {
               }}
             />
 
-            <div className="flex gap-4">
-              <Button type="submit" className="flex-1">Guardar</Button>
-              <Button type="button" variant="outline" onClick={resetForm} className="flex-1">Cancelar</Button>
+            <div className="flex flex-col md:flex-row gap-4">
+              <Button type="submit" className="flex-1 w-full">Guardar</Button>
+              <Button type="button" variant="outline" onClick={resetForm} className="flex-1 w-full">Cancelar</Button>
             </div>
           </form>
         </div>
       )}
 
-      {/* Lista de inventarios */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      {/* VISTA DE ESCRITORIO: TABLA (Oculta en md e inferior) */}
+      <div className="hidden md:block bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-900">
@@ -406,7 +392,6 @@ const handleSubmit = async (e) => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {/* {console.log('Inventarios:', inventarios)} */}
               {inventarios.map((inv) => (
                 <tr key={inv.id}>
                   <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
@@ -454,6 +439,76 @@ const handleSubmit = async (e) => {
           </table>
         </div>
       </div>
+
+      {/* VISTA MÓVIL: CARDS (Visible en md e inferior) */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {inventarios.map((inv) => (
+          <div key={inv.id} className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg flex flex-col gap-3 border-l-4 border-blue-500">
+            {/* Encabezado Card */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                  Poste #{inv.numero_poste_en_plano}
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {new Date(inv.fecha).toLocaleDateString()}
+                </p>
+              </div>
+              <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                 {inv.cantidad_prst} PRSTs
+              </span>
+            </div>
+
+            {/* Detalles */}
+            <div className="text-sm text-gray-700 dark:text-gray-300 grid grid-cols-2 gap-2">
+               <div>
+                 <span className="font-semibold text-xs text-gray-500 uppercase block">Tipo</span>
+                 {inv.tipo_poste}
+               </div>
+               <div>
+                 <span className="font-semibold text-xs text-gray-500 uppercase block">Altura</span>
+                 {inv.altura}m
+               </div>
+               <div className="col-span-2">
+                 <span className="font-semibold text-xs text-gray-500 uppercase block">Coordenadas</span>
+                 <span className="font-mono text-xs">{inv.coordenada}</span>
+               </div>
+            </div>
+
+            <hr className="border-gray-200 dark:border-gray-700" />
+
+            {/* Botones de Acción Móvil */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                className="w-full justify-center text-blue-600 border-blue-200"
+                onClick={() => handleEdit(inv)}
+              >
+                ✏️ Editar
+              </Button>
+              <Button
+                className="w-full justify-center"
+                onClick={() => navigate(`/inspecciones/prsts/${inv.id}`)}
+              >
+                📋 PRSTs
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full col-span-2 justify-center text-red-600 border-red-200 hover:bg-red-50"
+                onClick={() => handleDelete(inv.id)}
+              >
+                🗑️ Eliminar
+              </Button>
+            </div>
+          </div>
+        ))}
+        {inventarios.length === 0 && (
+          <div className="text-center p-8 text-gray-500 bg-white dark:bg-gray-800 rounded-lg">
+            No hay inventarios registrados aún.
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

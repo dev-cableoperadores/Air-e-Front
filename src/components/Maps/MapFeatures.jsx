@@ -52,7 +52,7 @@ const [currentZoom, setCurrentZoom] = useState(13);
                 <div>
                   <strong>{feature.proyecto || 'Proyecto'}</strong><br />
                   <strong>N° {feature.name || index + 1}</strong><br />
-                  {feature.description && <p>{feature.description}</p>}
+                  {/* {feature.description && <p>{feature.description}</p>} */}
                   <small>
                     Lat: {feature.coordinates.lat.toFixed(6)}<br />
                     Lon: {feature.coordinates.lon.toFixed(6)}
