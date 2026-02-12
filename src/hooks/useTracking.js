@@ -1,59 +1,59 @@
-// hooks/useTracking.js
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 
 export function useTracking(user) {
+  // Usamos useRef para guardar la última vez que enviamos datos
+  const lastUpdate = useRef(0);
+  
   useEffect(() => {
-    // 1. Usar el ID específicamente para evitar reinicios por cambios en otros campos del user
-    const userId = user?.id;
+    const userId = user?.id; // O user?.pk dependiendo de tu objeto Django
     if (!userId) return;
 
     const watchId = navigator.geolocation.watchPosition(
       async (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
+        const now = Date.now();
 
-        // Opcional: No enviar si la precisión es muy mala (ej. > 100 metros)
-        if (accuracy > 100) return; 
+        // 1. FILTRO DE PRECISIÓN: Si el error es > 50m, ignorar.
+        if (accuracy > 50) return;
+
+        // 2. THROTTLE: No enviar más de 1 vez cada 2 segundos
+        if (now - lastUpdate.current < 2000) return;
 
         try {
+          lastUpdate.current = now;
+          
           await supabase
             .from('tracking_inspectores')
             .upsert({ 
               inspector_id: userId,
-              nombre_inspector: user.first_name ? `${user.first_name} ${user.last_name}` : user.username,
+              nombre_inspector: user.first_name || user.username || 'Inspector',
               lat: latitude, 
               lng: longitude,
               ultima_actualizacion: new Date().toISOString(),
               en_linea: true
-            }, { onConflict: 'inspector_id' });
+            }, { onConflict: 'inspector_id' }); // IMPORTANTE
+
         } catch (err) {
-          console.error("Error al sincronizar con Supabase:", err);
+          console.error("Error envío GPS:", err);
         }
       },
-      (error) => {
-        const messages = {
-          1: "Permiso de ubicación denegado.",
-          2: "Ubicación no disponible.",
-          3: "Tiempo de espera agotado."
-        };
-        console.warn(`GPS: ${messages[error.code] || error.message}`);
-      },
+      (err) => console.warn("Error GPS:", err.message),
       { 
         enableHighAccuracy: true, 
-        distanceFilter: 10, // Solo dispara si se mueve 10 metros
-        timeout: 15000     // No esperar más de 15s por una lectura
+        distanceFilter: 5, // Más sensible (5 metros)
+        timeout: 10000 
       }
     );
 
+    // Limpieza al cerrar
     return () => {
-      if (watchId) navigator.geolocation.clearWatch(watchId);
-      
-      // Marcar offline al desmontar el componente
-      supabase
-        .from('tracking_inspectores')
+      navigator.geolocation.clearWatch(watchId);
+      // Intentar marcar offline (best effort)
+      supabase.from('tracking_inspectores')
         .update({ en_linea: false })
         .eq('inspector_id', userId)
-        .then(() => { /* offline set */ });
+        .then(() => console.log("Inspector desconectado"));
     };
-  }, [user?.id]); // <--- Cambio clave aquí
+  }, [user]); // Solo reiniciar si cambia el usuario
 }
