@@ -134,7 +134,7 @@ function InventarioForm() {
         const cantidadPrst = parseInt(formData.cantidad_prst) || 0;
         
         if (cantidadPrst === 0) {
-          toast.info('No hay PRSTs para registrar en este poste');
+          toast('No hay PRSTs para registrar en este poste');
           resetForm();
           loadData();
         } else {

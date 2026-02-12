@@ -5,6 +5,7 @@ import asignacionService from '../../services/asignacionService';
 import { fetchKmzImports } from '../../services/kmzService';
 import inspectoresService from '../../services/inspectoresService';
 import { getToken } from '../../services/authService';
+import { ExportarExcelInventario, ExportarExcelInventarioHoy, ExportarExcelInventarioAllHoy } from '../../services/exportExcel';
 import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
 import { toast } from 'react-hot-toast';
@@ -107,6 +108,15 @@ function AsignacionProyectos() {
       {user.is_staff == true && (
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
         {/* Header Responsivo: Flex Column en móvil, Row en escritorio */}
+        <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4'>
+          <Button
+              size="md"
+              variant="success"
+              onClick={() => ExportarExcelInventarioAllHoy()}
+              >
+               Inventario General hoy .xlsx 📥
+               </Button>
+        </div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -116,6 +126,7 @@ function AsignacionProyectos() {
               Total: {proyectos.length} proyectos
             </p>
           </div>
+          
           <Button onClick={() => setShowForm(!showForm)} className="w-full md:w-auto">
             {showForm ? '✕ Cancelar' : '+ Nuevo Proyecto'}
           </Button>
@@ -278,6 +289,26 @@ function AsignacionProyectos() {
                       🗑️
                     </Button>
                     )}
+                    {user.is_staff == true && (
+                    <>
+                    <Button
+                      size="xs"
+                      variant="outline"
+                      onClick={() => ExportarExcelInventario(proyecto.id, proyecto.kmzimport?.filename || 'Inventario')}
+                      className="text-red-600 hover:text-red-700"
+                      >
+                      📥 Inventario
+                    </Button>
+                    {/* <Button
+                      size="xs"
+                      variant="outline"
+                      onClick={() => ExportarExcelInventarioHoy(proyecto.id, proyecto.kmzimport?.filename || 'Inventario')}
+                      className="text-red-600 hover:text-red-700"
+                      >
+                      📥 Inventario hoy
+                    </Button> */}
+                    </>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -363,6 +394,24 @@ function AsignacionProyectos() {
                       className="w-full justify-center text-red-600 border-red-200 hover:bg-red-50"
                     >
                       🗑️ Eliminar Proyecto
+                    </Button>
+                  </div>
+                  <div className="col-span-2 mt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => ExportarExcelInventario(proyecto.id, proyecto.kmzimport?.filename || 'Inventario')}
+                      className="w-full justify-center text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      📥 Exportar Excel
+                    </Button>
+                  </div>
+                  <div className="col-span-2 mt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => ExportarExcelInventarioHoy(proyecto.id, proyecto.kmzimport?.filename || 'Inventario')}
+                      className="w-full justify-center text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      📥 Exportar Excel de hoy
                     </Button>
                   </div>
                  </>

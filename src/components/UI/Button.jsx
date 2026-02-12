@@ -19,6 +19,9 @@ const Button = ({
   }
   
   const sizes = {
+    // uno de los tamaños más pequeños, ideal para botones en filas o con poco espacio
+    // este sera muy pequeño, para acciones secundarias o iconos
+    xs: 'px-1.5 sm:px-2 py-1 text-xs',
     sm: 'px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm',
     md: 'px-3 sm:px-4 py-2 text-sm sm:text-base',
     lg: 'px-4 sm:px-6 py-2.5 sm:py-3 text-base sm:text-lg',
