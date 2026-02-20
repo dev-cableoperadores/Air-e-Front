@@ -69,25 +69,38 @@ function InspeccionesList() {
 
   return (
     <div className="proyectos-container text-center px-4 py-6 text-gray-800">
-      {user && user.is_inspector && !user.is_staff ? (
-        <h1>Inspecciones</h1>
-      ) : (
-        <h1>Proyectos KMZ para Inspección</h1>
-      )}
-      <Link to="/inspecciones/asignacion"><Button>Ver Inspecciones</Button></Link>
-      {user && user.is_staff && (
-      <KMZUpload onUploadSuccess={handleUploadSuccess} />
-      )}
-
-
-
-      {error && (
-        <div className="error-message">
-          {error}
+      {/* header card */}
+      <div className="w-full space-y-4 p-4">
+        <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {user && user.is_inspector && !user.is_staff ? 'Inspecciones' : 'Proyectos KMZ para Inspección'}
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Total: {kmzFeatures.length} proyectos
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Link to="/inspecciones/asignacion">
+                <Button>Ver Inspecciones</Button>
+              </Link>
+              <Link to="/monitoreo">
+                <Button variant='danger'>Monitoreo</Button>
+              </Link>
+              {user && user.is_staff && (
+                <KMZUpload onUploadSuccess={handleUploadSuccess} />
+              )}
+            </div>
+          </div>
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+          <FeatureStats features={kmzFeatures} />
         </div>
-      )}
-
-      <FeatureStats features={kmzFeatures} />
+      </div>
 
       <div className="map-section">
         <h2>Visualización de Proyectos en el Mapa</h2>

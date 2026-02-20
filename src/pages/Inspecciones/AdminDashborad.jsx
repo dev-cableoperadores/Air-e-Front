@@ -1,5 +1,6 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 import MonitorRealtime from '../../components/Maps/MonitorRealtime';
+import ButtonMap from '../../components/Maps/ButtonMap';
 
 function AdminDashboard() {
   return (
@@ -13,7 +14,7 @@ function AdminDashboard() {
             maxNativeZoom={18}
             
           />
-        
+        <ButtonMap />
         {/* Aquí es donde ocurre la magia del tiempo real */}
         <MonitorRealtime />
         
