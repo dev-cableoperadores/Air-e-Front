@@ -115,7 +115,10 @@ function AsignacionProyectos() {
               onClick={() => ExportarExcelInventarioAllHoy()}
               >
                Inventario General hoy .xlsx 📥
-               </Button>
+          </Button>
+          <Button onClick={() => navigate('/inspecciones')} variant="outline" className="w-full md:w-auto">
+          ← Volver
+        </Button>
         </div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

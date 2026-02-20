@@ -10,7 +10,7 @@
 
 ### Navegar al directorio del backend
 ```bash
-cd c:\Users\Joel\OneDrive\Escritorio\aire\Air-e_api
+cd c:\Air-e_api
 ```
 
 ### Instalar dependencias
@@ -55,7 +55,7 @@ El backend estará disponible en: `http://127.0.0.1:8000/`
 
 ### Navegar al directorio del frontend
 ```bash
-cd c:\Users\Joel\OneDrive\Escritorio\aire\Air-e
+cd c:\Air-e
 ```
 
 ### Instalar dependencias
@@ -123,7 +123,7 @@ El frontend estará disponible en: `http://localhost:5173/`
 - ✅ Dark mode completo
 - ✅ Sidebar colapsable
 - ✅ Dashboard con estadísticas
-- ✅ Gestión de Cable-operadores
+- ✅ Gestión de Cableoperadores
 - ✅ Gestión de Contratos
 - ✅ Autenticación JWT
 - ✅ Persistencia de sesión
@@ -169,7 +169,7 @@ aire/
 └── Air-e_api/               # Backend (Django)
     ├── API/                 # Configuración del proyecto
     ├── authentication/      # App de autenticación
-    ├── cableoperadores/     # App de cable-operadores
+    ├── cableoperadores/     # App de cableoperadores
     ├── contratos/          # App de contratos
     └── manage.py
 ```
