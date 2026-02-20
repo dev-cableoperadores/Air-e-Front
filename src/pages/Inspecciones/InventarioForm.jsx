@@ -121,6 +121,11 @@ function InventarioForm() {
       return;
     }
 
+    if (!formData.rf1 || !formData.rf2 || !formData.rf3) {
+      toast.error('Debes cargar las 3 fotos correctamente');
+      return;
+    }
+
     try {
       if (editingId) {
         await inventarioService.update(editingId, formData);
@@ -355,6 +360,7 @@ function InventarioForm() {
               onUploadSuccess={(urls) => {
                 setFormData(prev => ({ ...prev, rf1: urls[0] || '', rf2: urls[1] || '', rf3: urls[2] || '' }));
               }}
+              required
             />
 
             <div className="flex flex-col md:flex-row gap-4">

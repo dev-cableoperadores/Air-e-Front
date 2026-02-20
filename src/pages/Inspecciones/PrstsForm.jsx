@@ -82,7 +82,10 @@ function PrstsForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!formData.rf1 || !formData.rf2) {
+      toast.error('Por favor, sube las 2 fotos requeridas');
+      return;
+    }
     try {
       if (editingId) {
         // Modo edición
@@ -396,6 +399,7 @@ function PrstsForm() {
                   rf2: urls[1] || ''
                 }));
               }}
+              required
             />
 
             {/* Observaciones */}
