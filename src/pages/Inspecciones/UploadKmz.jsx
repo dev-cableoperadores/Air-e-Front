@@ -22,6 +22,7 @@ function InspeccionesList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  const  [ CountProyectos, setProyectos] = useState(0);
   useTracking(user); 
   useEffect(() => {
     const loadData = async () => {
@@ -41,6 +42,8 @@ function InspeccionesList() {
 
         const features = convertDjangoToFeatures(proyectos);
         setKmzFeatures(features);
+        setProyectos(proyectos.count);
+        
       } catch (error) {
         console.error('❌ Error loading data:', error);
         setError('Error al cargar datos iniciales: ' + error.message);
@@ -78,18 +81,19 @@ function InspeccionesList() {
                 {user && user.is_inspector && !user.is_staff ? 'Inspecciones' : 'Proyectos KMZ para Inspección'}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Total: {kmzFeatures.length} proyectos
+                Total: {CountProyectos} proyectos
               </p>
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
               <Link to="/inspecciones/asignacion">
                 <Button>Ver Inspecciones</Button>
               </Link>
+              {user && user.is_staff && ( <>
               <Link to="/monitoreo">
                 <Button variant='danger'>Monitoreo</Button>
               </Link>
-              {user && user.is_staff && (
                 <KMZUpload onUploadSuccess={handleUploadSuccess} />
+              </>
               )}
             </div>
           </div>
