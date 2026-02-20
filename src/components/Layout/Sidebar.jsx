@@ -209,7 +209,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     <>
       {/* Mobile overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden" aria-hidden={!isOpen}>
+        <div className="fixed inset-0 z-[1100] lg:hidden" aria-hidden={!isOpen}>
           <div
             className="fixed inset-0 bg-black bg-opacity-50"
             onClick={onClose}
@@ -217,7 +217,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
           />
           <div
             id="mobile-sidebar"
-            className="fixed inset-y-0 left-0 z-50 h-full w-72 max-w-[85vw] sm:max-w-sm focus:outline-none shadow-xl"
+            className="fixed inset-y-0 left-0 z-[1200] h-full w-72 max-w-[85vw] sm:max-w-sm focus:outline-none shadow-xl"
             role="dialog"
             aria-modal="true"
             aria-label="Menú lateral"
