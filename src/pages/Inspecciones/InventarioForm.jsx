@@ -62,7 +62,7 @@ function InventarioForm() {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     proyecto_id: proyectoId,
-    brigada_responsable_id: '',
+    brigada_responsable_id: user?.id,
     numero_poste_en_plano: '',
     coordenada: '',
     elementos_existentes: '',
@@ -165,9 +165,7 @@ function InventarioForm() {
 
     setFormData({
       proyecto_id: proyectoId,
-      brigada_responsable_id: typeof item.brigada_responsable === 'object' 
-        ? item.brigada_responsable.id 
-        : item.brigada_responsable,
+      brigada_responsable_id: user?.id,
       numero_poste_en_plano: item.numero_poste_en_plano,
       coordenada: item.coordenada,
       elementos_existentes: item.elementos_existentes,
@@ -189,7 +187,7 @@ function InventarioForm() {
 
   const resetForm = () => {
     setFormData({
-      proyecto_id: proyectoId, brigada_responsable_id: '', numero_poste_en_plano: '',
+      proyecto_id: proyectoId, brigada_responsable_id: user?.id, numero_poste_en_plano: '',
       coordenada: '', elementos_existentes: '', tipo_poste: '', material: '',
       altura: '', cantidad_prst: '', observaciones: '', rf1: '', rf2: '', rf3: ''
     });
@@ -277,16 +275,6 @@ function InventarioForm() {
         <div className="bg-white dark:bg-gray-800 p-6 shadow rounded-lg">
           <h2 className="text-xl font-bold mb-6 dark:text-white">Registrar Poste</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
-            
-            <Select
-              label="Brigada Responsable *"
-              name="brigada_responsable_id"
-              value={formData.brigada_responsable_id}
-              onChange={handleChange}
-              options={inspectores.map(i => ({ value: i.id, label: i.user.username || `Inspector #${i.id}` }))}
-              required
-            />
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 label="Número de Poste en Plano"
@@ -338,6 +326,7 @@ function InventarioForm() {
                 label="Cantidad de PRSTs"
                 name="cantidad_prst"
                 type="number"
+                min="0"
                 value={formData.cantidad_prst}
                 onChange={handleChange}
                 required
@@ -404,7 +393,7 @@ function InventarioForm() {
                     {new Date(inv.fecha).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
-                    {inv.numero_poste_en_plano}
+                    {inv.numero_poste_en_plano} 
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
                     {inv.coordenada}

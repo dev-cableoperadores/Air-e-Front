@@ -194,7 +194,7 @@ function AsignacionProyectos() {
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {inspector.user.username || `Inspector #${inspector.id}`}
+                      {`${inspector.user.first_name} ${inspector.user.last_name}` || `Inspector #${inspector.id}`}
                     </span>
                   </label>
                 ))}
