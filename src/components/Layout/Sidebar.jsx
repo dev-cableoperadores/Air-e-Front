@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/proyectos', label: 'Proyectos', icon: Layers },
     { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
     { path: '/facturas', label: 'Facturas', icon: Receipt },
-    { path: '/inspecciones', label: 'Inspector', icon: ClipboardCheck },
+    { path: '/inspecciones', label: 'Viabilidades', icon: ClipboardCheck },
   ]
 
   if (user && user.is_staff) {
