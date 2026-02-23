@@ -204,7 +204,7 @@ function AnnotationEditor({ imageDataUrl, onSave, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-white font-bold text-lg">✏️ Editor de Anotaciones</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">✕</button>
+          <button type="button" onClick={onClose} className="text-gray-400 hover:text-white text-xl">✕</button>
         </div>
 
         {/* Toolbar */}
@@ -213,6 +213,7 @@ function AnnotationEditor({ imageDataUrl, onSave, onClose }) {
           <div className="flex gap-1">
             {tools.map((t) => (
               <button
+                type='button'
                 key={t.id}
                 title={t.title}
                 onClick={() => setTool(t.id)}
@@ -233,6 +234,7 @@ function AnnotationEditor({ imageDataUrl, onSave, onClose }) {
           <div className="flex gap-1">
             {colors.map((c) => (
               <button
+                type="button"
                 key={c}
                 onClick={() => setColor(c)}
                 className={`w-7 h-7 rounded-full border-2 transition-all ${
@@ -261,6 +263,7 @@ function AnnotationEditor({ imageDataUrl, onSave, onClose }) {
 
           <div className="ml-auto flex gap-2">
             <button
+              type="button"
               onClick={undo}
               disabled={history.length <= 1}
               className="px-3 py-1.5 bg-gray-700 text-gray-300 rounded-lg text-sm hover:bg-gray-600 disabled:opacity-40 transition-all"
@@ -282,6 +285,7 @@ function AnnotationEditor({ imageDataUrl, onSave, onClose }) {
               onKeyDown={(e) => e.key === 'Enter' && addText()}
             />
             <button
+              type="button"
               onClick={addText}
               disabled={!textPos || !textInput.trim()}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm disabled:opacity-40 hover:bg-blue-500 transition-all"
@@ -330,12 +334,14 @@ function AnnotationEditor({ imageDataUrl, onSave, onClose }) {
         {/* Actions */}
         <div className="flex gap-3 justify-end">
           <button
+            type="button"
             onClick={onClose}
             className="px-5 py-2.5 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-all font-medium"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={handleSave}
             className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all font-bold shadow-lg shadow-blue-900/40"
           >
@@ -435,6 +441,7 @@ function CameraModal({ onCapture, onClose }) {
           />
 
           <button
+            
             onClick={flipCamera}
             className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all"
             title="Voltear cámara"
@@ -627,6 +634,7 @@ function PhotoUploader({
           <div className="flex gap-2">
             {/* Upload from file */}
             <button
+              type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 font-medium text-sm hover:border-blue-400 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-all"
@@ -637,6 +645,7 @@ function PhotoUploader({
 
             {/* Camera */}
             <button
+              type="button"
               onClick={() => setShowCamera(true)}
               disabled={uploading}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-medium text-sm hover:border-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 transition-all"
@@ -679,12 +688,14 @@ function PhotoUploader({
                 {/* Overlay actions */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
                   <button
+                    
                     onClick={() => handleEditFromGallery(index)}
                     className="px-3 py-1.5 bg-white/90 text-gray-800 rounded-lg text-xs font-bold hover:bg-white transition-all"
                   >
                     ✏️ Anotar
                   </button>
                   <button
+                    
                     onClick={() => handleRemove(index)}
                     className="px-3 py-1.5 bg-red-500/90 text-white rounded-lg text-xs font-bold hover:bg-red-500 transition-all"
                   >

@@ -78,7 +78,7 @@ function InspeccionesList() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {user && user.is_inspector && !user.is_staff ? 'Inspecciones' : 'Proyectos KMZ para Inspección'}
+                {user && user.is_inspector && !user.is_staff ? 'proyecto' : 'Proyectos KMZ para Inspección'}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Total: {CountProyectos} proyectos
@@ -86,7 +86,7 @@ function InspeccionesList() {
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
               <Link to="/inspecciones/asignacion">
-                <Button>Ver Inspecciones</Button>
+                <Button>Ver Proyectos</Button>
               </Link>
               {user && user.is_staff && ( <>
               <Link to="/monitoreo">

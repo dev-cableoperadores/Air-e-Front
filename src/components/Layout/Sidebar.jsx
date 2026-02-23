@@ -26,9 +26,9 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/', label: 'Inicio', icon: Home },
     { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
     { path: '/contratos', label: 'Contratos', icon: FileText },
+    { path: '/facturas', label: 'Facturas', icon: Receipt },
     { path: '/proyectos', label: 'Proyectos', icon: Layers },
     { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
-    { path: '/facturas', label: 'Facturas', icon: Receipt },
     { path: '/inspecciones', label: 'Viabilidades', icon: ClipboardCheck },
   ]
 
@@ -104,6 +104,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
 
         {/* Collapse Toggle - Only show on desktop */}
         <button
+          type="button"
           onClick={toggleCollapse}
           className={`hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
             (expanded ? false : isCollapsed) && 'mx-auto'

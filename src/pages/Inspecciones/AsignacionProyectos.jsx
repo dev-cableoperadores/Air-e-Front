@@ -131,7 +131,7 @@ function AsignacionProyectos() {
           </div>
           
           <Button onClick={() => setShowForm(!showForm)} className="w-full md:w-auto">
-            {showForm ? '✕ Cancelar' : '+ Nuevo Proyecto'}
+            {showForm ? '✕ Cancelar' : '+ Asignar Proyecto'}
           </Button>
         </div>
       </div>
