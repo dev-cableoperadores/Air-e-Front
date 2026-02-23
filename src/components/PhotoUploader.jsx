@@ -428,6 +428,7 @@ function CameraModal({ onCapture, onClose }) {
         {/* Controls */}
         <div className="flex items-center justify-between px-8 py-5 bg-black/60 backdrop-blur-sm">
           <button
+            type="button"
             onClick={onClose}
             className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all"
           >
@@ -435,13 +436,14 @@ function CameraModal({ onCapture, onClose }) {
           </button>
 
           <button
+          type="button"
             onClick={capture}
             disabled={!ready}
             className="w-16 h-16 rounded-full bg-white border-4 border-white/30 disabled:opacity-50 hover:scale-105 active:scale-95 transition-all shadow-xl"
           />
 
           <button
-            
+            type="button"
             onClick={flipCamera}
             className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all"
             title="Voltear cámara"
@@ -688,14 +690,14 @@ function PhotoUploader({
                 {/* Overlay actions */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
                   <button
-                    
+                    type="button"
                     onClick={() => handleEditFromGallery(index)}
                     className="px-3 py-1.5 bg-white/90 text-gray-800 rounded-lg text-xs font-bold hover:bg-white transition-all"
                   >
                     ✏️ Anotar
                   </button>
                   <button
-                    
+                    type="button"
                     onClick={() => handleRemove(index)}
                     className="px-3 py-1.5 bg-red-500/90 text-white rounded-lg text-xs font-bold hover:bg-red-500 transition-all"
                   >
