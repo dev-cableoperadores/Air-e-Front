@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/facturas', label: 'Facturas', icon: Receipt },
   ]
   const InspectorItems = [
-    { path: '/inspecciones', label: 'Inspector', icon: ClipboardCheck },
+    { path: '/inspecciones', label: 'Viabilidades', icon: ClipboardCheck },
   ]
   const AdminItems = [
     { path: '/', label: 'Inicio', icon: Home },
