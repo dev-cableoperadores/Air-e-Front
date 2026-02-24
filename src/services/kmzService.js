@@ -105,8 +105,6 @@ export const handleMarcarInspeccionado = async (id) => {
   const hoy = new Date().toISOString().split('T')[0];
 
   try {
-    // La URL debe coincidir exactamente con tu path de Django
-    // Si en Django es 'asignacion/<int:pk>/', aquí es:
     const response = await api.patch(`/api/proyectos/asignacion/${id}/`, {
       inspeccionado: true,
       fecha_inspeccion: hoy,
@@ -115,8 +113,22 @@ export const handleMarcarInspeccionado = async (id) => {
     toast.success('Proyecto marcado como inspeccionado');
     return response.data; 
   } catch (error) {
-    // El interceptor ya muestra un toast.error general, 
-    // pero puedes capturar errores específicos aquí si lo deseas.
+    throw error;
+  }
+};
+
+// toggle inspeccionado boolean (true/false)
+export const toggleInspeccionado = async (id, value) => {
+  try {
+    const payload = { inspeccionado: value };
+    if (value) {
+      payload.fecha_inspeccion = new Date().toISOString().split('T')[0];
+    }
+    const response = await api.patch(`/api/proyectos/asignacion/${id}/`, payload);
+    toast.success(`Proyecto ${value ? 'marcado' : 'desmarcado'} como inspeccionado`);
+    return response.data;
+  } catch (error) {
+    console.error('Error toggle inspeccionado:', error);
     throw error;
   }
 };

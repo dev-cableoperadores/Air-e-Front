@@ -2,7 +2,7 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchKmzImportsNoInspeccionados, fetchKmzImports, handleMarcarInspeccionado, deleteKmzImport } from '../../services/kmzService';
+import { fetchKmzImportsNoInspeccionados, fetchKmzImports, handleMarcarInspeccionado, toggleInspeccionado, deleteKmzImport } from '../../services/kmzService';
 import asignacionService from '../../services/asignacionService';
 import inspectoresService from '../../services/inspectoresService';
 import { ExportarExcelInventario, ExportarExcelInventarioHoy } from '../../services/exportExcel';
@@ -186,14 +186,14 @@ function InspeccionesList() {
     }
   };
 
-  const onFinalizarInspeccion = async (id) => {
+  const onToggleInspeccion = async (proyecto) => {
     try {
-      await handleMarcarInspeccionado(id);
-      // Recargar proyectos después de marcar como inspeccionado
+      await toggleInspeccionado(proyecto.id, !proyecto.inspeccionado);
+      // Recargar proyectos
       const proyectosData = await asignacionService.getAll();
       setProyectos(Array.isArray(proyectosData) ? proyectosData : proyectosData.results || []);
     } catch (error) {
-      // Error handled by service
+      // handled by service
     }
   };
 
@@ -436,12 +436,11 @@ function InspeccionesList() {
                             size="sm"
                             variant={proyecto.inspeccionado ? "success" : "outline"}
                             className={proyecto.inspeccionado 
-                              ? "bg-green-100 text-green-700 border-green-200 cursor-default" 
+                              ? "bg-green-100 text-green-700 border-green-200" 
                               : "text-blue-600 border-blue-600 hover:bg-blue-50"}
-                              onClick={() => !proyecto.inspeccionado && onFinalizarInspeccion(proyecto.id)}
-                              disabled={proyecto.inspeccionado}
-                              >
-                            {proyecto.inspeccionado ? '✅ Inspeccionado' : '🔎 Finalizar'}
+                            onClick={() => onToggleInspeccion(proyecto)}
+                          >
+                            {proyecto.inspeccionado ? '✅ Inspeccionado' : '🔎 Marcar'}
                           </Button>
                         <Button
                           size="sm"
