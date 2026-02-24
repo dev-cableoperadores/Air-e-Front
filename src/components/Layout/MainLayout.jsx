@@ -20,8 +20,8 @@ const MainLayout = ({ children }) => {
     }
   }, [])
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden"> {/* 1. Evita el scroll horizontal en el body */}
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -29,13 +29,17 @@ const MainLayout = ({ children }) => {
         onToggleCollapse={() => setIsCollapsed((v) => !v)}
       />
       
-      <div className={`bg-white-100 flex flex-col flex-1 transition-all duration-300 ${
+      {/* 2. Añadimos min-w-0 para que el flex-1 no desborde el ancho disponible */}
+      <div className={`flex flex-col flex-1 min-w-0 transition-all duration-300 ${
         isCollapsed ? 'lg:ml-16' : 'lg:ml-72'
       }`}>
         <Header onMenuClick={() => setSidebarOpen(true)} />
         
-        <main className="flex-1 px-2 py-2 sm:px-3 sm:py-3 md:px-5 md:py-5 lg:px-6 lg:py-6 overflow-auto touch-pan-x touch-pan-y">
-          <div className="mx-auto w-full transition-all duration-300 max-w-full lg:max-w-6xl xl:max-w-7xl">
+        {/* 3. overflow-x-hidden aquí es clave para que el mapa/tablas no rompan el layout */}
+        <main className="flex-1 px-2 py-2 sm:px-3 sm:py-3 md:px-5 md:py-5 lg:px-6 lg:py-6 overflow-y-auto overflow-x-hidden">
+          
+          {/* 4. Cambiamos max-w-full por un control más estricto si es necesario */}
+          <div className="mx-auto w-full min-w-0 transition-all duration-300 max-w-full">
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

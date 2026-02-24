@@ -1,8 +1,12 @@
 // pages/inspecciones/List.jsx
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchKmzImportsNoInspeccionados } from '../../services/kmzService';
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchKmzImportsNoInspeccionados, fetchKmzImports, handleMarcarInspeccionado } from '../../services/kmzService';
+import asignacionService from '../../services/asignacionService';
+import inspectoresService from '../../services/inspectoresService';
+import { ExportarExcelInventario, ExportarExcelInventarioHoy } from '../../services/exportExcel';
+import { toast } from 'react-hot-toast';
 import { getToken } from '../../services/authService'; // Ajustado a tu ruta real
 import { convertDjangoToFeatures } from '../../utils/kmlParser';
 import MapChangeView from '../../components/Maps/MapChangeView';
@@ -18,11 +22,16 @@ import Button from '../../components/UI/Button'
 import { useTracking } from '../../hooks/useTracking';
 
 function InspeccionesList() {
+  const navigate = useNavigate();
   const [kmzFeatures, setKmzFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
-  const  [ CountProyectos, setProyectos] = useState(0);
+  const  [ CountProyectos, setCountProyectos] = useState(0);
+  const [kmzImports, setKmzImports] = useState([]);
+  const [inspectores, setInspectores] = useState([]);
+  const [proyectos, setProyectos] = useState([]);
+  const [formData, setFormData] = useState({ nombre: '', kmzimport_id: '', brigadas_asignadas_ids: [] });
   useTracking(user); 
   useEffect(() => {
     const loadData = async () => {
@@ -38,11 +47,17 @@ function InspeccionesList() {
 
         //console.log('✅ Token encontrado, llamando fetchProyectos...');
         const proyectos = await fetchKmzImportsNoInspeccionados(token);
+        const kmzData = await fetchKmzImports(token);
         //console.log('✅ Proyectos obtenidos correctamente');
 
         const features = convertDjangoToFeatures(proyectos);
         setKmzFeatures(features);
-        setProyectos(proyectos.count);
+        setCountProyectos(proyectos.count);
+        setKmzImports(Array.isArray(kmzData) ? kmzData : kmzData.results || []);
+        
+        // Cargar proyectos asignados
+        const proyectosData = await asignacionService.getAll();
+        setProyectos(Array.isArray(proyectosData) ? proyectosData : proyectosData.results || []);
         
       } catch (error) {
         console.error('❌ Error loading data:', error);
@@ -56,8 +71,83 @@ function InspeccionesList() {
     loadData();
   }, []);
 
-  const handleUploadSuccess = (newFeatures) => {
+  // cargar inspectores para formulario
+  useEffect(() => {
+    const loadInspectores = async () => {
+      try {
+        const data = await inspectoresService.getAll();
+        const items = Array.isArray(data?.results) ? data.results : (data || []);
+        setInspectores(items);
+      } catch (err) {
+        console.error('No se pudieron cargar inspectores', err);
+      }
+    };
+
+    loadInspectores();
+  }, []);
+
+  const handleUploadSuccess = async (newFeatures) => {
     setKmzFeatures(prevFeatures => [...prevFeatures, ...newFeatures]);
+    
+    // Recargar la lista de KMZ importados después de una carga exitosa
+    try {
+      const token = getToken();
+      if (token) {
+        const kmzData = await fetchKmzImports(token);
+        setKmzImports(Array.isArray(kmzData) ? kmzData : kmzData.results || []);
+      }
+    } catch (error) {
+      console.error('Error al recargar KMZ importados:', error);
+    }
+  };
+
+  const handleBrigadaToggle = (brigadaId) => {
+    setFormData(prev => {
+      const brigadas = prev.brigadas_asignadas_ids.includes(brigadaId)
+        ? prev.brigadas_asignadas_ids.filter(id => id !== brigadaId)
+        : [...prev.brigadas_asignadas_ids, brigadaId];
+      return { ...prev, brigadas_asignadas_ids: brigadas };
+    });
+  };
+
+  const handleAssignSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await asignacionService.create(formData);
+      toast.success('Proyecto asignado exitosamente');
+      setFormData({ nombre: '', kmzimport_id: '', brigadas_asignadas_ids: [] });
+      // Recargar proyectos después de crear uno nuevo
+      const proyectosData = await asignacionService.getAll();
+      setProyectos(Array.isArray(proyectosData) ? proyectosData : proyectosData.results || []);
+    } catch (error) {
+      console.error('Error al asignar proyecto:', error);
+      toast.error('Error al asignar proyecto');
+    }
+  };
+
+  const onFinalizarInspeccion = async (id) => {
+    try {
+      await handleMarcarInspeccionado(id);
+      // Recargar proyectos después de marcar como inspeccionado
+      const proyectosData = await asignacionService.getAll();
+      setProyectos(Array.isArray(proyectosData) ? proyectosData : proyectosData.results || []);
+    } catch (error) {
+      // Error handled by service
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('¿Estás seguro de eliminar este proyecto?')) return;
+    try {
+      await asignacionService.delete(id);
+      toast.success('Proyecto eliminado');
+      // Recargar proyectos después de eliminar
+      const proyectosData = await asignacionService.getAll();
+      setProyectos(Array.isArray(proyectosData) ? proyectosData : proyectosData.results || []);
+    } catch (error) {
+      console.error('Error deleting proyecto:', error);
+      toast.error('Error al eliminar proyecto');
+    }
   };
 
   if (loading) {
@@ -71,37 +161,338 @@ function InspeccionesList() {
   }
 
   return (
-    <div className="proyectos-container text-center px-4 py-6 text-gray-800">
+    <div className="proyectos-container text-center px-4 py-6 text-gray-800 w-full max-w-full overflow-x-hidden">
       {/* header card */}
       <div className="w-full space-y-4 p-4">
-        <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {user && user.is_inspector && !user.is_staff ? 'proyecto' : 'Proyectos KMZ para Inspección'}
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Total: {CountProyectos} proyectos
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center">
+        <div className="bg-white dark:bg-gray-800 p-4 md:p-6 shadow rounded-lg">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+          <div className="flex-1">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {user && user.is_inspector && !user.is_staff ? 'Proyectos' : 'Proyectos KMZ para Inspección'}
+            </h1>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Total: {CountProyectos} proyectos
+            </p>
+          </div>
+          
+          {/* Modificamos este contenedor para que sea flex-col y alinee sus elementos a la derecha (en desktop) o centro (en móvil) */}
+          <div className="flex flex-col items-center md:items-end gap-3">
+            
+            {/* Contenedor para los botones en fila */}
+            <div className="flex flex-wrap gap-2 justify-center md:justify-end">
               <Link to="/inspecciones/asignacion">
                 <Button>Ver Proyectos</Button>
               </Link>
-              {user && user.is_staff && ( <>
-              <Link to="/monitoreo">
-                <Button variant='danger'>Monitoreo</Button>
-              </Link>
-                <KMZUpload onUploadSuccess={handleUploadSuccess} />
-              </>
+              {user && user.is_staff && (
+                <Link to="/monitoreo">
+                  <Button variant='danger'>Monitoreo</Button>
+                </Link>
               )}
             </div>
+
+            {/* KMZUpload aparecerá debajo de los botones */}
+            {user && user.is_staff && (
+              <div className="w-full flex justify-center md:justify-end mt-1">
+                <KMZUpload onUploadSuccess={handleUploadSuccess} />
+              </div>
+            )}
+            
           </div>
+        </div>
           {error && (
             <div className="error-message">
               {error}
             </div>
           )}
+
+          {/* formulario de asignación siempre visible */}
+          {user && user.is_staff && (
+            <div className="bg-white dark:bg-gray-800 p-4 md:p-6 shadow rounded-lg w-full mt-6">
+              <h2 className="text-lg md:text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+                Asignar Proyecto
+              </h2>
+              <form onSubmit={handleAssignSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Archivo KMZ Asociado *
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2 md:p-3 border border-gray-200 dark:border-gray-700 rounded-md max-h-40 md:max-h-48 overflow-y-auto">
+                    {kmzImports.length === 0 ? (
+                      <p className="text-sm text-gray-600 dark:text-gray-400">No hay archivos disponibles</p>
+                    ) : (
+                      kmzImports.map((kmz) => (
+                        <label
+                          key={kmz.id}
+                          className="flex items-center space-x-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer"
+                        >
+                          <input
+                            type="radio"
+                            name="kmzimport_id"
+                            value={kmz.id}
+                            checked={formData.kmzimport_id === String(kmz.id)}
+                            onChange={(e) => setFormData({ ...formData, kmzimport_id: e.target.value })}
+                            className="w-4 h-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                            required
+                          />
+                          <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                            {kmz.filename || `KMZ #${kmz.id}`}
+                          </span>
+                        </label>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Brigadas Asignadas
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 md:max-h-56 overflow-y-auto p-2 md:p-3 border border-gray-200 dark:border-gray-700 rounded-md">
+                    {inspectores.map((inspector) => (
+                      <label
+                        key={inspector.id}
+                        className="flex items-center space-x-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.brigadas_asignadas_ids.includes(inspector.id)}
+                          onChange={() => handleBrigadaToggle(inspector.id)}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                          {`${inspector.user.first_name} ${inspector.user.last_name}` || `Inspector #${inspector.id}`}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                  <Button type="submit" className="w-full sm:flex-1 text-sm md:text-base">
+                    Asignar Proyecto
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+          {/* lista de archivos kmz importados */}
+          {/* {user && user.is_staff && (
+          <div className="mt-6 text-left bg-white dark:bg-gray-800 p-4 md:p-6 shadow rounded-lg">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 text-base md:text-lg">
+              Archivos KMZ importados ({kmzImports.length})
+            </h3>
+            {kmzImports.length === 0 ? (
+              <p className="text-sm text-gray-600 dark:text-gray-400">No hay archivos disponibles.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {kmzImports.map((kmz) => (
+                  <div key={kmz.id} className="border border-gray-200 dark:border-gray-700 p-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                      {kmz.filename || `KMZ #${kmz.id}`}
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">ID: {kmz.id}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>)} */}
+
+          {/* tabla de proyectos asignados - VISTA ESCRITORIO */}
+          <div className="mt-6 hidden md:block bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Proyecto
+                    </th>
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      KMZ Asociado
+                    </th> */}
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Brigadas
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {proyectos.map((proyecto) => (
+                    <tr key={proyecto.id}>
+                      {/* <td className="px-4 py-4 whitespace-nowrap text-sm text-left font-medium text-gray-900 dark:text-gray-100">
+                        {proyecto.nombre}
+                      </td> */}
+                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                        {proyecto.kmzimport?.filename || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex flex-wrap gap-1">
+                          {proyecto.brigadas_asignadas?.map((brigada) => (
+                            <span
+                              key={brigada.id}
+                              className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs"
+                            >
+                              {brigada.user.username || `#${brigada.id}`}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        {user.is_staff && ( 
+                          <>
+                          <Button
+                            size="sm"
+                            variant={proyecto.inspeccionado ? "success" : "outline"}
+                            className={proyecto.inspeccionado 
+                              ? "bg-green-100 text-green-700 border-green-200 cursor-default" 
+                              : "text-blue-600 border-blue-600 hover:bg-blue-50"}
+                              onClick={() => !proyecto.inspeccionado && onFinalizarInspeccion(proyecto.id)}
+                              disabled={proyecto.inspeccionado}
+                              >
+                            {proyecto.inspeccionado ? '✅ Inspeccionado' : '🔎 Finalizar'}
+                          </Button>
+                          </>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => navigate(`/inspecciones/inventario/${proyecto.id}`)}
+                          >
+                          🔍 Ir a Inspección
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => ExportarExcelInventario(proyecto.id, proyecto.kmzimport?.filename || 'Inventario')}
+                        >
+                          📥 Exportar
+                        </Button>
+                        
+                        {user.is_staff && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDelete(proyecto.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            🗑️
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {proyectos.length === 0 && (
+              <div className="text-center p-8 text-gray-500">
+                No hay proyectos asignados.
+              </div>
+            )}
+          </div>
+
+          {/* VISTA MÓVIL: TARJETAS - CARDS */}
+          <div className="mt-6 md:hidden grid grid-cols-1 gap-4">
+            {proyectos.map((proyecto) => (
+              <div key={proyecto.id} className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg space-y-3">
+                {/* Cabecera de la Tarjeta */}
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                      {proyecto.kmzimport?.filename}
+                    </h3>
+                    {/* <p className="text-sm text-gray-500 dark:text-gray-400">
+                      📂 KMZ: {proyecto.kmzimport?.filename || 'N/A'}
+                    </p> */}
+                  </div>
+                  {proyecto.inspeccionado && (
+                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold whitespace-nowrap ml-2">
+                      ✅ Listo
+                    </span>
+                  )}
+                </div>
+
+                {/* Lista de Brigadas */}
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Brigadas:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {proyecto.brigadas_asignadas?.length > 0 ? (
+                      proyecto.brigadas_asignadas.map((brigada) => (
+                        <span
+                          key={brigada.id}
+                          className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs"
+                        >
+                          {brigada.user.username}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-gray-400 italic">Sin asignar</span>
+                    )}
+                  </div>
+                </div>
+
+                <hr className="dark:border-gray-700" />
+
+                {/* Botones de Acción Móvil */}
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  {/* Botón Ir a Inspección y Ver Inventario */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full justify-center text-xs"
+                    onClick={() => navigate(`/inspecciones/inventario/${proyecto.id}`)}
+                  >
+                    🔍 Inspección
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full justify-center text-xs"
+                    onClick={() => ExportarExcelInventario(proyecto.id, proyecto.kmzimport?.filename || 'Inventario')}
+                  >
+                    📥 Exportar
+                  </Button>
+
+                  {user.is_staff && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant={proyecto.inspeccionado ? "success" : "outline"}
+                        className={`w-full justify-center text-xs ${proyecto.inspeccionado 
+                          ? "bg-green-100 text-green-700 border-green-200" 
+                          : "text-blue-600 border-blue-600"}`}
+                        onClick={() => !proyecto.inspeccionado && onFinalizarInspeccion(proyecto.id)}
+                        disabled={proyecto.inspeccionado}
+                      >
+                        {proyecto.inspeccionado ? '✅ Listo' : '🔎 Finalizar'}
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(proyecto.id)}
+                        className="w-full justify-center text-red-600 border-red-200 hover:bg-red-50 text-xs"
+                      >
+                        🗑️ Eliminar
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            {proyectos.length === 0 && (
+              <div className="text-center p-8 text-gray-500">
+                No hay proyectos asignados.
+              </div>
+            )}
+          </div>
           <FeatureStats features={kmzFeatures} />
         </div>
       </div>
