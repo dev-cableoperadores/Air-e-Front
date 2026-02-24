@@ -64,6 +64,18 @@ export const fetchKmzImports = async (token) => {
     //console.log('=== fetchKmzImports END ===');
   }
 };
+
+// elimina un KMZ importado
+export const deleteKmzImport = async (id) => {
+  try {
+    const response = await api.delete(`/api/inspectores/kmz-imports/${id}/`);
+    toast.success('Archivo KMZ eliminado');
+    return response.data;
+  } catch (error) {
+    console.error('Error eliminando KMZ:', error);
+    throw error;
+  }
+};
 export const fetchKmzImportsNoInspeccionados = async (token) => {
   try {
     //console.log('=== fetchKmzImports START ===');
