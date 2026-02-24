@@ -376,3 +376,9 @@ export const ALTURAS = [
   { value: 18, label: '18'},
   { value: 25, label: '25'},
 ];
+
+export const TIPOS_INGRESO = [
+  { value: 'Viabilidad', label: 'Viabilidad' },
+  { value: 'Desmonte', label: 'Desmonte' },
+  { value: 'Legalizacion', label: 'Legalización' },
+];

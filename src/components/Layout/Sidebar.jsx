@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/cableoperadores', label: 'Cableoperadores', icon: Cable },
     { path: '/contratos', label: 'Contratos', icon: FileText },
     { path: '/proyectos', label: 'Proyectos', icon: Layers },
-    { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
+    
     { path: '/facturas', label: 'Facturas', icon: Receipt },
   ]
   const InspectorItems = [
@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
     { path: '/contratos', label: 'Contratos', icon: FileText },
     { path: '/facturas', label: 'Facturas', icon: Receipt },
     { path: '/proyectos', label: 'Proyectos', icon: Layers },
-    { path: '/proyectos/ingreso', label: 'Ingresos', icon: FileText },
+    
     { path: '/inspecciones', label: 'Viabilidades', icon: ClipboardCheck },
   ]
 

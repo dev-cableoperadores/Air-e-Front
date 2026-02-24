@@ -47,6 +47,9 @@ const ProyectosList = () => {
         <Link to="/proyectos/nuevo" className="w-full sm:w-auto">
           <Button variant="primary" className="w-full sm:w-auto text-xs sm:text-sm">Nuevo Proyecto</Button>
         </Link>
+        <Link to="/proyectos/ingreso" className="w-full sm:w-auto">
+          <Button variant="primary" className="w-full sm:w-auto text-xs sm:text-sm">Ingresos</Button>
+        </Link>
       </div>
 
       <div className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 overflow-x-auto mx-2 sm:mx-0">

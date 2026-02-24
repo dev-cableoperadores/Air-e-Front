@@ -9,12 +9,21 @@ import Input from '../../components/UI/Input'
 import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
+import { TIPOS_INGRESO, MUNICIPIOS_COLOMBIA } from '../../utils/constants'
 
 const departamentosOptions = [
   { value: 'atlantico', label: 'Atlantico' },
   { value: 'magdalena', label: 'Magdalena' },
   { value: 'la_guajira', label: 'La Guajira' },
 ]
+
+// label map used to pick the right key from MUNICIPIOS_COLOMBIA
+const DEPARTAMENTO_LABEL_MAP = {
+  atlantico: 'Atlántico',
+  magdalena: 'Magdalena',
+  la_guajira: 'La Guajira',
+}
+
 
 const IngresoNew = () => {
   const navigate = useNavigate()
@@ -63,7 +72,13 @@ const IngresoNew = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    // when department changes we need to clear municipio and barrio so they
+    // stay in sync with the new list
+    if (name === 'departamento') {
+      setFormData({ ...formData, departamento: value, municipio: '', barrio: '' })
+    } else {
+      setFormData({ ...formData, [name]: value })
+    }
   }
 
   const handleAlturaChange = (e) => {
@@ -116,16 +131,33 @@ const IngresoNew = () => {
       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 px-2 sm:px-0">Nuevo Ingreso de Proyecto</h2>
       <form onSubmit={handleSubmit} className="bg-blue-50 dark:bg-blue-100/10 rounded-lg border border-blue-200 dark:border-blue-700 p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 mx-2 sm:mx-0">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+          <Input label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} required />
           <SearchableSelect
             label="Cableoperador"
             name="cableoperador_id"
-            value={formData.cableoperador_id} 
+            value={formData.cableoperador_id}
             onChange={handleChange}
             options={cableoperadores.map((co) => ({ value: co.id.toString(), label: co.nombre_largo || co.nombre }))}
             required
           />
-          <Input label="OT PRST" name="OT_PRST" value={formData.OT_PRST} onChange={handleChange} />
-          <Input label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} required />
+            <Select label="Tipo Ingreso" name="TipoIngreso" value={formData.TipoIngreso} onChange={handleChange} options={TIPOS_INGRESO} />
+            <Select label="Departamento" name="departamento" value={formData.departamento} onChange={handleChange} options={departamentosOptions} />
+            {/* municipio y barrio ahora son selects dependientes del departamento */}
+            <Select
+              label="Municipio"
+              name="municipio"
+              value={formData.municipio}
+              onChange={handleChange}
+              options={
+                MUNICIPIOS_COLOMBIA[DEPARTAMENTO_LABEL_MAP[formData.departamento]] || []
+              }
+            />
+            <Input label="Barrio" name="barrio" value={formData.barrio} onChange={handleChange} />
+            <Input label="Fecha Inicio" name="fecha_inicio" type="date" value={formData.fecha_inicio} onChange={handleChange} />
+            <Input label="Fecha Fin" name="fecha_fin" type="date" value={formData.fecha_fin} onChange={handleChange} />
+            <Input label="Fecha Confirmación Fin" name="fecha_confirmacion_fin" type="date" value={formData.fecha_confirmacion_fin} onChange={handleChange} />
+            <Input label="Fecha Radicación PRST" name="fecha_radicacion_prst" type="date" value={formData.fecha_radicacion_prst} onChange={handleChange} />
+            <Input label="Fecha Revisión Documento" name="fecha_revision_doc" type="date" value={formData.fecha_revision_doc} onChange={handleChange} />
         <div className="space-y-3 sm:space-y-4">
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <label className="flex items-center gap-2 text-xs sm:text-sm">
@@ -152,9 +184,20 @@ const IngresoNew = () => {
         <div className="bg-blue-50 dark:bg-blue-900/10 p-3 sm:p-4 rounded-lg border border-blue-200 dark:border-blue-700">
           <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 mb-3">Altura Inicial Poste (opcional)</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
-            {Object.keys(formData.altura_inicial_poste_input).map((k) => (
-              <Input key={k} label={k} name={k} type="number" value={formData.altura_inicial_poste_input[k]} onChange={handleAlturaChange} className="text-xs sm:text-sm" />
-            ))}
+            {Object.keys(formData.altura_inicial_poste_input).map((k) => {
+              const displayLabel = `Altura ${k.replace('tipo', '')}m`;
+              return (
+                <Input 
+                  key={k} 
+                  label={displayLabel} 
+                  name={k} 
+                  type="number" 
+                  value={formData.altura_inicial_poste_input[k]} 
+                  onChange={handleAlturaChange} 
+                  className="text-xs sm:text-sm"
+                />
+              );
+            })}
           </div>
         </div>
 

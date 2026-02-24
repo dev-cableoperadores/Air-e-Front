@@ -9,12 +9,20 @@ import Select from '../../components/UI/Select'
 import Button from '../../components/UI/Button'
 import Loading from '../../components/UI/Loading'
 import { formatDateForInput } from '../../utils/formatters'
+import { TIPOS_INGRESO, MUNICIPIOS_COLOMBIA } from '../../utils/constants'
 
 const departamentosOptions = [
   { value: 'atlantico', label: 'Atlantico' },
   { value: 'magdalena', label: 'Magdalena' },
   { value: 'la_guajira', label: 'La Guajira' },
 ]
+
+const DEPARTAMENTO_LABEL_MAP = {
+  atlantico: 'Atlántico',
+  magdalena: 'Magdalena',
+  la_guajira: 'La Guajira',
+}
+
 
 const IngresoEdit = () => {
   const { id } = useParams()
@@ -62,7 +70,11 @@ const IngresoEdit = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    if (name === 'departamento') {
+      setFormData({ ...formData, departamento: value, municipio: '', barrio: '' })
+    } else {
+      setFormData({ ...formData, [name]: value })
+    }
   }
 
   const handleAlturaChange = (e) => {
@@ -110,9 +122,17 @@ const IngresoEdit = () => {
             onChange={handleChange}
             options={cableoperadores.map((co) => ({ value: co.id.toString(), label: co.nombre_largo || co.nombre }))}
           />
-            <Select label="Tipo Ingreso" name="TipoIngreso" value={formData.TipoIngreso} onChange={handleChange} options={[{value:'Viabilidad',label:'Viabilidad'},{value:'Instalacion',label:'Instalación'},{value:'Otro',label:'Otro'}]} />
+            <Select label="Tipo Ingreso" name="TipoIngreso" value={formData.TipoIngreso} onChange={handleChange} options={TIPOS_INGRESO} />
             <Select label="Departamento" name="departamento" value={formData.departamento} onChange={handleChange} options={departamentosOptions} />
-            <Input label="Municipio" name="municipio" value={formData.municipio} onChange={handleChange} />
+            <Select
+              label="Municipio"
+              name="municipio"
+              value={formData.municipio}
+              onChange={handleChange}
+              options={
+                MUNICIPIOS_COLOMBIA[DEPARTAMENTO_LABEL_MAP[formData.departamento]] || []
+              }
+            />
             <Input label="Barrio" name="barrio" value={formData.barrio} onChange={handleChange} />
             <Input label="Fecha Inicio" name="fecha_inicio" type="date" value={formData.fecha_inicio} onChange={handleChange} />
             <Input label="Fecha Fin" name="fecha_fin" type="date" value={formData.fecha_fin} onChange={handleChange} />
