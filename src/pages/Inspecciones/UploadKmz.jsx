@@ -241,13 +241,14 @@ function InspeccionesList() {
             
             {/* Contenedor para los botones en fila */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-end">
+              {user && user.is_staff && (<>
               <Link to="/inspecciones/asignacion">
                 <Button>Ver Proyectos</Button>
               </Link>
-              {user && user.is_staff && (
                 <Link to="/monitoreo">
                   <Button variant='danger'>Monitoreo</Button>
                 </Link>
+              </>
               )}
             </div>
 
@@ -326,7 +327,11 @@ function InspeccionesList() {
                           </span>
                         ) : (
                           <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">
-                            ⏳ Pendiente
+                              {proyecto.numero_de_inventarios > 0 ? (
+                              `Iniciado`
+                            ) : (
+                              `⏳ Pendiente`
+                            )}
                           </span>
                         )}
                         </td>
@@ -355,6 +360,7 @@ function InspeccionesList() {
                               ? "bg-green-100 text-green-700 border-green-200" 
                               : "text-blue-600 border-blue-600 hover:bg-blue-50"}
                             onClick={() => onToggleInspeccion(proyecto)}
+                            disabled={proyecto.numero_de_inventarios < proyecto.kmzimport.features_type_point}
                           >
                             {proyecto.inspeccionado ? '🔓 Habilitar' : '🚩 Finalizar'}
                           </Button>
@@ -399,7 +405,7 @@ function InspeccionesList() {
           </div>
 
           {/* VISTA MÓVIL: TARJETAS - CARDS */}
-          <div className="mt-6 md:hidden grid grid-cols-1 gap-4">
+          <div className="mt-6 md:hidden grid grid-cols-1 gap-4  shadow-inner border-t border-gray-500 dark:border-gray-700 mt-6">
             {proyectos.map((proyecto) => (
               <div key={proyecto.id} className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg space-y-3">
                 {/* Cabecera de la Tarjeta */}
@@ -408,9 +414,18 @@ function InspeccionesList() {
                     <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                       {proyecto.kmzimport?.filename}
                     </h3>
-                    {/* <p className="text-sm text-gray-500 dark:text-gray-400">
-                      📂 KMZ: {proyecto.kmzimport?.filename || 'N/A'}
-                    </p> */}
+                    {/* Estado badge para la tarjeta móvil */}
+                    <div className="mt-1">
+                      {proyecto.inspeccionado ? (
+                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">
+                          ✅ Listo
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">
+                          {proyecto.numero_de_inventarios > 0 ? 'Iniciado' : '⏳ Pendiente'}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {proyecto.inspeccionado && (
                     <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold whitespace-nowrap ml-2">
@@ -436,8 +451,12 @@ function InspeccionesList() {
                       <span className="text-xs text-gray-400 italic">Sin asignar</span>
                     )}
                   </div>
+                </div>                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Poste %:</p>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {proyecto.numero_de_inventarios} de {proyecto.kmzimport.features_type_point}
+                  </span>
                 </div>
-
                 <hr className="dark:border-gray-700" />
 
                 {/* Botones de Acción Móvil */}
