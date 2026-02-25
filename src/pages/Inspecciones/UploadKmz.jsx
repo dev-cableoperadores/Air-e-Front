@@ -285,6 +285,9 @@ function InspeccionesList() {
                       Brigadas
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Poste %
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Acciones
                     </th>
                   </tr>
@@ -304,7 +307,7 @@ function InspeccionesList() {
                             Asignar
                           </Button>
                         </td>
-                        <td className="px-6 py-4"></td>
+                        <td className="px-6 py-4">{kmz.features_type_point}</td>
                       </tr>
                     ))
                   }
@@ -338,6 +341,11 @@ function InspeccionesList() {
                             </span>
                           ))}
                         </div>
+                      </td>
+                      <td>
+                        <span>
+                          {proyecto.numero_de_inventarios} de {proyecto.kmzimport.features_type_point}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                           <Button
