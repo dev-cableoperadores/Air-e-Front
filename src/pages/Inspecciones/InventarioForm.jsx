@@ -4,8 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import inventarioService from '../../services/inventarioService';
-import inspectoresService from '../../services/inspectoresService';
 import asignacionService from '../../services/asignacionService';
+import inspectoresService from '../../services/inspectoresService';
 import Loading from '../../components/UI/Loading';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
@@ -53,16 +53,16 @@ function InventarioForm() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [proyecto, setProyecto] = useState(null);
-  const [inspectores, setInspectores] = useState([]);
   const [inventarios, setInventarios] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [projectFeatures, setProjectFeatures] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const { user } = useAuth();
+  const [myInspector, setMyInspector] = useState(null);
   const [formData, setFormData] = useState({
     proyecto_id: proyectoId,
-    brigada_responsable_id: user?.id,
+    brigada_responsable_id: null,
     numero_poste_en_plano: '',
     coordenada: '',
     elementos_existentes: '',
@@ -77,6 +77,20 @@ function InventarioForm() {
   useEffect(() => { loadData(); }, [proyectoId]);
   useTracking(user);
   
+  // fetch inspector record corresponding to current user
+  useEffect(() => {
+    if (user?.id) {
+      inspectoresService.getById(user.id)
+        .then(ins => {
+          setMyInspector(ins);
+          setFormData(prev => ({ ...prev, brigada_responsable_id: ins.id }));
+        })
+        .catch(err => {
+          console.warn('No se encontró inspector para usuario', err);
+        });
+    }
+  }, [user?.id]);
+
   useEffect(() => {
     if (selectedPosition) {
       setFormData(prev => ({
@@ -96,8 +110,6 @@ function InventarioForm() {
         setProjectFeatures(convertDjangoToFeatures([proyectoData.kmzimport]));
       }
       
-      const inspectoresData = await inspectoresService.getAll();
-      setInspectores(Array.isArray(inspectoresData) ? inspectoresData : inspectoresData.results || []);
 
       const inventarioData = await inventarioService.getByProyecto(proyectoId);
       setInventarios(Array.isArray(inventarioData) ? inventarioData : inventarioData.results || []);
@@ -120,23 +132,52 @@ function InventarioForm() {
       toast.error('Debe seleccionar coordenadas en el mapa');
       return;
     }
-
     if (!formData.rf1 || !formData.rf2 || !formData.rf3) {
       toast.error('Debes cargar las 3 fotos correctamente');
+      return;
+    }
+    // evitar crear duplicados de número de poste en el mismo proyecto
+    if (!editingId) {
+      const existe = inventarios.some(inv =>
+        String(inv.numero_poste_en_plano) === String(formData.numero_poste_en_plano)
+      );
+      if (existe) {
+        toast.error('Ya existe un poste con ese número en este proyecto');
+        return;
+      }
+    }
+
+    // preparar payload con tipos correctos
+    const payload = {
+      ...formData,
+      proyecto_id: formData.proyecto_id ? parseInt(formData.proyecto_id, 10) : null,
+      brigada_responsable_id: formData.brigada_responsable_id ? parseInt(formData.brigada_responsable_id, 10) : (myInspector?.id || null),
+      numero_poste_en_plano: formData.numero_poste_en_plano ? parseInt(formData.numero_poste_en_plano, 10) : null,
+      cantidad_prst: formData.cantidad_prst ? parseInt(formData.cantidad_prst, 10) : 0,
+      altura: formData.altura ? parseInt(formData.altura, 10) : '',
+      // convertir cadenas vacías de fotos a null para no enviar campos vacíos
+      rf1: formData.rf1 || null,
+      rf2: formData.rf2 || null,
+      rf3: formData.rf3 || null,
+    };
+
+    // Validar que tengamos un id de brigada responsable válido
+    if (!payload.brigada_responsable_id) {
+      toast.error('No se pudo determinar la brigada responsable (verifica que estés autenticado)');
       return;
     }
 
     try {
       if (editingId) {
-        await inventarioService.update(editingId, formData);
+        await inventarioService.update(editingId, payload);
         toast.success('Inventario actualizado exitosamente');
         resetForm();
         loadData();
       } else {
-        const newInventario = await inventarioService.create(formData);
+        const newInventario = await inventarioService.create(payload);
         toast.success('Inventario creado exitosamente');
         
-        const cantidadPrst = parseInt(formData.cantidad_prst) || 0;
+        const cantidadPrst = parseInt(payload.cantidad_prst, 10) || 0;
         
         if (cantidadPrst === 0) {
           toast('No hay PRSTs para registrar en este poste');
@@ -147,7 +188,8 @@ function InventarioForm() {
         }
       }
     } catch (error) {
-      console.error('Error saving inventario:', error);
+      // mostrar detalles del servidor en consola para depuración
+      console.error('Error saving inventario:', error.response?.data || error);
       toast.error(editingId ? 'Error al actualizar inventario' : 'Error al crear inventario');
     }
   };
@@ -165,7 +207,7 @@ function InventarioForm() {
 
     setFormData({
       proyecto_id: proyectoId,
-      brigada_responsable_id: user?.id,
+      brigada_responsable_id: item.brigada_responsable_id || myInspector?.id || user?.id,
       numero_poste_en_plano: item.numero_poste_en_plano,
       coordenada: item.coordenada,
       elementos_existentes: item.elementos_existentes,
@@ -187,7 +229,9 @@ function InventarioForm() {
 
   const resetForm = () => {
     setFormData({
-      proyecto_id: proyectoId, brigada_responsable_id: user?.id, numero_poste_en_plano: '',
+      proyecto_id: proyectoId,
+      brigada_responsable_id: myInspector?.id || user?.id,
+      numero_poste_en_plano: '',
       coordenada: '', elementos_existentes: '', tipo_poste: '', material: '',
       altura: '', cantidad_prst: '', observaciones: '', rf1: '', rf2: '', rf3: ''
     });
@@ -239,7 +283,7 @@ function InventarioForm() {
           <h1 className="text-2xl font-bold dark:text-white text-black">Inventario General</h1>
           <p className="text-sm text-gray-500">Proyecto: <strong>{proyecto?.nombre}</strong></p>
         </div>
-        <Button onClick={() => navigate('/inspecciones/asignacion')} variant="outline" className="w-full md:w-auto">
+        <Button onClick={() => navigate('/inspecciones')} variant="outline" className="w-full md:w-auto">
           ← Volver
         </Button>
       </div>
