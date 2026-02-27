@@ -3,7 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 const APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycby84Mlj4HEOfZ1aMBGym1bOCgBKCUZS0AnquR1GntM5fUdfpwXjKs_vjEbeV_fIn56y/exec';
+  'https://script.google.com/macros/s/AKfycbwbA-P9lxzKA0hP8qsTCIOmnVTTkOG6r92dzCFcfBPk5NMxb0TYmMzlMPQkiNwKLnGnWQ/exec';
 
 /* ─────────────────────────────────────────────
    ANNOTATION EDITOR
