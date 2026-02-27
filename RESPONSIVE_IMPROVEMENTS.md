@@ -3,7 +3,7 @@
 **Fecha:** 22 de enero de 2026  
 **Objetivo:** Adaptar la interfaz para ser completamente responsiva en móviles, tablets y desktop, manteniendo los colores y esencia del diseño original.
 
----
+---Cambio de cuenta
 
 ## 📊 Estado de Optimización
 
