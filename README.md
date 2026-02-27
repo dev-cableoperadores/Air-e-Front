@@ -76,7 +76,8 @@ npm install
 ```
 
 3. Crea un archivo `.env` en la raíz y añade las variables necesarias (ver sección siguiente).
-
+- `VITE_API_BASE_URL`
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
 4. Inicia el servidor de desarrollo (documentado puerto: 3000):
 
 ```bash
@@ -92,9 +93,6 @@ Ejemplo mínimo en `.env` (NO incluir secretos reales en el repositorio):
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:8000
 VITE_ENVIRONMENT=development
-# Autenticación
-VITE_AUTH_SECRET=
-VITE_AUTH_TOKEN_KEY=
 # Supabase (si se utiliza)
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
